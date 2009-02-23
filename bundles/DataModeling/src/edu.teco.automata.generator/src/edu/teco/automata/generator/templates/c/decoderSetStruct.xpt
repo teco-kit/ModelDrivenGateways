@@ -1,0 +1,454 @@
+«IMPORT Automata»
+«IMPORT edu::teco::automata::generator::templates»
+«EXTENSION edu::teco::automata::generator::templates::util»
+
+«DEFINE root FOR StateMachine»
+   «FILE "c/decoder_set.h"»
+#ifndef _DECODER_SET_H
+#define _DECODER_SET_H
+      «FOREACH states.typeSelect(SimpleState) AS st-»
+      «EXPAND state_set_h FOR st-»   
+      «ENDFOREACH-»
+#endif
+      «clear()»
+   «ENDFILE»
+   «FILE "c/decoder_set.c"»
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "../bitsio/bits_io.h"
+#include "decoder_struct.h"
+#include "decoder_set.h"
+
+   «FOREACH states.typeSelect(SimpleState) AS st-»
+   «EXPAND state_set FOR st-»
+   «ENDFOREACH-»
+   «clear()-»
+   «ENDFILE»
+
+   «FILE "c/decoder_struct.h"»
+#ifndef _DECODER_STRUCT_H_
+#define _DECODER_STRUCT_H_
+
+   «REM»«FOREACH states.typeSelect(SimpleState) AS st-»
+   «EXPAND state_struct FOR st-»
+   «ENDFOREACH-»
+   «ENDREM»
+   «EXPAND state_struct FOR states.typeSelect(SimpleState).get(0)-»
+   «clear()-»
+#endif
+   «ENDFILE»
+
+«ENDDEFINE»
+
+«DEFINE state_set_h FOR SimpleState-»
+ «IF type.metaType.name != complexTypeName()-»
+   «IF !isStackEmpty()-»
+   «EXPAND popStackRec-»
+
+   «LET getTypeMap(type.metaType.name).toLowerCase() AS tName-»
+   «IF upperBound == 1-»
+   void «getPapaName().toFirstUpper()»_set_«name»
+   «ELSE-»
+   void «getPapaName().toFirstUpper()»_add_«name»      
+   «ENDIF-»
+   (struct «getPapaName().toFirstUpper()» *parent,
+   «IF tName == "string"-»
+      const char *
+   «ELSEIF tName == "byte"-»
+      «IF ((Automata::TByte)type).min == 0 && ((Automata::TByte)type).max == (twoPow(8)-1)-»
+      uint8_t
+      «ELSE-»
+      int8_t
+      «ENDIF-»
+   «ELSEIF tName == "short"-»
+     «IF ((Automata::TShort)type).min == 0 && ((Automata::TShort)type).max == (twoPow(16)-1)-»
+     uint16_t
+     «ELSE-»
+     int16_t
+     «ENDIF-»
+   «ELSEIF tName == "int"-»
+      «IF ((Automata::TInt)type).min == 0 && ((Automata::TInt)type).max == (twoPow(32)-1)-»
+      uint32_t
+      «ELSE-»
+      int32_t
+      «ENDIF-» 
+   «ELSE-»
+      «tName»
+   «ENDIF-» value);
+   «ENDLET»
+   «ELSE-»
+   struct «name» * get_«name.toFirstUpper()» (void);
+   «ENDIF-»
+ «ELSE-» 
+   «IF !isStackEmpty()-»
+   «EXPAND popStackRec-»
+   «IF upperBound == 1-»
+   struct «name» * «getPapaName().toFirstUpper()»_get_«name»
+      (struct «getPapaName().toFirstUpper()» *parent);
+   «ELSEIF upperBound <= 0-» «REM» means we have unbounded upper bound e.g. *«ENDREM»
+   struct «name» * «getPapaName().toFirstUpper()»_getNext_«name»
+         (struct «getPapaName().toFirstUpper()» *parent);
+   «ELSE-»
+   struct «name» * «getPapaName().toFirstUpper()»_getNext_«name»
+         (struct «getPapaName().toFirstUpper()» *parent);
+   «ENDIF-»
+   
+   «ELSE-»
+   struct «name» * get_«name.toFirstUpper()» (void);
+   «ENDIF-»
+   « pushType(name, depth, lowerBound, upperBound, kind, lowerBound) »
+ «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE state_set FOR SimpleState-»
+ «IF type.metaType.name != complexTypeName()-»
+   «IF !isStackEmpty()-»
+   «EXPAND popStackRec-»
+
+   «LET getTypeMap(type.metaType.name).toLowerCase() AS tName-»
+   «IF upperBound == 1-»
+   void «getPapaName().toFirstUpper()»_set_«name»
+   «ELSE-»
+   void «getPapaName().toFirstUpper()»_add_«name»
+   «ENDIF-»
+      (struct «getPapaName().toFirstUpper()» *parent, 
+      «IF tName == "string"-»
+         const char *
+      «ELSEIF tName == "byte"-»
+      «IF ((Automata::TByte)type).min == 0 && ((Automata::TByte)type).max == (twoPow(8)-1)-»
+         uint8_t
+      «ELSE-»
+         int8_t
+      «ENDIF-»
+      «ELSEIF tName == "short"-»
+      «IF ((Automata::TShort)type).min == 0 && ((Automata::TShort)type).max == (twoPow(16)-1)-»
+         uint16_t
+      «ELSE-»
+         int16_t
+      «ENDIF-»
+      «ELSEIF tName == "int"-»
+      «IF ((Automata::TInt)type).min == 0 && ((Automata::TInt)type).max == (twoPow(32)-1)-»
+         uint32_t
+       «ELSE-»
+         int32_t
+       «ENDIF-»
+      «ELSE-»
+         «tName»
+      «ENDIF-» value)
+   {
+      «EXPAND decodeFunction FOR this»
+   }
+   «ENDLET»
+   «ELSE-»
+   static struct «name» «name»_struct;
+   
+   struct «name» * get_«name.toFirstUpper()» (void)
+   {
+      return &«name»_struct;
+   }
+   «ENDIF-»
+ «ELSE-» 
+   «IF !isStackEmpty()-»
+   «EXPAND popStackRec-»
+   «IF upperBound == 1-»
+   struct «name» * «getPapaName().toFirstUpper()»_get_«name»
+      (struct «getPapaName().toFirstUpper()» *parent)
+   {
+      «IF lowerBound != 1-»
+      parent->«name»_count = 1;
+      «ENDIF-»
+      return &(parent->«name»_elem);
+   }
+   «ELSEIF upperBound <= 0-» «REM» means we have unbounded upper bound e.g. *«ENDREM»
+   struct «name» * «getPapaName().toFirstUpper()»_getNext_«name»
+         (struct «getPapaName().toFirstUpper()» *parent)
+   {
+      parent->«name»_elem[parent->«name»_count++] = 
+         («name» *)malloc(sizeof(struct «name»));
+      return parent->«name»_elem[parent->«name»_count];
+   }
+   «ELSE-»
+   struct «name» * «getPapaName().toFirstUpper()»_getNext_«name»
+         (struct «getPapaName().toFirstUpper()» *parent)
+   {
+      return &(parent->«name»_elem[parent->«name»_count++]);
+   }
+   «ENDIF-»
+   
+   «ELSE-»
+   static struct «name» «name»_struct;
+   
+   struct «name» * get_«name.toFirstUpper()» (void)
+   {
+      return &«name»_struct;
+   }
+   «ENDIF-»
+   « pushType(name, depth, lowerBound, upperBound, kind, lowerBound) »
+ «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE popStackRec FOR SimpleState»
+   «IF getPapaDepth() >= depth-»
+   «popStack()-»
+   «EXPAND popStackRec-»
+   «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE decodeFunction FOR SimpleState»
+
+ «IF upperBound == 1-»
+   «IF lowerBound != 1-»
+   parent->«name»_count = 1;
+   «ENDIF-»
+ «ENDIF-»
+
+«LET getTypeMap(type.metaType.name).toLowerCase() AS tName-»
+«IF tName == "string"-»
+   «IF upperBound <= 0-»
+   parent->«name»[parent->«name»_count++] = 
+         («type.metaType.name» *)malloc(«((Automata::TString)type).length»);
+   «ENDIF-»
+   decode_string(value,
+   «IF upperBound == 1-»&(parent->«name»)
+   «ELSEIF upperBound > 0-»&(parent->«name»[parent->«name»_count++])
+   «ELSE-»&(parent->«name»[parent->«name»_count]) 
+   «ENDIF-»
+   ,«((Automata::TString)type).length»);
+«ELSEIF tName == "int" || tName == "short" || tName == "byte"-»
+   «IF upperBound <= 0-»
+   parent->«name»[parent->«name»_count++] = 
+         («type.metaType.name» *)malloc(
+   «IF tName == "byte"-»
+   1
+   «ELSEIF tName == "short"-»
+   2
+   «ELSE-»
+   4      
+   «ENDIF-»);
+   «ENDIF-»
+   decode_«tName»(value, 
+   «IF upperBound == 1-»
+   (u_char *)&(parent->«name»)
+   «ELSEIF upperBound > 0-»&(parent->«name»[parent->«name»_count++])
+   «ELSE-»&(parent->«name»[parent->«name»_count]) 
+   «ENDIF-»
+   ,«((Automata::TInt)type).min», «((Automata::TInt)type).max», «((Automata::TInt)type).stepping»);
+«ELSEIF tName == "double"-»
+   «IF upperBound <= 0-»
+   parent->«name»[parent->«name»_count++] = 
+         («type.metaType.name» *)malloc(sizeof «type.metaType.name»);
+   «IF ((Automata::TDouble)type).fractionDigits > 0-»
+   parent->«name»_frac[parent->«name»_count] = 
+         («type.metaType.name» *)malloc(sizeof «type.metaType.name»);
+   «ENDIF-»
+   «ENDIF-»
+   decode_«tName»(value,
+   «IF upperBound == 1-»
+      (u_char *)&(parent->«name»)
+      «IF ((Automata::TDouble)type).fractionDigits > 0-»
+      , (u_char *)&(parent->«name»_frac)
+      «ELSE-», NULL
+      «ENDIF-»
+   «ELSEIF upperBound > 0-»
+      (u_char *)&(parent->«name»[parent->«name»_count++])
+      «IF ((Automata::TDouble)type).fractionDigits > 0-»
+      , (u_char *)&(parent->«name»_frac[parent->«name»_count])
+      «ELSE-», NULL
+      «ENDIF-»
+   «ELSE-»
+      (u_char *)&(parent->«name»[parent->«name»_count])
+      «IF ((Automata::TDouble)type).fractionDigits > 0-»
+      , (u_char *)&(parent->«name»_frac[parent->«name»_count])
+      «ELSE-», NULL
+      «ENDIF-» 
+   «ENDIF-»
+   ,«((Automata::TDouble)type).min», «((Automata::TDouble)type).max», «((Automata::TDouble)type).stepping»,
+    «((Automata::TDouble)type).fractionDigits»);
+«ELSE-»
+   decode_«tName»(value);
+«ENDIF-»
+«ENDLET»
+«ENDDEFINE»
+
+«DEFINE state_struct FOR SimpleState-»
+  «FOREACH out AS st-»
+   «IF st.metaType.name == "Automata::SimpleState"-»
+      «EXPAND state_struct FOR (Automata::SimpleState)st » 
+   «ENDIF-»
+  «ENDFOREACH»
+ «IF type.metaType.name == complexTypeName()-»
+struct «name» {
+  «FOREACH out AS st-»
+   «IF st.metaType.name == "Automata::SimpleState"-»
+   «EXPAND kids(depth) FOR (Automata::SimpleState)st » 
+   «ENDIF-»
+  «ENDFOREACH» 
+};
+ «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE kids(Integer PapaDepth) FOR SimpleState-»
+  «IF depth > PapaDepth-»
+   «IF depth == (PapaDepth + 1)-»
+      «IF type.metaType.name != complexTypeName()-»
+      «EXPAND decodeDType(lowerBound,upperBound)»
+      «ELSE-»
+         «IF upperBound == 1-»
+            struct «name» «name»_elem;
+            «IF lowerBound != 1-»
+            size_t «name»_count;
+            «ENDIF-»
+         «ELSE-»
+            «IF upperBound > 0-»
+               struct «name» «name»_elem[«upperBound»];
+            «ELSE-» 
+               struct «name» * «name»_elem[];
+            «ENDIF-»
+            «IF upperBound != lowerBound-»
+            size_t «name»_count;
+            «ENDIF-»
+         «ENDIF-»
+      «ENDIF-»  
+   «ENDIF-»
+  
+
+  «FOREACH out AS st ITERATOR i-»
+   «IF st.metaType.name == "Automata::SimpleState"-»
+   «EXPAND kids(PapaDepth) FOR (Automata::SimpleState)st » 
+   «ENDIF-»
+  «ENDFOREACH» 
+  
+  «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE decodeDType(Integer lowerBound, Integer upperBound) FOR SimpleState»
+«LET getTypeMap(type.metaType.name).toLowerCase() AS tName»
+
+«IF upperBound == 1-»
+   «IF tName == "string"»
+      «IF ((Automata::TString)type).length > 0-»
+      char «name»[«((Automata::TString)type).length»];
+      «ELSE-» 
+      char *«name»;
+      «ENDIF-»
+   «ELSEIF tName == "int"-»
+      «EXPAND IntegerStruct(((Automata::TInt)type))»;
+   «ELSEIF tName == "double"-»
+      «EXPAND DoubleStruct(((Automata::TDouble)type))»;
+      «EXPAND DoubleStructFrac(((Automata::TDouble)type).fractionDigits)»;
+   «ELSEIF tName == "byte" -»
+      «IF ((Automata::TByte)type).min == 0 && ((Automata::TByte)type).max == (twoPow(8)-1)-»
+      uint8_t «name»;
+      «ELSE-»
+      int8_t «name»;
+      «ENDIF-»
+   «ELSEIF tName == "short" -»
+      «IF ((Automata::TShort)type).min == 0 && ((Automata::TShort)type).max == (twoPow(16)-1)-»
+      uint16_t «name»;
+      «ELSE-»
+      int16_t «name»;
+      «ENDIF-»
+   «ELSE-»
+      «tName» «name»;
+   «ENDIF-»
+   «IF lowerBound != 1»
+   size_t «name»_count;
+   «ENDIF-»
+«ELSE-»
+   «IF upperBound > 0-»
+      «IF tName == "string"-»
+        «IF ((Automata::TString)type).length > 0-»
+        char «name»[«upperBound»][«((Automata::TString)type).length»];
+        «ELSE-» 
+        char *«name»[«upperBound»];
+        «ENDIF-»
+      «ELSEIF tName == "int"-»
+         «EXPAND IntegerStruct(((Automata::TInt)type))»[«upperBound»];
+      «ELSEIF tName == "double"-»
+         «EXPAND DoubleStruct(((Automata::TDouble)type))»[«upperBound»];
+         «EXPAND DoubleStructFrac(((Automata::TDouble)type).fractionDigits)»[«upperBound»];
+      «ELSEIF tName == "byte" -»
+         «IF ((Automata::TByte)type).min == 0 && ((Automata::TByte)type).max == (twoPow(8)-1)-»
+         uint8_t «name»[«upperBound»];
+         «ELSE-»
+         int8_t «name»[«upperBound»];
+         «ENDIF-»
+      «ELSEIF tName == "short" -»
+         «IF ((Automata::TShort)type).min == 0 && ((Automata::TShort)type).max == (twoPow(16)-1)-»
+         uint16_t «name»[«upperBound»];
+         «ELSE-»
+         int16_t «name»[«upperBound»];
+         «ENDIF-»
+      «ELSE-»
+      «tName» «name»[«upperBound»];
+      «ENDIF-»
+   «ELSE-»
+      «IF tName == "string"-»
+         «IF ((Automata::TString)type).length != null && ((Automata::TString)type).length > 0-»
+         char *«name»[«((Automata::TString)type).length»];
+         «ELSE-» 
+         char *«name»;
+         «ENDIF-»
+      «ELSEIF tName == "int"-»
+         «EXPAND IntegerStruct(((Automata::TInt)type))»[];
+      «ELSEIF tName == "double"-»
+         «EXPAND DoubleStruct(((Automata::TDouble)type))»[];
+         «EXPAND DoubleStructFrac(((Automata::TDouble)type).fractionDigits)»[];
+      «ELSEIF tName == "byte" -»
+         «IF ((Automata::TByte)type).min == 0 && ((Automata::TByte)type).max == (twoPow(8)-1)»
+         uint8_t *«name»;
+         «ELSE-»
+         int8_t *«name»;
+         «ENDIF-»
+      «ELSEIF tName == "short" -»
+         «IF ((Automata::TShort)type).min == 0 && ((Automata::TShort)type).max == (twoPow(16)-1)»
+         uint16_t *«name»;
+         «ELSE-»
+         int16_t *«name»;
+         «ENDIF-»
+      «ELSE-»
+         «tName» *«name»;
+      «ENDIF-» 
+   «ENDIF-»
+   size_t «name»_count;
+«ENDIF-» 
+«ENDLET»
+«ENDDEFINE»
+
+«DEFINE IntegerStruct(Automata::TInt type) FOR SimpleState»
+   «IF type.min != type.max-»
+      «IF type.min == 0 && type.max == (twoPow(32)-1)-»
+      uint_32
+      «ELSEIF byteLen(type.min, type.max) > 1-»
+      u_char «name»[«byteLen(type.min, type.max, type.stepping)»]
+      «ELSE-»
+      u_char «name»
+      «ENDIF-»
+   «ELSE-»
+      int32_t «name»
+   «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE DoubleStruct(Automata::TDouble type) FOR SimpleState»
+   «IF type.min != type.max-»
+      «IF byteLen(type.min, type.max) > 1-»
+      u_char «name»[«byteLenDouble(type.min, type.max, type.stepping)»]
+      «ELSE-»
+      u_char «name»
+      «ENDIF-»
+   «ELSE-»
+      double «name»
+   «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE DoubleStructFrac(Integer frac) FOR SimpleState»
+   «IF frac > 0-»
+   «IF fracLen(frac) > 1-»
+   u_char «name»_frac[«fracLen(frac)»]
+   «ELSE-»
+   u_char «name»_frac
+   «ENDIF-»
+   «ENDIF-»
+«ENDDEFINE»

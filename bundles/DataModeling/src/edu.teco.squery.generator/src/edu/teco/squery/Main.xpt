@@ -1,0 +1,91 @@
+«IMPORT squery»
+
+«DEFINE main FOR QueryModel»
+   «FOREACH actions AS a»
+     «EXPAND main FOR a»
+   «ENDFOREACH»
+«ENDDEFINE»
+
+«DEFINE main FOR Action»
+   «FILE "edu/teco/squery/generator/gen/Queries.java"»
+      package edu.teco.squery.generator.gen;
+      
+      import java.util.HashMap;
+      import java.util.regex.Matcher;
+      import java.util.regex.Pattern;
+      import edu.teco.automata.generator.templates.*;
+
+      public class Queries {
+
+         private static HashMap<String, String> actions    =
+            new HashMap<String, String>();
+         private static HashMap<String, String> conditions =
+            new HashMap<String, String>();
+
+         public static void init() {
+            String statePath = "";
+            «IF query.st.state.name.size > 1»
+            «FOREACH query.st.state.name AS st»
+               statePath += "/" + "«st»";
+            «ENDFOREACH»
+            «ELSE»
+               statePath = "«query.st.state.name.last()»";
+            «ENDIF»
+
+            actions.put(statePath, "«name»");
+            NeededMap.setName(statePath, true);
+            
+            «FOREACH query.condition.expressions AS exp ITERATOR i»
+            String cStatePath = "";
+            «IF exp.op1.state.name.size > 1»
+            «FOREACH exp.op1.state.name AS st»
+            cStatePath += "/" + "«st»";
+            «ENDFOREACH»
+            «ELSE»
+            cStatePath = "«exp.op1.state.name.last()»";
+            «ENDIF»
+            conditions.put(cStatePath,
+                           cStatePath + " «exp.operand.op» «exp.op2»");
+            «ENDFOREACH»
+         }
+         
+         public static boolean hasAction(String element) {
+            return  actions.containsKey(element);
+         }
+
+         public static String getAction(String element, String type) {
+            return (
+            actions.get(element) +
+            "(TypesBin.read" + firstToUpper(type) + "(ins));");
+         }
+
+         public static String getCondition(String element) {
+            return conditions.get(element);
+         }
+
+         public static String getImports() {
+            return "";
+         }
+         public static boolean hasCondition(String element) {
+            return conditions.containsKey(element);
+         }
+
+         public static boolean isNeeded(String name) {
+            return NeededMap.isNeeded(name);
+         }
+
+         private static String firstToUpper(String str) {
+            Matcher m = Pattern.compile("([a-z])").matcher(str);
+            StringBuffer sb = new StringBuffer();
+            if (m.find(0))
+            {
+               m.appendReplacement(sb, m.group(1).toUpperCase());
+            }
+            str = m.appendTail(sb).toString();
+            return str;
+         }
+
+      }
+   «ENDFILE»
+«ENDDEFINE»
+         

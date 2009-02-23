@@ -1,0 +1,314 @@
+«IMPORT Automata»
+«IMPORT edu::teco::automata::generator::templates»
+«EXTENSION edu::teco::automata::generator::templates::util»
+«EXTENSION edu::teco::automata::generator::templates::config»
+
+«DEFINE root FOR Automata::StateMachine»
+«FILE "c/deliver_event.c"»
+/* Generated file */   
+#include "«getNSPrefix()»_inv.nsmap"
+#include "dpws_device.h"
+#include "../../bitsio/read_bits_buf.h"
+#include "gsoap_encoder_automata_inv.h"
+
+struct dpws_s *_device;
+
+void
+deliver_event (void *device, char * buf)
+{
+  struct soap soap;
+  struct ws4d_subscription *subs, *next;
+  struct READER_STRUCT reader;
+#define soap_action_uri "«getMsgOutURI()»"
+
+  _device = (struct dpws_s *)device; 
+
+  soap_init (&soap);
+  soap_set_namespaces (&soap, «getNSPrefix()»_inv_namespaces);
+
+  dpws_for_each_subs (subs, next, _device,
+                      soap_action_uri)
+  {
+    char *deliverto = dpws_subsm_get_deliveryPush_address (_device, subs);
+
+    if (!deliverto)
+      continue;
+
+    dpws_header_gen_oneway (&soap, NULL, deliverto,
+                            soap_action_uri,
+                            NULL, sizeof (struct SOAP_ENV__Header));
+
+    printf ("Sending Event to %s\n", deliverto);
+
+    if (   soap_connect(&soap, deliverto, soap_action_uri)
+        || soap_envelope_begin_out(&soap)
+        || soap_putheader(&soap)
+        || soap_body_begin_out(&soap) )
+    {
+       soap_closesock(&soap);
+       soap_print_fault (&soap, stderr);
+    }
+    read_init(&reader, buf);
+    gsoap_automata_init_inv(&soap, &reader);
+    gsoap_automata_run_inv();
+    
+    if (   soap_body_end_out(&soap)
+        || soap_envelope_end_out(&soap)
+        || soap_end_send(&soap) )
+    {
+       soap_closesock(&soap);
+       soap_print_fault (&soap, stderr);
+    }
+    soap_end (&soap);
+  }
+
+  soap_done (&soap);
+}
+«ENDFILE»
+
+«FILE "c/advanced_device.c"»
+/* Generated file */  
+#include "«getNSPrefix()».nsmap"
+#include "dpws_device.h"
+#include "«getNSPrefix()»_metadata.h"
+#include "«getNSPrefix()»_wsdl.h"
+#include "config.h"
+#include <signal.h>
+
+#include "../../bitsio/read_bits_buf.h"
+#include "event_worker.h"
+
+struct soap service;
+struct dpws_s device;
+
+void
+service_exit ()
+{
+#ifdef DEBUG
+  printf ("\nSensor Monitor: shutting down...\n");
+#endif
+
+  event_worker_shutdown();
+
+  dpws_deactivate_hosting_service (&device);
+  soap_done (&service);
+  dpws_done (&device);
+
+  exit (0);
+}
+
+int
+main (int argc, char **argv)
+{
+#ifndef WIN32
+  struct sigaction sa;
+#endif
+  char *interface = NULL;
+  char *uuid = NULL;
+
+  /* parsing command line options */
+  while (argc > 1)
+    {
+      if (argv[1][0] == '-')
+        {
+          char *option = &argv[1][1];
+
+          switch (option[0])
+            {
+            case 'i': /* set interface with option -i */
+              if (strlen (option) > 2)
+                {
+                  ++option;
+                  interface = option;
+                }
+              else
+                {
+                  --argc;
+                  ++argv;
+                  interface = argv[1];
+                }
+#ifdef DEBUG
+              printf ("\nSensor Monitor: Set interface to \"%s\"\n", interface);
+#endif
+              break;
+            case 'u': /* set id with option -u */
+              if (strlen (option) > 2)
+                {
+                  ++option;
+                  uuid = option;
+                }
+              else
+                {
+                  --argc;
+                  ++argv;
+                  uuid = argv[1];
+                }
+#ifdef DEBUG
+              printf ("\nSensor Monitor: Set uuid to \"%s\"\n", uuid);
+#endif
+              break;
+            default:
+              fprintf (stderr, "\nSensor Monitor: Bad option %s\n", argv[1]);
+              printf ("\n%s -i [interface address] -u urn:uuid[uuid]\n", argv[0]);
+         exit(1);
+            }
+        }
+      --argc;
+      ++argv;
+    }
+
+  if (interface == NULL)
+    {
+      fprintf (stderr, "\nSensor Monitor: No interface addrss was specified!\n");
+      exit (1);
+    }
+
+  /* initialize soap handle */
+  soap_init (&service);
+#ifdef DEBUG
+  soap_omode (&service, SOAP_XML_INDENT);
+#endif
+  soap_set_namespaces (&service, «getNSPrefix()»_namespaces);
+
+  /* initialize device and services */
+  if (dpws_init (&device, interface)
+      || «getNSPrefix()»_setup_HostingService (&device, &service, uuid, 100)
+      || «getNSPrefix()»_setup_«getDeviceName()» (&device, &service, SENSORVALUES_WSDL,
+                                                100))
+    {
+      fprintf (stderr, "\nSensor Monitor: Can't init device and services\n");
+      dpws_done (&device);
+      exit (1);
+    }
+
+  /* Set Metadata */
+  «getNSPrefix()»_set_Metadata (&device);
+  «getNSPrefix()»_set_wsdl (&device);
+
+  /* Update Metadata */
+  if (dpws_update_Metadata (&device))
+    {
+      fprintf (stderr, "\nSensor Monitor: Can't init metadata\n");
+      dpws_done (&device);
+      exit (1);
+    }
+
+  /* install signal handler for SIGINT or Ctrl-C */
+#ifdef WIN32
+  signal (SIGINT, service_exit);
+#else
+  memset (&sa, 0, sizeof (sa));
+  sa.sa_handler = service_exit;
+  sigaction (SIGINT, &sa, NULL);
+#endif
+
+  /* Tell hosting service to start advertising its hosted services */
+  if (dpws_activate_hosting_service (&device))
+    {
+      fprintf (stderr, "\nSensor Monitor: Can't activate device\n");
+      dpws_done (&device);
+      exit (1);
+    }
+
+  /* activate eventing. */
+  if (dpws_activate_eventsource (&device, &service))
+    {
+      printf ("\nSensor Monitor: Can't activate eventing\n");
+      dpws_done (&device);
+      exit (0);
+    }
+
+  if (event_worker_init(&device))
+  {
+      printf ("\nSensor Monitor: Can't init event worker\n");
+      dpws_done (&device);
+      exit (0);
+  }
+
+
+#ifdef DEBUG
+  printf ("\nSensor Monitor: ready to serve... (Ctrl-C for shut down)\n");
+#endif
+
+  for (;;)
+    {
+      struct soap *handle = NULL, *soap_set[] = SOAP_HANDLE_SET (&service);
+      int (*serve_requests[]) (struct soap * soap) =
+        SOAP_SERVE_SET («getNSPrefix()»_serve_request);
+
+#ifdef DEBUG
+      printf ("\nSensor Monitor: waiting for request\n");
+#endif
+
+      /* waiting for new messages */
+      handle = dpws_maccept (&device, 100000, 1, soap_set);
+
+      if (handle)
+        {
+
+#ifdef DEBUG
+          printf ("\nSensor Monitor: processing request from %s:%d\n",
+                  inet_ntoa (handle->peer.sin_addr),
+                  ntohs (handle->peer.sin_port));
+#endif
+
+          /* dispatch messages */
+          if (dpws_mserve (handle, 1, serve_requests))
+            {
+              soap_print_fault (handle, stderr);
+            }
+
+          /* clean up soaps internaly allocated memory */
+          soap_end (handle);
+        }
+      
+      dpws_check_subscriptions(&device);
+    }
+
+  return -1;
+}
+«LET states.typeSelect(Automata::SimpleState).get(0).name AS RootElement»
+
+int __«getNSPrefix()»1__Get«RootElement»(struct soap* soap, 
+                                         struct _«getNSPrefix()»1__EmptyMessage    *«getNSPrefix()»_Get«RootElement», 
+                                         struct «getNSPrefix()»1__«RootElement»Type *«getNSPrefix()»__«RootElement»)
+{
+  struct READER_STRUCT reader;
+
+  /* create response header */
+  dpws_header_gen_response (soap, NULL, wsa_header_get_ReplyTo (soap),
+                            "«getMsgRspURI()»",
+                            wsa_header_get_MessageId (soap),
+                            sizeof (struct SOAP_ENV__Header));
+                            
+   if ( soap_response(soap, SOAP_OK)
+       || soap_envelope_begin_out(soap)
+       || soap_putheader(soap)
+       || soap_body_begin_out(soap) )
+   {
+      soap_closesock(soap);
+      soap_print_fault (soap, stderr);
+   }
+   else
+   {
+      read_init(&reader, get_global_packet_buf());
+      gsoap_automata_init(soap, (void*)&reader);
+      gsoap_automata_run();
+   }
+    
+   if ( soap_body_end_out(soap)
+       || soap_envelope_end_out(soap)
+       || soap_end_send(soap) )
+   {
+      soap_closesock(soap);
+      soap_print_fault (soap, stderr);
+   }
+                            
+   return SOAP_OK;
+}
+«ENDLET»
+
+«ENDFILE»
+      
+«ENDDEFINE»
+    

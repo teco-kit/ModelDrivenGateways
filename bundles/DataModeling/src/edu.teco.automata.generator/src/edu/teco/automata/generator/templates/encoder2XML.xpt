@@ -1,0 +1,81 @@
+«IMPORT Automata»
+«IMPORT edu::teco::automata::generator::templates»
+«EXTENSION edu::teco::automata::generator::templates::util»
+
+«DEFINE root FOR StateMachine»
+   «FILE "EncoderAutomata.java"»
+      package edu.teco.automata.generator.gen;
+      import java.io.IOException;
+      import java.io.PrintStream;
+      import edu.teco.automata.generator.types.TypesString;
+      import edu.teco.automata.generator.core.BitsIO;
+      
+      public class EncoderAutomata {
+         private BitsIO   io;
+         private int         label = 0;
+         private PrintStream out = null;
+
+         public EncoderAutomata ( BitsIO io, PrintStream out ) {
+            this.io       = io;
+            this.out      = out;
+         }
+         
+         public void run() throws IOException {
+            
+            while(true)
+            {
+            switch (label)
+            {
+            «resetCase()»
+            «FOREACH states AS st ITERATOR i»
+               «EXPAND encoderRoot::state(i.counter0) FOR st»
+            «ENDFOREACH»
+            }
+            }
+         }
+      }
+   «ENDFILE»
+«ENDDEFINE»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoop(Integer count) 
+ FOR SimpleState»
+   int lowB«count» = «lowerBound»;
+   while (true)
+   {
+      if (lowB«count» <= 0)
+         breatk;
+      lowB«count»--;
+    «targetDef.proceed()»
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::loop(Integer count) 
+FOR SimpleState»
+   /* loop «getCurrPath() + name» */
+   while(io.read_bit())
+   { /* depth «depth» */
+   «targetDef.proceed()»
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoop(Integer count, Integer label) FOR SimpleState»
+   if(io.read_bit())
+   { /* depth «depth»*/
+   «targetDef.proceed()»
+   }
+   else
+   {
+      label = «getEndCase(name)» ;
+      continue;
+   } /* «name» */
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoop(Integer count, Integer label) FOR SimpleState» 
+   if(io.read_bit())
+   { /* depth «depth»*/
+   «targetDef.proceed()»
+   }
+   else
+   {
+      label = «getEndCase(name)»;
+      continue;
+   } /* «name» */
+«ENDAROUND»

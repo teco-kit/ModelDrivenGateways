@@ -1,0 +1,48 @@
+«IMPORT squery»
+«DEFINE main FOR QueryModel»
+
+«FILE "edu/teco/squery/generator/gen/AcceptorNew.ext"-»
+Void initQueriesG():
+    JAVA edu.teco.squery.generator.gen.Queries.init();
+    
+Boolean isNeededG(String name): 
+    JAVA edu.teco.squery.generator.gen.Queries.isNeeded(java.lang.String);
+
+Boolean hasActionG(String element):
+    JAVA edu.teco.squery.generator.gen.Queries.hasAction(java.lang.String);
+    
+String getActionG(String element, String type): 
+    JAVA edu.teco.squery.generator.gen.Queries.getAction(java.lang.String, java.lang.String);
+    
+Boolean hasConditionG(String name):
+    JAVA edu.teco.squery.generator.gen.Queries.hasCondition(java.lang.String);
+
+String getConditionG(String name):
+    JAVA edu.teco.squery.generator.gen.Queries.getCondition(java.lang.String);
+
+String getImportsG():
+    JAVA edu.teco.squery.generator.gen.Queries.getImports();
+
+around edu::teco::automata::generator::templates::AcceptorUtil::initQueries():
+   initQueriesG();
+    
+around edu::teco::automata::generator::templates::AcceptorUtil::isNeeded(String name): 
+   isNeededG(name);
+
+around edu::teco::automata::generator::templates::AcceptorUtil::hasAction(String element):
+  hasActionG(element);
+    
+around edu::teco::automata::generator::templates::AcceptorUtil::getAction(String element, String type): 
+  getActionG(element, type);
+    
+around edu::teco::automata::generator::templates::AcceptorUtil::hasCondition(String name):
+  hasConditionG(name);
+
+around edu::teco::automata::generator::templates::AcceptorUtil::getCondition(String name):
+  getConditionG(name);
+
+around edu::teco::automata::generator::templates::AcceptorUtil::getImports():
+  getImportsG();
+«ENDFILE»
+
+«ENDDEFINE»

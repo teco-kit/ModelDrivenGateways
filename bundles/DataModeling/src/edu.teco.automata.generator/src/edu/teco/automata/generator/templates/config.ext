@@ -1,0 +1,4 @@
+String getNSPrefix(): GLOBALVAR NSPrefix;
+String getMsgOutURI(): GLOBALVAR MsgOutURI;
+String getMsgRspURI(): GLOBALVAR MsgRspURI;
+String getDeviceName(): GLOBALVAR DeviceName;

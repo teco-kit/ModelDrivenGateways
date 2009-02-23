@@ -1,0 +1,29 @@
+Void initQueries():
+    JAVA edu.teco.automata.generator.core.Queries.init();
+    
+Boolean isNeeded(String name): 
+    JAVA edu.teco.automata.generator.core.Queries.isNeeded(java.lang.String);
+
+Boolean hasAction(String element):
+    JAVA edu.teco.automata.generator.core.Queries.hasAction(java.lang.String);
+    
+String getAction(String element, String type): 
+    JAVA edu.teco.automata.generator.core.Queries.getAction(java.lang.String, java.lang.String);
+    
+Boolean hasCondition(String name):
+    JAVA edu.teco.automata.generator.core.Queries.hasCondition(java.lang.String);
+
+String getCondition(String name):
+    JAVA edu.teco.automata.generator.core.Queries.getCondition(java.lang.String);
+
+String getImports():
+    JAVA edu.teco.automata.generator.core.Queries.getImports();
+    
+Void setNeeded(String name, Boolean isNeeded):
+    JAVA edu.teco.automata.generator.templates.NeededMap.setName(java.lang.String, java.lang.Boolean);
+    
+Boolean isCurrNeeded():
+    JAVA edu.teco.automata.generator.templates.NeededMap.isCurrNeeded();
+
+Void setCurrNeeded(Boolean isNeeded):
+    JAVA edu.teco.automata.generator.templates.NeededMap.setCurrNeeded(java.lang.Boolean);

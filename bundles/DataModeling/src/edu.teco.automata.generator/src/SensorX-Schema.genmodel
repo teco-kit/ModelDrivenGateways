@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/edu.teco.automata.generator/src"
+    modelPluginID="edu.teco.automata.generator" modelName="SensorX-Schema" importerID="org.eclipse.xsd.ecore.importer"
+    complianceLevel="6.0" copyrightFields="false">
+  <foreignModel>SensorX-Schema.xsd</foreignModel>
+  <genPackages prefix="Schema" basePackage="org.example.new_.xml" resource="XML" disposableProviderFactory="true"
+      ecorePackage="schema.ecore#/">
+    <genDataTypes ecoreDataType="schema.ecore#//LightType"/>
+    <genDataTypes ecoreDataType="schema.ecore#//SensorIdType"/>
+    <genDataTypes ecoreDataType="schema.ecore#//TemperatureType"/>
+    <genClasses ecoreClass="schema.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute schema.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference schema.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference schema.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schema.ecore#//DocumentRoot/sensorData"/>
+    </genClasses>
+    <genClasses ecoreClass="schema.ecore#//SensorDataType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schema.ecore#//SensorDataType/sensorValues"/>
+    </genClasses>
+    <genClasses ecoreClass="schema.ecore#//SensorValuesType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute schema.ecore#//SensorValuesType/temperature"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute schema.ecore#//SensorValuesType/light"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute schema.ecore#//SensorValuesType/sensorID"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

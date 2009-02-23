@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<wsm:Metadata xmlns:wsm="http://schemas.xmlsoap.org/ws/2004/09/mex"
+	      xmlns:sval="http://www.teco.edu/SensorValues"
+	      xmlns:svale="http://www.teco.edu/SensorValuesEvent"
+	      xmlns:wdp="http://schemas.xmlsoap.org/ws/2006/02/devprof"
+	      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	      xmlns:wsd="http://schemas.xmlsoap.org/ws/2005/04/discovery"
+	      xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsm:MetadataSection Dialect="http://schemas.xmlsoap.org/ws/2006/02/devprof/Relationship">
+    <wdp:Relationship Type="http://schemas.xmlsoap.org/ws/2006/02/devprof/host">
+      <wdp:Host>
+        <wdp:Types>sval:ParticleSensor</wdp:Types>
+        <wdp:ServiceId>DPWS-HostingService</wdp:ServiceId>
+      </wdp:Host>
+      <wdp:Hosted>
+        <wdp:Types>sval:ParticleSensorInterface</wdp:Types>
+        <wdp:ServiceId>ParticleSensor</wdp:ServiceId>
+        <Name>ParticleSensor</Name>
+      </wdp:Hosted>
+    </wdp:Relationship>
+  </wsm:MetadataSection>
+  <wsm:MetadataSection Dialect="http://schemas.xmlsoap.org/ws/2006/02/devprof/ThisModel">
+    <wdp:ThisModel>
+      <wdp:Manufacturer lang="de">TECO (Universität Karlsruhe)</wdp:Manufacturer>
+      <wdp:Manufacturer lang="en">TECO (University of Karlsruhe)</wdp:Manufacturer>
+      <wdp:ManufacturerUrl>http://www.teco.edu</wdp:ManufacturerUrl>
+      <wdp:ModelName lang="de">Sensorüberwachungsdienst</wdp:ModelName>
+      <wdp:ModelName lang="en">Sensor Monitoring Service</wdp:ModelName>
+      <wdp:ModelNumber>1.0</wdp:ModelNumber>
+      <wdp:ModelUrl>http://www.teco.edu</wdp:ModelUrl>
+    </wdp:ThisModel>
+  </wsm:MetadataSection>
+  <wsm:MetadataSection Dialect="http://schemas.xmlsoap.org/ws/2006/02/devprof/ThisDevice">
+    <wdp:ThisDevice>
+      <wdp:FriendlyName lang="de">Sensorüberwachungsdienst</wdp:FriendlyName>
+      <wdp:FriendlyName lang="en">Sensor Monitoring Service</wdp:FriendlyName>
+      <wdp:FirmwareVersion>Version 0.1</wdp:FirmwareVersion>
+      <wdp:SerialNumber>1234567f-c23f-4d91-84ba-555555555555</wdp:SerialNumber>
+    </wdp:ThisDevice>
+  </wsm:MetadataSection>
+</wsm:Metadata>

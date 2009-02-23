@@ -1,0 +1,44 @@
+<workflow>
+  <property name='modelFile' />
+  <property name='automataModel' />
+  <property name='targetDir' value='src-gen/'/>
+  <bean class="org.eclipse.mwe.emf.StandaloneSetup">
+      <platformUri value=".."/>
+  </bean>
+  <component file='edu/teco/squery/parser/Parser.oaw'>
+     <modelFile value='${modelFile}'/>
+     <outputSlot value='theModel'/>
+  </component>
+  
+  <component class='oaw.workflow.common.DirectoryCleaner' directories='${targetDir}'/>
+ 
+  <component class='oaw.xpand2.Generator'>
+     <metaModel id='mm' class='org.eclipse.m2t.type.emf.EmfRegistryMetaModel'/>
+     <expand value='edu::teco::squery::Main::main FOR theModel'/>
+     <genPath value='${targetDir}'/>
+  </component>
+  
+  <component class='oaw.xpand2.Generator'>
+     <metaModel id='mm' class='org.eclipse.m2t.type.emf.EmfRegistryMetaModel'/>
+     <expand value='edu::teco::squery::Extensions::main FOR theModel'/>
+     <genPath value='${targetDir}'/>
+  </component>
+
+  <!--
+  <cartridge file="edu/teco/automata/generator/acceptor.oaw"/>
+    <component adviceTarget="generator"
+     class="oaw.xpand2.GeneratorAdvice">
+     <extensionAdvices value='edu::teco::squery::generator::gen::AcceptorNew'/>
+    </component>
+  </cartridge>
+
+  <component class="edu.teco.squery.RefreshWorkspace">
+      <directoryPath value='${targetDir}'/>
+  </component>
+    -->
+  <component file='edu/teco/automata/generator/acceptor.oaw'>
+   <extensions value='edu::teco::squery::generator::gen::AcceptorNew'/>
+   <modelFile value='${automataModel}' />
+  </component>
+
+</workflow>
