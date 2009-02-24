@@ -78,7 +78,7 @@ SET (advanced_device_SRCS
 	${gen_DIR}/${nsPrefix}_wsdl.c)
 
 EXTEND_COMPILE_FLAGS(${advanced_device_SRCS}
-	FLAGS "-DDPWS_DEVICE -DWITH_MUTEXES")
+	FLAGS "-DDPWS_DEVICE -DWITH_MUTEXES -I/home/teco/include")
 
 # compile all files in simple_sensorvalues_SRCS and link them into
 # the device executable
