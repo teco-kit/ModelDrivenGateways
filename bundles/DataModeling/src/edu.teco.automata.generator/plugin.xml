@@ -3,6 +3,7 @@
 
 <!--
  <copyright>
+ TECO www.teco.edu
  </copyright>
 
  $Id$
@@ -13,6 +14,7 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             id="edu.teco.automata.generator.contribution1"
+            nameFilter="*.xsd"
             objectClass="org.eclipse.core.resources.IFile">
          <menu
                id="edu.teco.automata.generator.menu1"
@@ -31,6 +33,4 @@
          </action>
       </objectContribution>
    </extension>
-
-
 </plugin>

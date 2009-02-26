@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: edu.teco.automata.generator
+Bundle-Name: %pluginName
 Bundle-SymbolicName: edu.teco.automata.generator;singleton:=true
 Bundle-Version: 1.0.0
 Require-Bundle: org.openarchitectureware.dependencies,
@@ -20,3 +20,5 @@ Export-Package: edu.teco.automata.generator.core,
  edu.teco.automata.generator.xml
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.xsd.ecore
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: %providerName
