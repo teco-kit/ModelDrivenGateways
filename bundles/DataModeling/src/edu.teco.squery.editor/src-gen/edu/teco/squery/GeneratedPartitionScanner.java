@@ -17,8 +17,8 @@ public class GeneratedPartitionScanner extends AbstractPartitionScanner {
 
 		rules.add(new MultiLineRule("/*","*/", comment));
 		rules.add(new SingleLineRule("//", "", comment));
-		rules.add(new MultiLineRule("\"","\"", string));
-		rules.add(new MultiLineRule("'","'", string));
+		rules.add(new MultiLineRule("\"","\"", string, '\\'));
+		rules.add(new MultiLineRule("'","'", string, '\\'));
 		return rules;
 	}
 

@@ -28,7 +28,7 @@ public class MyNewSQueryProjectWizard extends NewSQueryProjectWizard {
                   pr.open(monitor);
                   String modelFileName = "model." + getFileExtension();
                   ProjectCreator.create(pr, new String[] { getDslProjectName(), 
-                            getGeneratorProjectName() }, monitor);
+                            getGeneratorProjectName() }, new String[] {},monitor);
                   IContainer srcFolder = pr.getFolder("src");
                   ProjectCreator
                         .createFile(

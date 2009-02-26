@@ -15,6 +15,9 @@ import edu.teco.squery.parser.XtextParser;
 
 public class SQueryUtilities extends AbstractLanguageUtilities {
 
+	// enforce eager registration of metamodel
+	private static final EPackage EPACKAGE = edu.teco.squery.MetaModelRegistration.getEPackage();
+	
 	@Override
 	protected IXtextParser internalParse(InputStream inputStream) {
 		return new XtextParser(inputStream);
@@ -25,7 +28,7 @@ public class SQueryUtilities extends AbstractLanguageUtilities {
 	}
 
 	public EPackage getEPackage() {
-		return edu.teco.squery.MetaModelRegistration.getEPackage();
+		return EPACKAGE;
 	}
 
 	List<String> r = new ArrayList<String>();
@@ -60,4 +63,6 @@ public class SQueryUtilities extends AbstractLanguageUtilities {
 	public XtextFile getXtextFile() {
 		return MetaModelRegistration.getXtextFile();
 	}
+	
+
 }

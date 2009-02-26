@@ -4,26 +4,18 @@ import codeassist;
 
 extension edu::teco::squery::EditorExtensions;
 
-/* proposals for Feature Action::name */
-List[Proposal] completeAction_name(emf::EObject ctx, String prefix) :
-	{newProposal("ActionName")};
-
 /* proposals for Feature BoolExpression::op2 */
 List[Proposal] completeBoolExpression_op2(emf::EObject ctx, String prefix) :
 	{newProposal("BoolExpressionOp2")};
 
+/* proposals for Feature Action::name */
+List[Proposal] completeAction_name(emf::EObject ctx, String prefix) :
+	{newProposal("ActionName")};
 
 
-/* proposals for Feature QueryModel::automata */
-List[Proposal] completeQueryModel_automata(emf::EObject ctx, String prefix) :
-	{};
 
-/* proposals for Feature BoolExpression::op1 */
-List[Proposal] completeBoolExpression_op1(emf::EObject ctx, String prefix) :
-	{};
-
-/* proposals for Feature Query::condition */
-List[Proposal] completeQuery_condition(emf::EObject ctx, String prefix) :
+/* proposals for Feature QueryModel::actions */
+List[Proposal] completeQueryModel_actions(emf::EObject ctx, String prefix) :
 	{};
 
 /* proposals for Feature BoolExpression::operand */
@@ -34,6 +26,14 @@ List[Proposal] completeBoolExpression_operand(emf::EObject ctx, String prefix) :
 List[Proposal] completeQuery_st(emf::EObject ctx, String prefix) :
 	{};
 
+/* proposals for Feature Query::condition */
+List[Proposal] completeQuery_condition(emf::EObject ctx, String prefix) :
+	{};
+
+/* proposals for Feature Condition::expressions */
+List[Proposal] completeCondition_expressions(emf::EObject ctx, String prefix) :
+	{};
+
 /* proposals for Feature Action::query */
 List[Proposal] completeAction_query(emf::EObject ctx, String prefix) :
 	{};
@@ -42,12 +42,12 @@ List[Proposal] completeAction_query(emf::EObject ctx, String prefix) :
 List[Proposal] completeCondition_expressions(emf::EObject ctx, String prefix) :
 	{};
 
-/* proposals for Feature QueryModel::actions */
-List[Proposal] completeQueryModel_actions(emf::EObject ctx, String prefix) :
+/* proposals for Feature BoolExpression::op1 */
+List[Proposal] completeBoolExpression_op1(emf::EObject ctx, String prefix) :
 	{};
 
-/* proposals for Feature Condition::expressions */
-List[Proposal] completeCondition_expressions(emf::EObject ctx, String prefix) :
+/* proposals for Feature QueryModel::automata */
+List[Proposal] completeQueryModel_automata(emf::EObject ctx, String prefix) :
 	{};
 
 
@@ -64,7 +64,7 @@ List[Proposal] completeState_state(emf::EObject ctx, String prefix) :
 
 
 List[Proposal] sortProposals(List[Proposal] proposalsToSort):
-	proposalsToSort;
+	proposalsToSort.sortBy(e|e.label.toLowerCase());
 
 isKeywordProposal(Proposal this):
 	type == codeassist::Type::KEYWORD;
