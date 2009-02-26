@@ -98,6 +98,8 @@ public abstract class GenParser extends AbstractXtextParser implements IXtextPar
 
 	public Issues doCheck() {
 		IssuesImpl issues = new IssuesImpl();
+		if (getRootNode().getModelElement() == null)
+			return issues;
 		ResourceLoader cl = ResourceLoaderFactory.createResourceLoader();
 		try {
 			ResourceLoaderFactory.setCurrentThreadResourceLoader(new ResourceLoaderImpl(GenParser.class.getClassLoader()));

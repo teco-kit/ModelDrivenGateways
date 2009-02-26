@@ -5,11 +5,11 @@ extension edu::teco::squery::Linking;
 link(emf::EObject this) :
 	this.allVisibleElements().internalLink();
 
-private Void internalLink(emf::EObject this) :
+Void internalLink(emf::EObject this) :
 	null;
 
 
-private Void internalLink(squery::State this) :
+Void internalLink(squery::State this) :
 	this.link_state()
 ;
 

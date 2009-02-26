@@ -4,92 +4,111 @@ grammar debugMeWithAntlrWorks;
 
 
 parse :
-	 result=ruleQueryModel EOF
+	 result=ruleQueryModel
+	 // Always return the root node! This prevents that this method is called multiple times
+	 // with interesting side effects.
+	 EOF
 ;
 
-ruleQueryModel  :
-((temp_automata=ruleAutomata )
+ruleQueryModel 
 
-(temp_actions=ruleAction )+
+:
+((ruleAutomata)
+
+(ruleAction)+
 )
 ;
 
-ruleAutomata  :
+ruleAutomata 
+
+:
 (('model')
 
-(temp_model= RULE_STRING
+( RULE_STRING
 )
 
 (';')
 )
 ;
 
-ruleAction  :
+ruleAction 
+
+:
 (('action')
 
-(temp_name=RULE_ID )
+(RULE_ID)
 
 ('on')
 
-(temp_query=ruleQuery )
+(ruleQuery)
 
 (';')
 )
 ;
 
-ruleQuery  :
-((temp_st=ruleState )
+ruleQuery 
 
-(temp_condition=ruleCondition )?
+:
+((ruleState)
+
+(ruleCondition)?
 )
 ;
 
-ruleCondition  :
+ruleCondition 
+
+:
 (('where')
 
-(temp_expressions=ruleBoolExpression )
+(ruleBoolExpression)
 
 ((('||')
 	|
 ('&&')
 )
 
-(temp_expressions=ruleBoolExpression )
+(ruleBoolExpression)
 )*
 )
 ;
 
-ruleBoolExpression  :
-((temp_op1=ruleState )
+ruleBoolExpression 
 
-(temp_operand=ruleOperand )
+:
+((ruleState)
 
-(temp_op2=RULE_STRING )
+(ruleOperand)
+
+(RULE_STRING)
 )
 ;
 
-ruleState  :
-((temp_state=RULE_ID
+ruleState 
+
+:
+((RULE_ID
 )
 	|
 (('/')
 
-(temp_state=RULE_ID
+(RULE_ID
 )
 )+
 )
 ;
 
-ruleOperand  :
-((temp_op='==' )
+ruleOperand 
+
+:
+(('==')
 	|
-(temp_op='<=' )
+('<=')
 	|
-(temp_op='>=' )
+('>=')
 	|
-(temp_op='<' )
+('<')
 	|
-(temp_op='>' )
+('>')
 )
 ;
 
@@ -101,7 +120,7 @@ RULE_ID :
 
 RULE_STRING :
 
-	 '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\') | ~('\\'|'"') )* '"' |
+	 '\"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\') | ~('\\'|'\"') )* '\"' |
 	 '\'' ( '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\') | ~('\\'|'\'') )* '\''
 	 
 ;

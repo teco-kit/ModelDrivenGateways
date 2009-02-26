@@ -1,4 +1,4 @@
-// $ANTLR 3.0 ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g 2008-12-18 21:54:26
+// $ANTLR 3.0 ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g 2009-02-26 08:57:37
 
 package edu.teco.squery.parser;
 
@@ -50,14 +50,14 @@ public class sQueryLexer extends Lexer {
     public sQueryLexer(CharStream input) {
         super(input);
     }
-    public String getGrammarFileName() { return "..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g"; }
+    public String getGrammarFileName() { return "..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g"; }
 
     // $ANTLR start T10
     public void mT10() throws RecognitionException {
         try {
             int _type = T10;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:22:7: ( 'model' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:22:7: 'model'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:22:7: ( 'model' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:22:7: 'model'
             {
             match("model"); 
 
@@ -75,8 +75,8 @@ public class sQueryLexer extends Lexer {
     public void mT11() throws RecognitionException {
         try {
             int _type = T11;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:23:7: ( ';' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:23:7: ';'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:23:7: ( ';' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:23:7: ';'
             {
             match(';'); 
 
@@ -93,8 +93,8 @@ public class sQueryLexer extends Lexer {
     public void mT12() throws RecognitionException {
         try {
             int _type = T12;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:24:7: ( 'action' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:24:7: 'action'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:24:7: ( 'action' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:24:7: 'action'
             {
             match("action"); 
 
@@ -112,8 +112,8 @@ public class sQueryLexer extends Lexer {
     public void mT13() throws RecognitionException {
         try {
             int _type = T13;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:25:7: ( 'on' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:25:7: 'on'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:25:7: ( 'on' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:25:7: 'on'
             {
             match("on"); 
 
@@ -131,8 +131,8 @@ public class sQueryLexer extends Lexer {
     public void mT14() throws RecognitionException {
         try {
             int _type = T14;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:26:7: ( 'where' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:26:7: 'where'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:26:7: ( 'where' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:26:7: 'where'
             {
             match("where"); 
 
@@ -150,8 +150,8 @@ public class sQueryLexer extends Lexer {
     public void mT15() throws RecognitionException {
         try {
             int _type = T15;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:27:7: ( '||' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:27:7: '||'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:27:7: ( '||' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:27:7: '||'
             {
             match("||"); 
 
@@ -169,8 +169,8 @@ public class sQueryLexer extends Lexer {
     public void mT16() throws RecognitionException {
         try {
             int _type = T16;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:28:7: ( '&&' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:28:7: '&&'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:28:7: ( '&&' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:28:7: '&&'
             {
             match("&&"); 
 
@@ -188,8 +188,8 @@ public class sQueryLexer extends Lexer {
     public void mT17() throws RecognitionException {
         try {
             int _type = T17;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:29:7: ( '/' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:29:7: '/'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:29:7: ( '/' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:29:7: '/'
             {
             match('/'); 
 
@@ -206,8 +206,8 @@ public class sQueryLexer extends Lexer {
     public void mT18() throws RecognitionException {
         try {
             int _type = T18;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:30:7: ( '==' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:30:7: '=='
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:30:7: ( '==' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:30:7: '=='
             {
             match("=="); 
 
@@ -225,8 +225,8 @@ public class sQueryLexer extends Lexer {
     public void mT19() throws RecognitionException {
         try {
             int _type = T19;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:31:7: ( '<=' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:31:7: '<='
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:31:7: ( '<=' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:31:7: '<='
             {
             match("<="); 
 
@@ -244,8 +244,8 @@ public class sQueryLexer extends Lexer {
     public void mT20() throws RecognitionException {
         try {
             int _type = T20;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:32:7: ( '>=' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:32:7: '>='
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:32:7: ( '>=' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:32:7: '>='
             {
             match(">="); 
 
@@ -263,8 +263,8 @@ public class sQueryLexer extends Lexer {
     public void mT21() throws RecognitionException {
         try {
             int _type = T21;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:33:7: ( '<' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:33:7: '<'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:33:7: ( '<' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:33:7: '<'
             {
             match('<'); 
 
@@ -281,8 +281,8 @@ public class sQueryLexer extends Lexer {
     public void mT22() throws RecognitionException {
         try {
             int _type = T22;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:34:7: ( '>' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:34:7: '>'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:34:7: ( '>' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:34:7: '>'
             {
             match('>'); 
 
@@ -299,10 +299,10 @@ public class sQueryLexer extends Lexer {
     public void mRULE_ID() throws RecognitionException {
         try {
             int _type = RULE_ID;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:265:3: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:265:3: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:487:3: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:487:3: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
             {
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:265:3: ( '^' )?
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:487:3: ( '^' )?
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -311,7 +311,7 @@ public class sQueryLexer extends Lexer {
             }
             switch (alt1) {
                 case 1 :
-                    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:265:4: '^'
+                    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:487:4: '^'
                     {
                     match('^'); 
 
@@ -330,7 +330,7 @@ public class sQueryLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:265:33: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:487:33: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
             loop2:
             do {
                 int alt2=2;
@@ -343,7 +343,7 @@ public class sQueryLexer extends Lexer {
 
                 switch (alt2) {
             	case 1 :
-            	    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:
+            	    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:
             	    {
             	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
             	        input.consume();
@@ -378,7 +378,7 @@ public class sQueryLexer extends Lexer {
     public void mRULE_STRING() throws RecognitionException {
         try {
             int _type = RULE_STRING;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:271:3: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\"' ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\'' ) )* '\\'' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:493:3: ( '\\\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\\"' ) )* '\\\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\'' ) )* '\\'' )
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -390,16 +390,16 @@ public class sQueryLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("269:1: RULE_STRING : ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\"' ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\'' ) )* '\\'' );", 5, 0, input);
+                    new NoViableAltException("491:1: RULE_STRING : ( '\\\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\\"' ) )* '\\\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\'' ) )* '\\'' );", 5, 0, input);
 
                 throw nvae;
             }
             switch (alt5) {
                 case 1 :
-                    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:271:3: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\"' ) )* '\"'
+                    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:493:3: '\\\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\\"' ) )* '\\\"'
                     {
                     match('\"'); 
-                    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:271:7: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\"' ) )*
+                    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:493:8: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\\"' ) )*
                     loop3:
                     do {
                         int alt3=3;
@@ -415,7 +415,7 @@ public class sQueryLexer extends Lexer {
 
                         switch (alt3) {
                     	case 1 :
-                    	    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:271:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    	    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:493:10: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -432,7 +432,7 @@ public class sQueryLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:271:53: ~ ( '\\\\' | '\"' )
+                    	    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:493:54: ~ ( '\\\\' | '\\\"' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -458,10 +458,10 @@ public class sQueryLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:272:3: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\'' ) )* '\\''
+                    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:494:3: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\'' ) )* '\\''
                     {
                     match('\''); 
-                    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:272:8: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\'' ) )*
+                    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:494:8: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ~ ( '\\\\' | '\\'' ) )*
                     loop4:
                     do {
                         int alt4=3;
@@ -477,7 +477,7 @@ public class sQueryLexer extends Lexer {
 
                         switch (alt4) {
                     	case 1 :
-                    	    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:272:10: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    	    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:494:10: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -494,7 +494,7 @@ public class sQueryLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:272:54: ~ ( '\\\\' | '\\'' )
+                    	    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:494:54: ~ ( '\\\\' | '\\'' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -532,10 +532,10 @@ public class sQueryLexer extends Lexer {
     public void mRULE_INT() throws RecognitionException {
         try {
             int _type = RULE_INT;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:278:3: ( ( '-' )? ( '0' .. '9' )+ )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:278:3: ( '-' )? ( '0' .. '9' )+
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:500:3: ( ( '-' )? ( '0' .. '9' )+ )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:500:3: ( '-' )? ( '0' .. '9' )+
             {
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:278:3: ( '-' )?
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:500:3: ( '-' )?
             int alt6=2;
             int LA6_0 = input.LA(1);
 
@@ -544,7 +544,7 @@ public class sQueryLexer extends Lexer {
             }
             switch (alt6) {
                 case 1 :
-                    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:278:4: '-'
+                    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:500:4: '-'
                     {
                     match('-'); 
 
@@ -553,7 +553,7 @@ public class sQueryLexer extends Lexer {
 
             }
 
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:278:9: ( '0' .. '9' )+
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:500:9: ( '0' .. '9' )+
             int cnt7=0;
             loop7:
             do {
@@ -567,7 +567,7 @@ public class sQueryLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:278:10: '0' .. '9'
+            	    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:500:10: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -597,10 +597,10 @@ public class sQueryLexer extends Lexer {
     public void mRULE_WS() throws RecognitionException {
         try {
             int _type = RULE_WS;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:284:3: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:284:3: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:506:3: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:506:3: ( ' ' | '\\t' | '\\r' | '\\n' )+
             {
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:284:3: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:506:3: ( ' ' | '\\t' | '\\r' | '\\n' )+
             int cnt8=0;
             loop8:
             do {
@@ -614,7 +614,7 @@ public class sQueryLexer extends Lexer {
 
                 switch (alt8) {
             	case 1 :
-            	    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:
+            	    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:
             	    {
             	    if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||input.LA(1)=='\r'||input.LA(1)==' ' ) {
             	        input.consume();
@@ -654,12 +654,12 @@ public class sQueryLexer extends Lexer {
     public void mRULE_ML_COMMENT() throws RecognitionException {
         try {
             int _type = RULE_ML_COMMENT;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:290:3: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:290:3: '/*' ( options {greedy=false; } : . )* '*/'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:512:3: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:512:3: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:290:8: ( options {greedy=false; } : . )*
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:512:8: ( options {greedy=false; } : . )*
             loop9:
             do {
                 int alt9=2;
@@ -684,7 +684,7 @@ public class sQueryLexer extends Lexer {
 
                 switch (alt9) {
             	case 1 :
-            	    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:290:36: .
+            	    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:512:36: .
             	    {
             	    matchAny(); 
 
@@ -713,12 +713,12 @@ public class sQueryLexer extends Lexer {
     public void mRULE_SL_COMMENT() throws RecognitionException {
         try {
             int _type = RULE_SL_COMMENT;
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:296:3: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:296:3: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:518:3: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:518:3: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
             {
             match("//"); 
 
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:296:8: (~ ( '\\n' | '\\r' ) )*
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:518:8: (~ ( '\\n' | '\\r' ) )*
             loop10:
             do {
                 int alt10=2;
@@ -731,7 +731,7 @@ public class sQueryLexer extends Lexer {
 
                 switch (alt10) {
             	case 1 :
-            	    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:296:8: ~ ( '\\n' | '\\r' )
+            	    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:518:8: ~ ( '\\n' | '\\r' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFE') ) {
             	        input.consume();
@@ -752,7 +752,7 @@ public class sQueryLexer extends Lexer {
                 }
             } while (true);
 
-            // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:296:22: ( '\\r' )?
+            // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:518:22: ( '\\r' )?
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -761,7 +761,7 @@ public class sQueryLexer extends Lexer {
             }
             switch (alt11) {
                 case 1 :
-                    // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:296:22: '\\r'
+                    // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:518:22: '\\r'
                     {
                     match('\r'); 
 
@@ -783,7 +783,7 @@ public class sQueryLexer extends Lexer {
     // $ANTLR end RULE_SL_COMMENT
 
     public void mTokens() throws RecognitionException {
-        // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:10: ( T10 | T11 | T12 | T13 | T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | RULE_ID | RULE_STRING | RULE_INT | RULE_WS | RULE_ML_COMMENT | RULE_SL_COMMENT )
+        // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:10: ( T10 | T11 | T12 | T13 | T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | RULE_ID | RULE_STRING | RULE_INT | RULE_WS | RULE_ML_COMMENT | RULE_SL_COMMENT )
         int alt12=19;
         switch ( input.LA(1) ) {
         case 'm':
@@ -1066,133 +1066,133 @@ public class sQueryLexer extends Lexer {
 
         switch (alt12) {
             case 1 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:10: T10
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:10: T10
                 {
                 mT10(); 
 
                 }
                 break;
             case 2 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:14: T11
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:14: T11
                 {
                 mT11(); 
 
                 }
                 break;
             case 3 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:18: T12
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:18: T12
                 {
                 mT12(); 
 
                 }
                 break;
             case 4 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:22: T13
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:22: T13
                 {
                 mT13(); 
 
                 }
                 break;
             case 5 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:26: T14
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:26: T14
                 {
                 mT14(); 
 
                 }
                 break;
             case 6 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:30: T15
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:30: T15
                 {
                 mT15(); 
 
                 }
                 break;
             case 7 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:34: T16
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:34: T16
                 {
                 mT16(); 
 
                 }
                 break;
             case 8 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:38: T17
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:38: T17
                 {
                 mT17(); 
 
                 }
                 break;
             case 9 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:42: T18
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:42: T18
                 {
                 mT18(); 
 
                 }
                 break;
             case 10 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:46: T19
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:46: T19
                 {
                 mT19(); 
 
                 }
                 break;
             case 11 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:50: T20
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:50: T20
                 {
                 mT20(); 
 
                 }
                 break;
             case 12 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:54: T21
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:54: T21
                 {
                 mT21(); 
 
                 }
                 break;
             case 13 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:58: T22
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:58: T22
                 {
                 mT22(); 
 
                 }
                 break;
             case 14 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:62: RULE_ID
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:62: RULE_ID
                 {
                 mRULE_ID(); 
 
                 }
                 break;
             case 15 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:70: RULE_STRING
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:70: RULE_STRING
                 {
                 mRULE_STRING(); 
 
                 }
                 break;
             case 16 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:82: RULE_INT
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:82: RULE_INT
                 {
                 mRULE_INT(); 
 
                 }
                 break;
             case 17 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:91: RULE_WS
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:91: RULE_WS
                 {
                 mRULE_WS(); 
 
                 }
                 break;
             case 18 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:99: RULE_ML_COMMENT
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:99: RULE_ML_COMMENT
                 {
                 mRULE_ML_COMMENT(); 
 
                 }
                 break;
             case 19 :
-                // ..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g:1:115: RULE_SL_COMMENT
+                // ..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g:1:115: RULE_SL_COMMENT
                 {
                 mRULE_SL_COMMENT(); 
 

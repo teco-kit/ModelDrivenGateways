@@ -33,43 +33,43 @@ T20 : '>=' ;
 T21 : '<' ;
 T22 : '>' ;
 
-// $ANTLR src "..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g" 263
+// $ANTLR src "..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g" 485
 RULE_ID :
 
 	 ('^')?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*
 	 
 ;
 
-// $ANTLR src "..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g" 269
+// $ANTLR src "..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g" 491
 RULE_STRING :
 
-	 '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\') | ~('\\'|'"') )* '"' |
+	 '\"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\') | ~('\\'|'\"') )* '\"' |
 	 '\'' ( '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\') | ~('\\'|'\'') )* '\''
 	 
 ;
 
-// $ANTLR src "..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g" 276
+// $ANTLR src "..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g" 498
 RULE_INT :
 
 	 ('-')?('0'..'9')+
 	 
 ;
 
-// $ANTLR src "..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g" 282
+// $ANTLR src "..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g" 504
 RULE_WS :
 
 	 (' '|'\t'|'\r'|'\n')+ {$channel=HIDDEN;}
 	 
 ;
 
-// $ANTLR src "..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g" 288
+// $ANTLR src "..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g" 510
 RULE_ML_COMMENT :
 
 	 '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;}
 	 
 ;
 
-// $ANTLR src "..//edu.teco.squery/src-gen//edu/teco/squery/parser/sQuery.g" 294
+// $ANTLR src "..//edu.teco.squery/src-gen/edu/teco/squery/parser/sQuery.g" 516
 RULE_SL_COMMENT :
 
 	 '//' ~('\n'|'\r')* '\r'? '\n' {$channel=HIDDEN;}

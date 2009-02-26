@@ -5,7 +5,7 @@ extension org::openarchitectureware::xtext::registry::Modelloader reexport;
 
 List[emf::EObject] allElements(emf::EObject x):
 	x.allLocalElements()
-			.union(x.allLocalElements().typeSelect(Automata).collect(e|e.model().allLocalElements()))
+			.union(x.allLocalElements().typeSelect(Automata).collect(e|e.model(false).allLocalElements()))
 		.flatten().toSet();
 		
 List[emf::EObject] allVisibleElements(emf::EObject x):
@@ -20,5 +20,8 @@ String id(emf::EObject x) :
 			null :
 			p.get(x);
 			
-List[emf::EObject] model(Automata this) :
-	model==null?{}:model.load().flatten();
+List[emf::EObject] model(Automata this, boolean forceLinking) :
+	model==null?{}:model.load(this, forceLinking).flatten();
+	
+List[emf::EObject] model(Automata x) :
+	model(x,true);
