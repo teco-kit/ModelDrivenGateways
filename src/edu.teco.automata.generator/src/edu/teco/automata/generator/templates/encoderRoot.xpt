@@ -1,0 +1,234 @@
+«IMPORT Automata»
+«EXTENSION edu::teco::automata::generator::templates::util»
+«EXTENSION edu::teco::automata::generator::templates::AcceptorUtil»
+
+«DEFINE root FOR StateMachine»
+   «FOREACH states AS st ITERATOR i»
+      «EXPAND encoderRoot::state(i.counter0) FOR st»
+   «ENDFOREACH»
+«ENDDEFINE»
+
+«DEFINE state(Integer count) FOR SimpleState»
+   «IF ! isStackEmpty()»
+      «IF getPapaDepth() >= depth»
+         «EXPAND statePapaEnd»
+      «ENDIF»
+   «ENDIF»
+   «IF type.metaType.name == complexTypeName()»
+      «LET getNextCase() AS label»
+      «EXPAND statePapaBegin(count, label)»
+      « IF lowerBound == upperBound »
+         « IF lowerBound != 1 »
+            «EXPAND complexConstLoop(count, label)»
+         « ELSE »
+            « EXPAND stateNameBegin »
+            « pushType(name, depth, lowerBound, upperBound, kind, label) »
+         « ENDIF »
+      « ELSE »
+         « EXPAND complexLoop(count, label) »
+      « ENDIF »
+      «EXPAND stateEnd»
+      «ENDLET»
+   «ELSE»
+      «EXPAND stateBegin(count)»
+      « IF lowerBound == upperBound »
+         « IF lowerBound != 1 »
+            «EXPAND constLoop(count)»
+            «EXPAND constLoopEnd(name)»
+         « ELSE  »
+            « EXPAND stateNameBegin »
+            « EXPAND stateType      »
+            « EXPAND stateNameEnd   »
+         « ENDIF »
+      « ELSE »
+         « EXPAND loop(count)  »
+         « EXPAND loopEnd(name)»
+      « ENDIF »
+      «EXPAND stateEnd»
+   «ENDIF»
+«ENDDEFINE»
+
+«DEFINE state(Integer count) FOR StartState»
+«ENDDEFINE»
+
+«DEFINE state(Integer count) FOR StopState»
+   «IF ! isStackEmpty()»
+      «EXPAND stackItr(getSize()-1)»
+   «ENDIF»
+   default:
+      return;
+«ENDDEFINE»
+
+«DEFINE state(Integer count) FOR State»
+«REM»Should not be executed«ENDREM»
+«ENDDEFINE»
+
+«DEFINE stackItr(Integer count) FOR StopState»
+   «EXPAND statePapaEnd»
+   «IF count > 0»
+      «EXPAND stackItr(count-1)»
+   «ENDIF»
+«ENDDEFINE»
+
+«REM»
+The one below are define separate in order to enable 
+easy AROUND statements.
+«ENDREM»
+
+«DEFINE loop(Integer count) FOR SimpleState»
+   « EXPAND stateNameBegin »
+   « EXPAND stateType      »
+   « EXPAND stateNameEnd   »
+«ENDDEFINE»
+
+«DEFINE loopEnd(String endName) FOR State»
+   } /* «endName» */
+«ENDDEFINE»
+
+«DEFINE constLoop(Integer count) FOR SimpleState»
+   « EXPAND stateNameBegin »
+   « EXPAND stateType      »
+   « EXPAND stateNameEnd   »
+«ENDDEFINE»
+
+«DEFINE constLoopEnd(String endName) FOR State»
+   } /* «endName» */
+«ENDDEFINE»
+
+«DEFINE complexLoop(Integer count, Integer label) FOR SimpleState»
+   « EXPAND stateNameBegin »   
+   « pushType(name, depth, lowerBound, upperBound, kind, label) »
+«ENDDEFINE»
+
+«DEFINE complexLoopEnd(String endName) FOR State»
+   label = «getBeginCase()»;
+   continue;
+«ENDDEFINE»
+
+«DEFINE complexConstLoop(Integer count, Integer label) FOR SimpleState»
+   « EXPAND stateNameBegin »
+   « pushType(name, depth, lowerBound, upperBound, kind, label) »
+«ENDDEFINE»
+
+«DEFINE complexConstLoopEnd(String endName) FOR State»
+   label = «getBeginCase()»;
+   continue;
+«ENDDEFINE»
+
+«DEFINE stateNameBegin FOR SimpleState»
+   «IF kind != "attribute"-»
+      «IF out.get(0).metaType.name == "Automata::SimpleState"-»
+         «IF ((Automata::SimpleState)out.get(0)).kind != "attribute"-»
+      out.println("<«name»>");
+         «ELSE»
+      out.print("<«name»");
+         «ENDIF»
+      «ELSE»
+      out.println("<«name»>");
+      «ENDIF»
+   «ELSE»
+      out.print(" «name»=\"");
+   «ENDIF»
+«ENDDEFINE»
+
+«DEFINE stateNameEnd FOR SimpleState»
+   «IF kind != "attribute"-»
+   out.println("</«name»>");
+   «ELSE-»
+      out.print("\"");
+      «IF out.get(0).metaType.name == "Automata::SimpleState"-»
+         «IF ((Automata::SimpleState)out.get(0)).kind != "attribute"-»
+         out.println(">");
+         «ENDIF»
+      «ENDIF»
+   «ENDIF»
+«ENDDEFINE»
+
+«DEFINE statePapaEnd FOR State»
+   case «getNextCase()»:
+   {
+   «EXPAND statePapaNameEnd»
+   «IF getLowB() != getUpB() || getLowB() != 1»
+      «IF getLowB() == getUpB()»
+      «EXPAND complexConstLoopEnd(getCurrPapaPath())»
+      «ELSE»
+      «EXPAND complexLoopEnd(getCurrPapaPath())»
+      «ENDIF»
+   «ENDIF»
+   } /* case */
+   «popStack()»
+«ENDDEFINE»
+
+«DEFINE statePapaNameEnd FOR State»
+  «IF getPapaKind() != "attribute"-»
+  out.println("</«getPapaName()»>");
+  «ENDIF»
+«ENDDEFINE»
+
+«DEFINE stateType FOR SimpleState»
+  «IF kind != "attribute"-»
+  out.println
+  «ELSE»
+  out.print
+  «ENDIF»
+  ( new TypesString.«getTypeMap(type.metaType.name)»().read(io) );
+«ENDDEFINE»
+«DEFINE stateBegin(Integer count) FOR State»
+   case «getNextCase()» :
+   {
+«ENDDEFINE»
+«DEFINE stateEnd FOR State»
+   } /* stateEnd */
+«ENDDEFINE»
+«DEFINE statePapaBegin(Integer count, Integer label) FOR State»
+   case «label» :
+   {
+«ENDDEFINE»
+
+«REM» 
+========================================================================
+«ENDREM»
+«DEFINE initNeeded FOR SimpleState»
+   «incCase()»
+   «IF ! isStackEmpty()»
+      «IF getPapaDepth() >= depth»
+         «IF isCurrNeeded()»
+            «EXPAND stIterator(depth)»
+         «ELSE»
+            «popStack()»
+         «ENDIF»
+      «ENDIF»
+   «ENDIF» 
+   «IF type.metaType.name == complexTypeName()»
+      «pushType(name, depth, lowerBound, upperBound, kind, lowerBound)»
+   «ELSE»
+      «IF isNeeded(getCurrPath() + name)»
+         «setCurrNeeded(true)»
+         «setNeeded(getCurrPath() + name, true)»
+      «ENDIF»
+   «ENDIF»
+«ENDDEFINE»
+
+«DEFINE initNeeded FOR StopState»
+   «IF ! isStackEmpty()»
+      «EXPAND stIterator(-1)»
+   «ENDIF»
+«ENDDEFINE»
+
+«DEFINE initNeeded FOR State»
+«ENDDEFINE»
+
+«DEFINE stIterator(Integer depth) FOR State»
+   «LET getNextCase() AS label»
+   «setEndCase(getPapaName(), label)»
+   «setNeeded(getPapaName(), isCurrNeeded())»
+   «popStack()»
+   «ENDLET»
+   «IF ! isStackEmpty()»
+   «IF getPapaDepth() >= depth»
+      «EXPAND stIterator(depth)»
+   «ELSE»
+      «setCurrNeeded(false)»
+   «ENDIF»
+   «ENDIF»
+«ENDDEFINE»

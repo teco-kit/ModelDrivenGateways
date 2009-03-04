@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: sQuery Plug-in
+Bundle-SymbolicName: edu.teco.squery;singleton:=true
+Bundle-Version: 1.0.0
+Require-Bundle: org.openarchitectureware.dependencies;visibility:=reexport,
+ org.antlr;visibility:=reexport,
+ org.openarchitectureware.xtext.core.base;visibility:=reexport,
+ org.openarchitectureware.xtext.generator,
+ edu.teco.automata,
+ edu.teco.automata.generator
+Eclipse-LazyStart: true
+Export-Package: edu.teco.squery,
+                edu.teco.squery.parser

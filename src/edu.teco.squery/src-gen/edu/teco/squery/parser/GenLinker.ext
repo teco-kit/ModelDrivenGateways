@@ -1,0 +1,16 @@
+
+extension edu::teco::squery::Extensions;
+extension edu::teco::squery::Linking;
+
+link(emf::EObject this) :
+	this.allVisibleElements().internalLink();
+
+Void internalLink(emf::EObject this) :
+	null;
+
+
+Void internalLink(squery::State this) :
+	this.link_state()
+;
+
+

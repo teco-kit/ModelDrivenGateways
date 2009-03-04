@@ -1,0 +1,6 @@
+<SensorData>
+  <SensorValues sensorID="20">
+    <Temperature>20.5</Temperature>
+    <Light>200</Light>
+  </SensorValues>
+</SensorData>

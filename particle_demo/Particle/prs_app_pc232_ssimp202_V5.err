@@ -1,0 +1,4 @@
+>>> Warning 225 "C:\PROGRA~1\PICC\drivers\stddef.h" Line 21(15,19): Duplicate #define
+>>> Warning 202 "C:\PROGRA~1\PICC\drivers\errno.h" Line 18(5,10): Variable never used:   errno
+      Memory usage:   ROM=31%      RAM=15% - 17%
+      0 Errors,  2 Warnings.

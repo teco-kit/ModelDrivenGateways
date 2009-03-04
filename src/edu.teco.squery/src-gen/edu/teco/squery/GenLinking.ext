@@ -1,0 +1,23 @@
+
+extension edu::teco::squery::Extensions;
+extension org::openarchitectureware::xtext::parser::LinkerUtils;
+
+link(emf::EObject this) :
+	let all = allLocalElements() :
+		all.typeSelect(squery::State).collect(e|e.link_state()) ->
+        null;
+
+
+
+
+Void link_state(squery::State this) :
+	(let ents = this.allVisibleElements().typeSelect(Automata::SimpleState) :
+
+		this.state.addAll(
+			this.parsed("state").collect(f|
+				ents.select(e|e.id() == f).first()
+		).reject(e|e == null))
+);
+
+
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+
+<!--
+ <copyright>
+ TECO www.teco.edu
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="edu.teco.automata.generator.contribution1"
+            nameFilter="*.xsd"
+            objectClass="org.eclipse.core.resources.IFile">
+         <menu
+               id="edu.teco.automata.generator.menu1"
+               label="TECO code generator"
+               path="additions">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               class="edu.teco.automata.generator.popup.actions.WRunner"
+               enablesFor="1"
+               id="edu.teco.automata.generator.newAction"
+               label="Generate code for XML schema"
+               menubarPath="edu.teco.automata.generator.menu1/group1">
+         </action>
+      </objectContribution>
+   </extension>
+</plugin>

@@ -1,0 +1,10 @@
+import squery;
+
+extension edu::teco::squery::Extensions;
+extension edu::teco::squery::GenNavigation reexport;
+/*
+ * overwrite the extensions
+ * ''emf::EObject findDeclaration(String,Object,Object)''
+ * ''List[emf::EObject] findReferences(String,Object,Object)''
+ * from edu::teco::squery::GenNavigation.ext to control the construction of the findReferences / findDeclaration actions
+ */

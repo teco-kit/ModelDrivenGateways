@@ -1,0 +1,15 @@
+<SensorValues>
+	<AcclX>
+		<AcclValue>300</AcclValue>
+		<AcclIdx>0</AcclIdx>
+	</AcclX>
+	<AcclY>
+      <AcclValue>300</AcclValue>
+      <AcclIdx>0</AcclIdx>
+   </AcclY>
+   <AcclZ>
+      <AcclValue>300</AcclValue>
+      <AcclIdx>0</AcclIdx>
+   </AcclZ>
+   <Voltage>3400</Voltage>
+</SensorValues>

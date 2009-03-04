@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        xmlns:xmyns="http://www.teco.edu"
+        targetNamespace="http://www.example.org/NewXMLSchema" 
+        xmlns:tns="http://www.example.org/NewXMLSchema" elementFormDefault="qualified">
+     
+    <simpleType name="sensorIdType">
+      <restriction base="string">
+         <length value="8"/>
+      </restriction>
+    </simpleType>
+    
+    <simpleType name="TemperatureType">
+      <restriction base="decimal">
+         <fractionDigits value="1"/>
+         <minInclusive value="-20"/>
+         <maxInclusive value="50"/>      
+      </restriction>
+    </simpleType>
+    
+    <simpleType name="LightType">
+      <annotation>
+         <appinfo source="http://www.teco.edu/SimpleTypePrecision">
+            <precision>
+               <stepping value="5"/>
+            </precision>
+         </appinfo>
+      </annotation>
+      <restriction base="integer">
+         <minInclusive value="0"/>
+         <maxInclusive value="500"/>
+      </restriction>
+    </simpleType>
+    
+    <complexType name="SensorValuesType">
+      <sequence>
+         <element name="Temperature" type="tns:TemperatureType"></element>
+         <element name="Light" type="tns:LightType"></element>
+      </sequence>
+      <attribute name="sensorID" type="tns:sensorIdType" use="required" ></attribute>
+    </complexType>
+    
+    <complexType name="SensorDataType">
+      <sequence>
+         <element minOccurs="1" maxOccurs="unbounded"
+            name="SensorValues" type="tns:SensorValuesType"/>
+      </sequence>
+    </complexType>
+    
+    <element name="SensorData" type="tns:SensorDataType"/>
+    
+</schema>

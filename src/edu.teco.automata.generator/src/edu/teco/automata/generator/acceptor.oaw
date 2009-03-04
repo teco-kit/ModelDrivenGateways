@@ -1,0 +1,42 @@
+<workflow>
+  <property name="modelFile" value="src/Mynew.automata"/>
+  <property name="extensions" value="edu::teco::automata::generator::templates::AcceptorUtil"/>
+  <property name="src-gen" value="src-gen/edu/teco/automata/generator/gen"/>
+  
+  <component id="xmiParser"
+    class="org.openarchitectureware.emf.XmiReader">
+    <modelFile value="${modelFile}"/>
+    <metaModelFile value="src/edu/teco/automata/metamodel/Automata.ecore"/>
+    <outputSlot value="model"/>
+    <firstElementOnly value="true"/>
+  </component>
+  <!--
+  <component id="dirCleaner"
+    class="org.openarchitectureware.workflow.common.DirectoryCleaner" >
+    <directories value="${src-gen}"/>
+  </component> 
+  -->
+  <component id="generator"
+    class="org.openarchitectureware.xpand2.Generator">
+    <metaModel id="mm"
+       class="org.openarchitectureware.type.emf.EmfMetaModel">
+        <metaModelFile value="src/edu/teco/automata/metamodel/Automata.ecore"/>
+    </metaModel>
+    <expand value="edu::teco::automata::generator::templates::Acceptor::root FOR model"/>
+    <outlet path="${src-gen}/">
+        <postprocessor
+            class="org.openarchitectureware.xpand2.output.JavaBeautifier"/>
+    </outlet>
+    <!--
+    <extensionAdvices value="${extensions}"/>
+    -->
+    <beautifier
+        class="org.openarchitectureware.xpand2.output.JavaBeautifier"/>
+  </component>  
+  <component adviceTarget="generator"
+     id="generatorAdv" class="oaw.xpand2.GeneratorAdvice">			 
+  	<advices value="edu::teco::automata::generator::templates::Acceptor"/>
+    <extensionAdvices value="${extensions}"/>
+  </component>  
+     
+</workflow>

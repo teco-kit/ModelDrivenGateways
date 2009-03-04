@@ -1,0 +1,265 @@
+«IMPORT Automata»
+«EXTENSION edu::teco::automata::generator::templates::util»
+
+«DEFINE root FOR StateMachine»  
+«FILE "c/decoder_send.c"»
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "../bitsio/bits_io.h"
+#include "decoder_struct.h"
+#include "decoder_set.h"
+
+
+ssize_t send_data(u_char * send_buffer, size_t max_size)
+{
+   ssize_t bytes_to_send;
+   «EXPAND variables FOREACH states.typeSelect(Automata::SimpleState)-»
+
+   struct «states.get(1).name» *«states.get(1).name»_elem;
+   «states.get(1).name»_elem = get_«states.get(1).name.toFirstUpper()»();
+   bytes_to_send = 0;
+   if (send_buffer)
+      write_init(send_buffer);
+
+   «FOREACH states AS st ITERATOR i-»
+   «EXPAND state(i.counter0, states.get(1).name + "_elem") FOR st-»
+   «ENDFOREACH-»
+   
+   bytes_to_send += write_finish();
+   
+   return bytes_to_send;
+   
+   «clear()»
+}
+
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE variables FOR SimpleState-»
+«IF upperBound != 1 || lowerBound != 1-»
+int «name»_it;
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE state(Integer count, String rootName) FOR SimpleState-»
+«IF count == 1»
+«pushType(rootName, depth, lowerBound, upperBound, kind, depth)»
+«ENDIF»
+«IF count > 1»
+   «IF ! isStackEmpty()»
+      «IF getPapaDepth() >= depth»
+         «EXPAND statePapaEnd»
+      «ENDIF»
+   «ENDIF»
+   «IF type.metaType.name == complexTypeName()»
+      «IF upperBound != lowerBound »
+      for («name»_it = 0; «name»_it < «getStructPath()»«name»_count;
+           «name»_it++)
+      {
+        bytes_to_send += write_true();
+      «ELSE»
+         « IF lowerBound != 1 »
+         for («name»_it = 0; «name»_it < «upperBound»; 
+              «name»_it++)
+         {
+         «ENDIF»
+      «ENDIF»
+      
+      « pushType(name + "_elem", depth, lowerBound, upperBound, kind, depth) »
+ 
+   «ELSE»
+      « IF upperBound != lowerBound »
+      for («name»_it = 0; «name»_it < «getStructPath()»«name»_count;
+           «name»_it++)
+      {
+         bytes_to_send += write_true();
+         « EXPAND write_bits »
+      }
+      bytes_to_send += write_false();
+      «getStructPath()»«name»_count = 0;
+      «ELSE»
+         « IF lowerBound != 1 »
+         for («name»_it = 0; «name»_it < «upperBound»; 
+              «name»_it++)
+         {
+         « ENDIF »
+         « EXPAND write_bits »
+      «ENDIF»
+   «ENDIF»
+«ENDIF»
+«ENDDEFINE»
+
+«DEFINE write_bits FOR SimpleState»
+
+«LET getTypeMap(type.metaType.name).toLowerCase() AS tName»
+
+«IF upperBound == 1-»
+   «IF tName == "string"»
+      «IF ((Automata::TString)type).length > 0»
+      bytes_to_send += write_bits((u_char *)«getStructPath()»«name»,
+                 «((Automata::TString)type).length»*8);
+      «ELSE-» 
+      bytes_to_send += write_bits(strlen(«getStructPath()»«name»)*8, 32);
+      bytes_to_send += write_bits((u_char *)«getStructPath()»«name»,
+                 strlen(«getStructPath()»«name»)*8);
+      «ENDIF-»
+   «ELSEIF tName == "int" || tName == "short" || tName == "byte"»
+   «LET ((Automata::TInt)type) AS type»
+      «IF type.min != type.max-»
+         «IF byteLen(type.min, type.max) > 1 && 
+         ( (type.min != 0)                                  || 
+           ((type.max != twoPow(8)-1 && tName == "byte")    && 
+            (type.max != twoPow(16)-1  && tName == "short") && 
+            (type.max != twoPow(32)-1  && tName == "int")))-»
+         bytes_to_send += write_bits(«getStructPath()»«name», 
+                                  «bitsLen(type.min, type.max, type.stepping)»);
+         «ELSE-»
+         bytes_to_send += write_bits((u_char*)&«getStructPath()»«name», 
+                                 «bitsLen(type.min, type.max, type.stepping)»);
+         «ENDIF-»
+      «ELSE-»
+         bytes_to_send += write_bits((u_char*)&«getStructPath()»«name», 
+         «IF tName == "byte"-»
+         8
+         «ELSEIF tName == "short"-»
+         16
+         «ELSE-»
+         32
+         «ENDIF-»);
+      «ENDIF-»
+   «ENDLET»
+   «ELSEIF tName == "double"»
+   «LET ((Automata::TDouble)type) AS type»
+      «IF type.min != type.max-»
+         «IF byteLen(type.min, type.max) > 1 -»
+         bytes_to_send += write_bits(«getStructPath()»«name», 
+                            «bitsLenDouble(type.min, type.max, type.stepping)»);
+         «ELSE-»
+         bytes_to_send += write_bits((u_char*)&«getStructPath()»«name», 
+                            «bitsLenDouble(type.min, type.max, type.stepping)»);
+         «ENDIF-»
+      «ELSE-»
+         bytes_to_send += write_bits((u_char*)&«getStructPath()»«name», 64);
+      «ENDIF-»
+      «IF type.fractionDigits > 0-»
+         «IF fracLen(type.fractionDigits) > 1-»
+            bytes_to_send += write_bits(«getStructPath()»«name»_frac, 
+                       «fracBitsLen(type.fractionDigits)»);
+         «ELSE-»
+            bytes_to_send += write_bits((u_char*)&«getStructPath()»«name»_frac, 
+                       «fracBitsLen(type.fractionDigits)»);
+         «ENDIF-»
+      «ENDIF-»
+   «ENDLET»
+   «ELSE»
+      bytes_to_send += write_bits((u_char*)&«getStructPath()»«name», sizeof(«tName»)*8);
+   «ENDIF-»
+«ELSE-»
+      «IF tName == "string"»
+        «IF ((Automata::TString)type).length > 0»
+        bytes_to_send += write_bits((u_char *)«getStructPath()»«name»[«name»_it],
+                   «((Automata::TString)type).length»);
+        «ELSE-» 
+        char *«name»[«upperBound»];
+        bytes_to_send += write_bits((u_char *)strlen(«getStructPath()»«name»[«name»_it]),
+                                    32);
+        bytes_to_send += write_bits((u_char *)«getStructPath()»«name»[«name»_it],
+                   «((Automata::TString)type).length»);
+        «ENDIF-»
+      «ELSEIF tName == "int" || tName == "byte" || tName == "short"-»
+         «LET ((Automata::TInt)type) AS type»
+            «IF type.min != type.max-»
+               «IF byteLen(type.min, type.max) > 1 && 
+                   ( (type.min != 0)                                  || 
+                     ((type.max != twoPow(8)-1 && tName == "byte")    && 
+                      (type.max != twoPow(16)-1  && tName == "short") && 
+                      (type.max != twoPow(32)-1  && tName == "int")))-»
+            bytes_to_send += write_bits(«getStructPath()»«name»[«name»_it], 
+                                            «bitsLen(type.min, type.max, type.stepping)»);
+               «ELSE-»
+            bytes_to_send += write_bits((u_char*)&«getStructPath()»«name»[«name»_it], 
+                       «bitsLen(type.min, type.max, type.stepping)»);
+               «ENDIF-»
+            «ELSE-»
+            bytes_to_send += write_bits((u_char*)&«getStructPath()»«name»[«name»_it],
+            «IF tName == "byte"-»
+            8
+            «ELSEIF tName == "short"-»
+            16
+            «ELSE-»
+            32
+            «ENDIF-»);
+            «ENDIF-»
+         «ENDLET»
+      «ELSEIF tName == "double"-»
+         «LET ((Automata::TDouble)type) AS type»
+         «IF type.min != type.max-»
+            «IF byteLen(type.min, type.max) > 1-»
+            bytes_to_send += write_bits(«getStructPath()»«name»[«name»_it], 
+                       «bitsLenDouble(type.min, type.max, type.stepping)»);
+            «ELSE-»
+            bytes_to_send += write_bits((u_char*)&«getStructPath()»«name»[«name»_it], 
+                       «bitsLenDouble(type.min, type.max, type.stepping)»);
+            «ENDIF-»
+         «ELSE-»
+         bytes_to_send += write_bits((u_char*)&«getStructPath()»«name»[«name»_it], 
+                    64);
+         «ENDIF-»
+         «IF type.fractionDigits > 0-»
+          «IF fracLen(type.fractionDigits) > 1-»
+             bytes_to_send += write_bits(«getStructPath()»«name»_frac[«name»_it], 
+                        «fracBitsLen(type.fractionDigits)»);
+          «ELSE-»
+             bytes_to_send += write_bits((u_char*)&«getStructPath()»«name»_frac[«name»_it], 
+                        «fracBitsLen(type.fractionDigits)»);
+          «ENDIF-»
+         «ENDIF-»
+         «ENDLET»
+      «ELSE»
+      bytes_to_send += write_bits((u_char*)&«getStructPath()»«name»[«name»_it], 
+                 sizeof(«tName»)*8);
+      «tName» «name»[«upperBound»];
+      «ENDIF-»
+«ENDIF-»
+
+«ENDLET»
+
+«ENDDEFINE»
+
+«DEFINE state(Integer count, String rootName) FOR StartState»
+«ENDDEFINE»
+
+«DEFINE state(Integer count, String rootName) FOR StopState»
+  «IF ! isStackEmpty()»
+   «EXPAND stackItr(getSize()-1)»
+  «ENDIF»
+«ENDDEFINE»
+
+«DEFINE stackItr(Integer count) FOR StopState»
+   «EXPAND statePapaEnd»
+   «IF count > 0»
+      «EXPAND stackItr(count-1)»
+   «ENDIF»
+«ENDDEFINE»
+
+«DEFINE statePapaEnd FOR State»
+   «IF getSize() > 1»
+   }
+   « IF getLowB() != getUpB() »
+   bytes_to_send += write_false();
+   «IF getUpB() != 1»
+   «getStructPath().split(getPapaName()).get(0)»«getPapaName().split("_elem").get(0)»_count = 0;
+   «ELSE»
+   «getStructPath().subString(0, getStructPath().length - 6)»_count = 0;
+   «ENDIF»
+   « ENDIF »
+   «ENDIF»
+   «popStack()»
+«ENDDEFINE»
+
+«DEFINE state(Integer count, String rootName) FOR State»
+«REM»Should not be executed«ENDREM»
+«ENDDEFINE»
+

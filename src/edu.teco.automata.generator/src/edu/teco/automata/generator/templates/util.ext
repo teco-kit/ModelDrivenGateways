@@ -1,0 +1,100 @@
+import Automata;
+import edu::teco::automata::generator::templates;
+
+int byteLen(int min, int max):
+    JAVA edu.teco.automata.generator.templates.Util.byteLen(java.lang.Integer, java.lang.Integer);
+
+int byteLen(int min, int max, int stepping):
+    JAVA edu.teco.automata.generator.templates.Util.byteLen(java.lang.Integer, java.lang.Integer, java.lang.Integer);
+
+int byteLenDouble(int min, int max, double stepping):
+    JAVA edu.teco.automata.generator.templates.Util.byteLenDouble(java.lang.Integer, java.lang.Integer, java.lang.Double);
+    
+int bitsLen(int min, int max):
+    JAVA edu.teco.automata.generator.templates.Util.bitsLen(java.lang.Integer, java.lang.Integer);
+
+int bitsLen(int min, int max, int stepping):
+    JAVA edu.teco.automata.generator.templates.Util.bitsLen(java.lang.Integer, java.lang.Integer, java.lang.Integer);
+    
+int bitsLenDouble(int min, int max, double stepping):
+    JAVA edu.teco.automata.generator.templates.Util.bitsLenDouble(java.lang.Integer, java.lang.Integer, java.lang.Double);
+
+int fracLen(int val):
+    JAVA edu.teco.automata.generator.templates.Util.fracLen(java.lang.Integer);
+
+int fracBitsLen(int val):
+    JAVA edu.teco.automata.generator.templates.Util.fracBitsLen(java.lang.Integer);
+
+int twoPow(int val):
+    JAVA edu.teco.automata.generator.templates.Util.twoPow(java.lang.Long);
+
+String getTypeMap(String name):
+    JAVA edu.teco.automata.generator.templates.TypesMap.getType(java.lang.String);
+    
+Void pushType(String name, int depth, int lowB, int upB, String kind, int label):
+    JAVA edu.teco.automata.generator.templates.CTypeStack.push(java.lang.String, 
+                                   java.lang.Integer,
+                                   java.lang.Integer,
+                                   java.lang.Integer,
+                                   java.lang.String,
+                                   java.lang.Integer);
+int getZero(): 0;
+
+Boolean isStackEmpty():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.isEmpty();
+
+String getPapaName():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.getName();
+
+int getPapaDepth():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.getDepth();
+
+int getLowB():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.getLowB();
+    
+int getUpB():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.getUpB();
+
+Void popStack():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.pop(); 
+    
+Integer getSize():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.size();
+    
+Void clear():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.clear(); 
+
+String getCurrPath():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.getCurrentPath(); 
+    
+String getStructPath():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.getStructPath(); 
+
+String getCurrPapaPath():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.getCurrentPapaPath();
+
+String getPapaKind():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.getPapaKind();
+
+int getNextCase():
+   JAVA edu.teco.automata.generator.templates.CTypeStack.getNextCase();
+
+int getBeginCase():
+   JAVA edu.teco.automata.generator.templates.CTypeStack.getBeginCase();
+
+Void incCase():
+   JAVA edu.teco.automata.generator.templates.CTypeStack.incCase();
+
+Void resetCase():
+   JAVA edu.teco.automata.generator.templates.CTypeStack.resetCase();
+
+Void setEndCase(String name, int label):
+   JAVA edu.teco.automata.generator.templates.CTypeStack.setEndCase(java.lang.String, java.lang.Integer);
+    
+int getEndCase(String name):
+   JAVA edu.teco.automata.generator.templates.CTypeStack.getEndCase(java.lang.String); 
+  
+String complexTypeName():
+    JAVA edu.teco.automata.generator.transformer.DataTypes.getComplexTypeName();
+
+

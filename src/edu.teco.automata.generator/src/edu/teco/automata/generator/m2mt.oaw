@@ -1,0 +1,28 @@
+<workflow>
+  <property name="modelFile" value="src/schema.ecore"/>
+  <property name="automataFile" value="Mynew.automata"/>
+  <property name="srcgen" value="src-gen/edu/teco/automata/generator/gen"/>
+  <property name="outputSlot" value="model"/>
+     
+   <bean class="org.eclipse.mwe.emf.StandaloneSetup">
+      <platformUri value=".."/>
+   </bean>
+     <!--
+  <component id="xmiParser"
+    class="org.eclipse.mwe.emf.Reader">
+    <uri value="${modelFile}"/>
+    <modelSlot value="SchemaModel"/>
+  </component>
+        -->
+  <component class="edu.teco.automata.generator.transformer.Transformer">
+    <modelSlot value="SchemaModel"/>
+    <outputSlot value="${outputSlot}"/>
+  </component>  
+  
+  <component id="xmiWrite"
+    class="org.openarchitectureware.emf.XmiWriter">
+    <modelFile value="${srcgen}/${automataFile}"/>
+    <inputSlot value="${outputSlot}"/>
+  </component>
+  
+</workflow>
