@@ -129,7 +129,7 @@ public class Acceptor {
 					if (io.read_bit()) { /* depth 1*/
 
 					} else {
-						label = 6;
+						label = 5;
 						continue;
 					} /* AcclX */
 
@@ -161,7 +161,7 @@ public class Acceptor {
 					if (io.read_bit()) { /* depth 1*/
 
 					} else {
-						label = 10;
+						label = 9;
 						continue;
 					} /* AcclY */
 
@@ -193,7 +193,7 @@ public class Acceptor {
 					if (io.read_bit()) { /* depth 1*/
 
 					} else {
-						label = 14;
+						label = 13;
 						continue;
 					} /* AcclZ */
 
@@ -240,7 +240,7 @@ public class Acceptor {
 					if (io.read_bit()) { /* depth 1*/
 
 					} else {
-						label = 19;
+						label = 18;
 						continue;
 					} /* Light */
 
@@ -272,7 +272,7 @@ public class Acceptor {
 					if (io.read_bit()) { /* depth 1*/
 
 					} else {
-						label = 23;
+						label = 22;
 						continue;
 					} /* AmbientLight */
 
@@ -304,7 +304,7 @@ public class Acceptor {
 					if (io.read_bit()) { /* depth 1*/
 
 					} else {
-						label = 27;
+						label = 26;
 						continue;
 					} /* Force */
 
@@ -336,7 +336,7 @@ public class Acceptor {
 					if (io.read_bit()) { /* depth 1*/
 
 					} else {
-						label = 31;
+						label = 30;
 						continue;
 					} /* Temperature */
 

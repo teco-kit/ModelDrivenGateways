@@ -4,6 +4,7 @@
 #include <string.h>
 #include <limits.h>
 #include <sys/types.h>
+#include <stdint.h>
 
 #include "../bitsio/bits_io.h"
 #include "write_str_func.h"
