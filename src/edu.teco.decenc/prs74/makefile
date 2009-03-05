@@ -1,6 +1,7 @@
 CC = gcc
 CFLAGS += -Wall -pedantic \
-	-I../../edu.teco.automata.generator/src-gen/edu/teco/automata/generator/gen/c/ -I. -I`pwd` 
+	-I../../edu.teco.automata.generator/src-gen/edu/teco/automata/generator/gen/c/ -I. -I`pwd` \
+	-I../dec
 
 LIBS = ../bitsio/libbitsio.a
 
