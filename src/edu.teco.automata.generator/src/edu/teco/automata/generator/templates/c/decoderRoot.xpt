@@ -1,8 +1,8 @@
-Â«IMPORT AutomataÂ»
-Â«EXTENSION edu::teco::automata::generator::templates::utilÂ»
+«IMPORT Automata»
+«EXTENSION edu::teco::automata::generator::templates::util»
 
-Â«DEFINE root FOR StateMachineÂ»
-   Â«FILE "c/decoder_automata.c"Â»
+«DEFINE root FOR StateMachine»
+   «FILE "c/decoder_automata.c"»
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -53,11 +53,11 @@ int getElementDecoder(char * xmlElement, struct STR_WRITER_STRUCT * writer_struc
    {
       switch (idx) 
       {
-         Â«FOREACH states AS st ITERATOR i-Â»
-         Â«EXPAND state(i.counter0) FOR st-Â»
-         Â«ENDFOREACH-Â»
+         «FOREACH states AS st ITERATOR i-»
+         «EXPAND state(i.counter0) FOR st-»
+         «ENDFOREACH-»
       default:
-         if (idx < Â«states.sizeÂ»)
+         if (idx < «states.size»)
             idx++;
          else 
             idx = 1;
@@ -67,67 +67,67 @@ int getElementDecoder(char * xmlElement, struct STR_WRITER_STRUCT * writer_struc
    }
 }
 
-   Â«ENDFILEÂ»
-Â«ENDDEFINEÂ»
+   «ENDFILE»
+«ENDDEFINE»
 
-Â«DEFINE state(Integer count) FOR SimpleState-Â»
-   case Â«countÂ»: /* Â«nameÂ» */
-      if (strcmp("Â«nameÂ»", xmlElement) != 0)
+«DEFINE state(Integer count) FOR SimpleState-»
+   case «count»: /* «name» */
+      if (strcmp("«name»", xmlElement) != 0)
       {
          idx++;
-         Â«IF type.metaType.name == complexTypeName()-Â» 
-            Â«IF (upperBound != 1 && upperBound != 0) || 
-                (upperBound == 1 && lowerBound == 0)-Â»
-            Â«FOREACH out AS tr ITERATOR it-Â»
-               Â«IF it.counter0 > 0-Â»
+         «IF type.metaType.name == complexTypeName()-» 
+            «IF (upperBound != 1 && upperBound != 0) || 
+                (upperBound == 1 && lowerBound == 0)-»
+            «FOREACH out AS tr ITERATOR it-»
+               «IF it.counter0 > 0-»
                else
-               Â«ENDIF-Â»
-               if (strcmp("Â«tr.nameÂ»", xmlElement) == 0)
+               «ENDIF-»
+               if (strcmp("«tr.name»", xmlElement) == 0)
                {
-                  Â«IF upperBound > 0-Â»
-                     if (elemCount > Â«upperBoundÂ»)
+                  «IF upperBound > 0-»
+                     if (elemCount > «upperBound»)
                        fprintf(stderr, "Error. Wrong count of element " 
-                                       "Â«nameÂ» upB Â«upperBoundÂ»"
-                                       " lowB Â«lowerBoundÂ»");
-                  Â«ENDIF-Â»
+                                       "«name» upB «upperBound»"
+                                       " lowB «lowerBound»");
+                  «ENDIF-»
                   if (++curr_idx >= curr_size)
                   {
                      curr_size += STD_STACK_SIZE;
                      stack      = realloc(stack, (curr_size)*sizeof(IdxMemo));
                   }
-                  stack[curr_idx].idx       = Â«countÂ»;
+                  stack[curr_idx].idx       = «count»;
                   stack[curr_idx].elemCount = elemCount;
                   elemCount = 0;
                   continue;
                } 
-            Â«ENDFOREACH-Â»
+            «ENDFOREACH-»
               else {
-               Â«EXPAND nextSiblingState(count, depth) FOR this-Â»
-               Â«IF lowerBound != upperBound-Â»
+               «EXPAND nextSiblingState(count, depth) FOR this-»
+               «IF lowerBound != upperBound-»
                write_false();
-               Â«ENDIF-Â»
+               «ENDIF-»
                elemCount = 0;
                continue;
               }
-           Â«ENDIF-Â»
-         Â«ENDIF-Â»
+           «ENDIF-»
+         «ENDIF-»
 
          
-         Â«IF lowerBound != upperBound-Â»
+         «IF lowerBound != upperBound-»
             write_false();
-         Â«ENDIF-Â»
+         «ENDIF-»
 
-         Â«IF lowerBound != 0-Â»
-            if (  Â«IF upperBound > 0-Â»
-                 elemCount > Â«upperBoundÂ» ||
-            Â«ENDIFÂ»  elemCount < Â«lowerBoundÂ» )
+         «IF lowerBound != 0-»
+            if (  «IF upperBound > 0-»
+                 elemCount > «upperBound» ||
+            «ENDIF»  elemCount < «lowerBound» )
                fprintf(stderr, "Error. Wrong count of element " 
-                               "Â«nameÂ» upB Â«upperBoundÂ»"
-                               " lowB Â«lowerBoundÂ»");
-         Â«ENDIF-Â»
+                               "«name» upB «upperBound»"
+                               " lowB «lowerBound»");
+         «ENDIF-»
             elemCount = 0;
-         Â«IF out.get(0).metaType.name == "Automata::SimpleState"-Â»
-            Â«IF ((SimpleState)out.get(0)).depth < depth-Â»  
+         «IF out.get(0).metaType.name == "Automata::SimpleState"-»
+            «IF ((SimpleState)out.get(0)).depth < depth-»  
                if (curr_idx > -1)
                { 
                   idx       = stack[curr_idx].idx;
@@ -136,8 +136,8 @@ int getElementDecoder(char * xmlElement, struct STR_WRITER_STRUCT * writer_struc
                   continue;
                }
                
-            Â«ENDIF-Â»
-         Â«ELSE-Â»
+            «ENDIF-»
+         «ELSE-»
              if (curr_idx > -1)
              { 
                 idx       = stack[curr_idx].idx;
@@ -145,77 +145,77 @@ int getElementDecoder(char * xmlElement, struct STR_WRITER_STRUCT * writer_struc
                 curr_idx--;
                 continue;
              }
-         Â«ENDIF-Â»
+         «ENDIF-»
             
 
       } else {
          elemCount++;
-         Â«IF lowerBound != upperBound-Â»
+         «IF lowerBound != upperBound-»
             write_true();
-         Â«ENDIF-Â»
-         Â«IF getTypeMap(type.metaType.name).toLowerCase() == "complextype"-Â»
+         «ENDIF-»
+         «IF getTypeMap(type.metaType.name).toLowerCase() == "complextype"-»
          return 0;
-         Â«ELSE-Â»
-         Â«EXPAND getTypeÂ»
+         «ELSE-»
+         «EXPAND getType»
          return 1;
-         Â«ENDIF-Â»
+         «ENDIF-»
          
       }
-Â«ENDDEFINEÂ»
+«ENDDEFINE»
 
-Â«DEFINE state(Integer count) FOR StartStateÂ»
-Â«ENDDEFINEÂ»
+«DEFINE state(Integer count) FOR StartState»
+«ENDDEFINE»
 
-Â«DEFINE nextSiblingState(Integer count, Integer papaDepth) FOR SimpleState-Â»
-   Â«IF out.get(0).metaType.name == "Automata::SimpleState"-Â»
-      Â«IF ((SimpleState)out.get(0)).depth <= papaDepth-Â»
-         idx = Â«count + 1Â»;
-      Â«ELSE-Â»
-         Â«EXPAND nextSiblingState(count+1, papaDepth) FOR (SimpleState)out.get(0)-Â»
-      Â«ENDIF-Â»
-   Â«ELSE-Â»
+«DEFINE nextSiblingState(Integer count, Integer ParentDepth) FOR SimpleState-»
+   «IF out.get(0).metaType.name == "Automata::SimpleState"-»
+      «IF ((SimpleState)out.get(0)).depth <= ParentDepth-»
+         idx = «count + 1»;
+      «ELSE-»
+         «EXPAND nextSiblingState(count+1, ParentDepth) FOR (SimpleState)out.get(0)-»
+      «ENDIF-»
+   «ELSE-»
       idx++;
-   Â«ENDIF-Â»
-Â«ENDDEFINEÂ»
+   «ENDIF-»
+«ENDDEFINE»
 
-Â«DEFINE getType FOR SimpleStateÂ»
-Â«LET getTypeMap(type.metaType.name).toLowerCase() AS tNameÂ»
-writer_struct->func = str_write_Â«tNameÂ»;
-Â«IF tName == "string"Â»
-   Â«IF ((Automata::TString)type).length > 0Â»
-   writer_struct->args.len = Â«((Automata::TString)type).length*8Â»;
-   Â«ENDIFÂ»
-Â«ELSEIF tName == "int"Â»
-   Â«IF ((Automata::TInt)type).min != ((Automata::TInt)type).max-Â»  
-   writer_struct->args.min = Â«((Automata::TInt)type).minÂ»;
-   writer_struct->args.max = Â«((Automata::TInt)type).maxÂ»;
-   writer_struct->args.len = Â«bitsLen(((Automata::TInt)type).min,
-                                      ((Automata::TInt)type).max)Â»;
-   Â«ENDIFÂ»
-   Â«IF ((Automata::TInt)type).stepping > 0-Â»  
-      writer_struct->args.stepping = Â«((Automata::TInt)type).steppingÂ»;
-   Â«ENDIFÂ»
-Â«ELSEIF tName == "double"Â»
-   Â«IF ((Automata::TDouble)type).min != ((Automata::TDouble)type).max-Â»  
-   writer_struct->args.min = Â«((Automata::TDouble)type).minÂ»;
-   writer_struct->args.max = Â«((Automata::TDouble)type).maxÂ»;
-   writer_struct->args.len = Â«bitsLen(((Automata::TDouble)type).min,
-                                      ((Automata::TDouble)type).max)Â»;
-   Â«ENDIFÂ» 
-   Â«IF ((Automata::TDouble)type).fractionDigits > 0-Â»
-   writer_struct->args.frac = Â«((Automata::TDouble)type).fractionDigitsÂ»;
-   writer_struct->args.frac_len = Â«fracBitsLen(((Automata::TDouble)type).fractionDigits)Â»;
-   Â«ENDIFÂ»
-   Â«IF ((Automata::TDouble)type).stepping > 0-Â»                                        
-   writer_struct->args.stepping = Â«((Automata::TDouble)type).steppingÂ»;
-   Â«ENDIFÂ»
-Â«ENDIFÂ»
-Â«ENDLETÂ»
-Â«ENDDEFINEÂ»
+«DEFINE getType FOR SimpleState»
+«LET getTypeMap(type.metaType.name).toLowerCase() AS tName»
+writer_struct->func = str_write_«tName»;
+«IF tName == "string"»
+   «IF ((Automata::TString)type).length > 0»
+   writer_struct->args.len = «((Automata::TString)type).length*8»;
+   «ENDIF»
+«ELSEIF tName == "int"»
+   «IF ((Automata::TInt)type).min != ((Automata::TInt)type).max-»  
+   writer_struct->args.min = «((Automata::TInt)type).min»;
+   writer_struct->args.max = «((Automata::TInt)type).max»;
+   writer_struct->args.len = «bitsLen(((Automata::TInt)type).min,
+                                      ((Automata::TInt)type).max)»;
+   «ENDIF»
+   «IF ((Automata::TInt)type).stepping > 0-»  
+      writer_struct->args.stepping = «((Automata::TInt)type).stepping»;
+   «ENDIF»
+«ELSEIF tName == "double"»
+   «IF ((Automata::TDouble)type).min != ((Automata::TDouble)type).max-»  
+   writer_struct->args.min = «((Automata::TDouble)type).min»;
+   writer_struct->args.max = «((Automata::TDouble)type).max»;
+   writer_struct->args.len = «bitsLen(((Automata::TDouble)type).min,
+                                      ((Automata::TDouble)type).max)»;
+   «ENDIF» 
+   «IF ((Automata::TDouble)type).fractionDigits > 0-»
+   writer_struct->args.frac = «((Automata::TDouble)type).fractionDigits»;
+   writer_struct->args.frac_len = «fracBitsLen(((Automata::TDouble)type).fractionDigits)»;
+   «ENDIF»
+   «IF ((Automata::TDouble)type).stepping > 0-»                                        
+   writer_struct->args.stepping = «((Automata::TDouble)type).stepping»;
+   «ENDIF»
+«ENDIF»
+«ENDLET»
+«ENDDEFINE»
 
-Â«DEFINE state(Integer count) FOR StopStateÂ»
-Â«ENDDEFINEÂ»
+«DEFINE state(Integer count) FOR StopState»
+«ENDDEFINE»
 
-Â«DEFINE state(Integer count) FOR StateÂ»
-Â«REMÂ»Should not be executedÂ«ENDREMÂ»
-Â«ENDDEFINEÂ»
+«DEFINE state(Integer count) FOR State»
+«REM»Should not be executed«ENDREM»
+«ENDDEFINE»

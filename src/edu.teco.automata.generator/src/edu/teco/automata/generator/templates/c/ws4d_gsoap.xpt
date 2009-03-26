@@ -1,12 +1,12 @@
-Â«IMPORT AutomataÂ»
-Â«IMPORT edu::teco::automata::generator::templatesÂ»
-Â«EXTENSION edu::teco::automata::generator::templates::utilÂ»
-Â«EXTENSION edu::teco::automata::generator::templates::configÂ»
+«IMPORT Automata»
+«IMPORT edu::teco::automata::generator::templates»
+«EXTENSION edu::teco::automata::generator::templates::util»
+«EXTENSION edu::teco::automata::generator::templates::config»
 
-Â«DEFINE root FOR Automata::StateMachineÂ»
-Â«FILE "c/deliver_event.c"Â»
+«DEFINE root FOR Automata::StateMachine»
+«FILE "c/deliver_event.c"»
 /* Generated file */   
-#include "Â«getNSPrefix()Â»_inv.nsmap"
+#include "«getNSPrefix()»_inv.nsmap"
 #include "dpws_device.h"
 #include "../../bitsio/read_bits_buf.h"
 #include "gsoap_encoder_automata_inv.h"
@@ -19,12 +19,12 @@ deliver_event (void *device, char * buf)
   struct soap soap;
   struct ws4d_subscription *subs, *next;
   struct READER_STRUCT reader;
-#define soap_action_uri "Â«getMsgOutURI()Â»"
+#define soap_action_uri "«getMsgOutURI()»"
 
   _device = (struct dpws_s *)device; 
 
   soap_init (&soap);
-  soap_set_namespaces (&soap, Â«getNSPrefix()Â»_inv_namespaces);
+  soap_set_namespaces (&soap, «getNSPrefix()»_inv_namespaces);
 
   dpws_for_each_subs (subs, next, _device,
                       soap_action_uri)
@@ -64,14 +64,14 @@ deliver_event (void *device, char * buf)
 
   soap_done (&soap);
 }
-Â«ENDFILEÂ»
+«ENDFILE»
 
-Â«FILE "c/advanced_device.c"Â»
+«FILE "c/advanced_device.c"»
 /* Generated file */  
-#include "Â«getNSPrefix()Â».nsmap"
+#include "«getNSPrefix()».nsmap"
 #include "dpws_device.h"
-#include "Â«getNSPrefix()Â»_metadata.h"
-#include "Â«getNSPrefix()Â»_wsdl.h"
+#include "«getNSPrefix()»_metadata.h"
+#include "«getNSPrefix()»_wsdl.h"
 #include "config.h"
 #include <signal.h>
 
@@ -168,12 +168,12 @@ main (int argc, char **argv)
 #ifdef DEBUG
   soap_omode (&service, SOAP_XML_INDENT);
 #endif
-  soap_set_namespaces (&service, Â«getNSPrefix()Â»_namespaces);
+  soap_set_namespaces (&service, «getNSPrefix()»_namespaces);
 
   /* initialize device and services */
   if (dpws_init (&device, interface)
-      || Â«getNSPrefix()Â»_setup_HostingService (&device, &service, uuid, 100)
-      || Â«getNSPrefix()Â»_setup_Â«getDeviceName()Â» (&device, &service, SENSORVALUES_WSDL,
+      || «getNSPrefix()»_setup_HostingService (&device, &service, uuid, 100)
+      || «getNSPrefix()»_setup_«getDeviceName()» (&device, &service, SENSORVALUES_WSDL,
                                                 100))
     {
       fprintf (stderr, "\nSensor Monitor: Can't init device and services\n");
@@ -182,8 +182,8 @@ main (int argc, char **argv)
     }
 
   /* Set Metadata */
-  Â«getNSPrefix()Â»_set_Metadata (&device);
-  Â«getNSPrefix()Â»_set_wsdl (&device);
+  «getNSPrefix()»_set_Metadata (&device);
+  «getNSPrefix()»_set_wsdl (&device);
 
   /* Update Metadata */
   if (dpws_update_Metadata (&device))
@@ -234,7 +234,7 @@ main (int argc, char **argv)
     {
       struct soap *handle = NULL, *soap_set[] = SOAP_HANDLE_SET (&service);
       int (*serve_requests[]) (struct soap * soap) =
-        SOAP_SERVE_SET (Â«getNSPrefix()Â»_serve_request);
+        SOAP_SERVE_SET («getNSPrefix()»_serve_request);
 
 #ifdef DEBUG
       printf ("\nSensor Monitor: waiting for request\n");
@@ -267,17 +267,17 @@ main (int argc, char **argv)
 
   return -1;
 }
-Â«LET states.typeSelect(Automata::SimpleState).get(0).name AS RootElementÂ»
+«LET states.typeSelect(Automata::SimpleState).get(0).name AS RootElement»
 
-int __Â«getNSPrefix()Â»1__GetÂ«RootElementÂ»(struct soap* soap, 
-                                         struct _Â«getNSPrefix()Â»1__EmptyMessage    *Â«getNSPrefix()Â»_GetÂ«RootElementÂ», 
-                                         struct Â«getNSPrefix()Â»1__Â«RootElementÂ»Type *Â«getNSPrefix()Â»__Â«RootElementÂ»)
+int __«getNSPrefix()»1__Get«RootElement»(struct soap* soap, 
+                                         struct _«getNSPrefix()»1__EmptyMessage    *«getNSPrefix()»_Get«RootElement», 
+                                         struct «getNSPrefix()»1__«RootElement»Type *«getNSPrefix()»__«RootElement»)
 {
   struct READER_STRUCT reader;
 
   /* create response header */
   dpws_header_gen_response (soap, NULL, wsa_header_get_ReplyTo (soap),
-                            "Â«getMsgRspURI()Â»",
+                            "«getMsgRspURI()»",
                             wsa_header_get_MessageId (soap),
                             sizeof (struct SOAP_ENV__Header));
                             
@@ -306,9 +306,8 @@ int __Â«getNSPrefix()Â»1__GetÂ«RootElementÂ»(struct soap* soap,
                             
    return SOAP_OK;
 }
-Â«ENDLETÂ»
+«ENDLET»
 
-Â«ENDFILEÂ»
+«ENDFILE»
       
-Â«ENDDEFINEÂ»
-    
+«ENDDEFINE»

@@ -1,37 +1,14 @@
 «IMPORT Automata»
 «IMPORT edu::teco::automata::generator::templates»
 «EXTENSION edu::teco::automata::generator::templates::util»
+«EXTENSION edu::teco::automata::generator::templates::config»
 «EXTENSION edu::teco::automata::generator::templates::AcceptorUtil»
 
-«DEFINE root FOR Automata::StateMachine»
+«DEFINE root(String nameID) FOR Automata::StateMachine»
    «initQueries()»
-   «FILE "c/encoder_automata.c"»
-/* Generated file */  
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <limits.h>
-#include <errno.h>
-
-#include "../bitsio/bits_io.h"
-#include "read_str_func.h"
-
-static int   out;
-static int   label = 0;
-static void *reader;
-
-void encoder_automata_init(int _out, void * _reader)
-{
-   out    = _out;
-   reader = _reader;
-   label  = 0;
-}
-
-void encoder_automata_run() 
-{
-   int   ret       = 0;
-   char *str       = NULL;
+   «FILE nameID+"/bin2sax.c"»
+   «EXPAND header(nameID)»
+   «EXPAND readFunctionInit»
    while (1)
    {
    switch (label)
@@ -48,8 +25,53 @@ void encoder_automata_run()
    «ENDFOREACH-»
    }
    }
-}
+   «EXPAND footer(nameID)»
    «ENDFILE»
+«ENDDEFINE»
+
+«DEFINE header(String nameID) FOR StateMachine»
+/* Generated file */
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <limits.h>
+#include <errno.h>
+#include <stdsoap2.h>
+
+
+#include "../../bitsio/bits_io.h"
+#include "../../enc/read_str_func.h"
+
+static struct soap *soap   = NULL;
+static        int   label  = 0;
+static void        *reader = NULL;
+
+#ifndef SOAP_TYPE_string
+#define SOAP_TYPE_string 0
+#endif
+
+void gsoap_automata_init«nameID»(struct soap *_soap, void * _reader)
+{
+   soap   = _soap;
+   reader = _reader;
+   label  = 0;
+}
+
+static void gsoap_automata_«nameID»();
+
+void gsoap_automata_run«nameID»() 
+{
+	while(0==gsoap_automata_«nameID»());
+}
+
+static void gsoap_automata_«nameID»()
+{
+«ENDDEFINE»
+
+«DEFINE footer(String nameID) FOR StateMachine»
+return 0;
+}
 «ENDDEFINE»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::constLoop(Integer count) 
@@ -59,7 +81,7 @@ void encoder_automata_run()
    {
       static int lowB«count» = «lowerBound»;
       if (lowB«count» <= 0)
-         breatk;
+         break;
       lowB«count»--;
     «targetDef.proceed()»
 «ENDAROUND»
@@ -74,6 +96,7 @@ FOR SimpleState»
    /* loop «getCurrPath() + name» */
    while(read_bit(reader))
    { /* depth «depth» */
+   label=label;//loop
    «targetDef.proceed()»
 «ENDAROUND»
 
@@ -108,39 +131,20 @@ FOR State»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameBegin 
 FOR SimpleState»
-   «IF kind != "attribute"-»
-      «IF out.get(0).metaType.name == "Automata::SimpleState"-»
-         «IF ((Automata::SimpleState)out.get(0)).kind != "attribute"-»
-      write(out, "<«name»>\n", «name.length + "<>\n".length»);
-         «ELSE-»
-      write(out, "<«name»", «name.length + "<".length»);
-         «ENDIF-»
-      «ELSE-»
-      write(out, "<«name»>\n", «name.length + "<>\n".length»);
-      «ENDIF-»
-   «ELSE-»
-      write(out, " «name»=\"", «name.length + "=\"".length»);
+   «IF type.metaType.name == complexTypeName()-»
+   «EXPAND generateSaxBeginEvent»
    «ENDIF-»
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd 
 FOR SimpleState»
-   «IF kind != "attribute"-»
-   write(out, "</«name»>\n", «name.length + "</>\n".length»);
-   «ELSE-»
-      write(out, "\"", «"\"".length»);
-      «IF out.get(0).metaType.name == "Automata::SimpleState"-»
-         «IF ((Automata::SimpleState)out.get(0)).kind != "attribute"-»
-         write(out, ">\n", «">\n".length»);
-         «ENDIF-»
-      «ENDIF-»
-   «ENDIF-»
+
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateParentNameEnd 
 FOR State»
    «IF getParentKind() != "attribute"-»
-   write(out, "</«getParentName()»>\n", «getParentName().length + "</>\n".length»);
+   «EXPAND generateSaxEndEvent»
    «ELSE-»
    «ENDIF-»
 «ENDAROUND»
@@ -148,18 +152,36 @@ FOR State»
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateType 
 FOR SimpleState»
    «EXPAND readFunction»
-   if (ret < 0)
-   {
-      fprintf(stderr, "Error reading input data. Errno: %s\n",
-              strerror(errno));
-      return;
-   }
-   write(out, str, strlen(str));
-   «IF kind != "attribute"-»
-   write(out, "\n", 1);
+  
+   
+   «IF kind == "attribute"-»
+ 	«EXPAND generateSaxAttributeEvent»
+   «ELSE-»
+   «EXPAND generateSaxValueEvent»
    «ENDIF-»
-   free(str);
+   «EXPAND readFunctionCleanUp» 
 «ENDAROUND»
+
+«DEFINE generateSaxBeginEvent FOR SimpleState»
+	soap_element_begin_out(soap, "«getNSPrefix()»1:«name»", 0, "");
+«ENDDEFINE»
+
+«DEFINE generateSaxEndEvent FOR State»
+	soap_element_end_out(soap, "«getNSPrefix()»1:«getParentName()»");
+«ENDDEFINE»
+
+«DEFINE generateSaxValueEvent FOR SimpleState»
+   {
+     char * 
+   	  «name»_str = soap_strdup(soap, str);
+     soap_outstring(soap, "«getNSPrefix()»1:«name»", -1, «name»_str, "", SOAP_TYPE_string);
+   }
+«ENDDEFINE»
+
+«DEFINE generateSaxAttributeEvent FOR SimpleState»
+ 	soap_attribute(soap,  "«getNSPrefix()»1:«name»",str);
+«ENDDEFINE»
+
 
 «DEFINE readFunction FOR SimpleState»
 «LET getTypeMap(type.metaType.name).toLowerCase() AS tName»
@@ -181,7 +203,7 @@ ret = str_read_«getTypeMap(type.metaType.name).toLowerCase()»(&str
       «ELSE-»
         , 0
       «ENDIF-»
-   «ENDLET-»
+   «ENDLET-»       
 «ELSEIF tName == "double"-»
    «LET ((Automata::TDouble)type) AS type-»
       «IF type.min != type.max-»
@@ -198,4 +220,19 @@ ret = str_read_«getTypeMap(type.metaType.name).toLowerCase()»(&str
 «ENDIF-»
 , reader);
 «ENDLET»
+ if (ret < 0)
+   {
+      fprintf(stderr,"Error reading input data. Errno: %s\n",
+              strerror(errno));
+      return;
+   }
 «ENDDEFINE»
+
+«DEFINE readFunctionCleanUp FOR SimpleState»
+ free(str);
+«ENDDEFINE»
+
+«DEFINE readFunctionInit FOR StateMachine»
+   int   ret       = 0;
+   char *str       = NULL;
+«ENDDEFINE»  
