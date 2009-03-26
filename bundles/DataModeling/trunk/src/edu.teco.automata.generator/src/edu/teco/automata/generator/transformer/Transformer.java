@@ -1,42 +1,34 @@
 package edu.teco.automata.generator.transformer;
 
+
 import java.util.Iterator;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EAnnotation;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
+
+import org.eclipse.emf.ecore.*;
+
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+
 import org.openarchitectureware.workflow.WorkflowContext;
 import org.openarchitectureware.workflow.issues.Issues;
 import org.openarchitectureware.workflow.lib.SimpleJavaModificationComponent;
 import org.openarchitectureware.workflow.monitor.ProgressMonitor;
 
-import edu.teco.automata.Automata.AutomataFactory;
-import edu.teco.automata.Automata.DataType;
-import edu.teco.automata.Automata.SimpleState;
-import edu.teco.automata.Automata.StartState;
-import edu.teco.automata.Automata.State;
-import edu.teco.automata.Automata.StateMachine;
-import edu.teco.automata.Automata.StopState;
-import edu.teco.automata.Automata.TDouble;
-import edu.teco.automata.Automata.TInt;
-import edu.teco.automata.Automata.TString;
 import edu.teco.automata.generator.xml.XmlReader;
+
+import edu.teco.automata.Automata.*;
+
+
 
 public class Transformer extends SimpleJavaModificationComponent {
    private StateMachine stMachine;
    EList<State> states;
    private String outputSlot;
    private boolean firstElementOnly = true;
-   private State previousState = null;
+   private State previousState= null;
    private static int depth = 0;
 
    @Override
@@ -59,7 +51,7 @@ public class Transformer extends SimpleJavaModificationComponent {
             EReference rootRef = (EReference) obj;
 
             for (EAnnotation ann : rootRef.getEAnnotations()) {
-               if (ann.getDetails().get("kind").equals("element")) {
+               if (ann.getDetails().get("kind").equals("element")) { 
 
                   handleAnnot(rootRef.getName(), 
                               rootRef.getEAnnotations(),
@@ -69,6 +61,10 @@ public class Transformer extends SimpleJavaModificationComponent {
                   depth++;
                   iterateEContents(rootRef.getEReferenceType());
 
+               }
+               else
+               {
+            	 //TODO: what happens to other
                }
             }
          } else if (obj.eClass().getInstanceClass() == EAttribute.class) {
@@ -84,6 +80,10 @@ public class Transformer extends SimpleJavaModificationComponent {
                   if (ret)
                      handleEDataType(attr.getEAttributeType().getEAnnotations());
                }
+               else
+               {
+            	 //TODO: what happens to other
+               }
             }
          }
       }
@@ -92,11 +92,11 @@ public class Transformer extends SimpleJavaModificationComponent {
       stop.setName("Stop");
       ((SimpleState) previousState).getOut().add(stop);
       states.add(stop);
+     
 
-      URI uri = URI.createURI("uri");
-      Resource r = new ResourceSetImpl().createResource(uri);
+      Resource r = new ResourceSetImpl().createResource(URI.createURI("uri"));
       r.getContents().add(stMachine);
-
+     
       if (firstElementOnly)
          ctx.set(outputSlot, r.getContents().get(0));
       else
