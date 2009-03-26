@@ -1,0 +1,26 @@
+ <workflow>
+   <component id="generatorBin2SAX" class="oaw.xpand2.Generator">           
+    <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
+        <metaModelFile value="Automata.ecore"/>
+    </metaModel>
+    <expand value="edu::teco::automata::generator::templates::c::bin2SAX::root('') FOR model"/>
+    <outlet path="${outlet_path}/"/>
+    <!--
+    <output class="org.openarchitectureware.xpand2.output.CppOutput"/>
+        -->
+    <beautifier class="org.openarchitectureware.xpand2.output.CppBeautifier"  
+                  configFile="cformat.xml"/>
+  
+    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
+   </component> 
+   
+   <component adviceTarget="generatorBin2SAX"
+      id="generatorGsoapAdv" class="oaw.xpand2.GeneratorAdvice">			 
+  	  <advices value="edu::teco::automata::generator::templates::c::bin2SAX"/>
+   </component> 
+   
+   <component adviceTarget="generatorBin2SAX"
+      id="generatorJennicAdv" class="oaw.xpand2.GeneratorAdvice">			 
+  	  <advices value="edu::teco::automata::generator::templates::c::bin2SAX_jennic"/>
+   </component>  
+ </workflow>

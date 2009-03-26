@@ -1,0 +1,45 @@
+ <workflow>
+ 
+   <component id="generatorDecC" class="oaw.xpand2.Generator">			 
+  	<metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
+  		<metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
+  	</metaModel>
+  	<expand value="edu::teco::automata::generator::templates::c::decoderRoot::root FOR model"/>
+  	<outlet path="${outlet_path}/">
+		<postprocessor class="oaw.xpand2.output.JavaBeautifier"/>
+	</outlet>
+  	<beautifier	class="oaw.xpand2.output.JavaBeautifier"/>
+  </component>  
+
+  <component id="generatorDecCSet" class="oaw.xpand2.Generator">           
+    <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
+       <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
+    </metaModel>
+    <expand value="edu::teco::automata::generator::templates::c::decoderSetStruct::root FOR model"/>
+    <outlet path="${outlet_path}/"/>
+  </component>  
+  
+  <component id="generatorDecCSend" class="oaw.xpand2.Generator">           
+    <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
+        <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
+    </metaModel>
+    <expand value="edu::teco::automata::generator::templates::c::decoderSend::root FOR model"/>
+    <outlet path="${outlet_path}/"/>
+  </component>  
+
+  <component id="generatorEncC" class="oaw.xpand2.Generator">			 
+  	<metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
+  		 <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
+  	</metaModel>
+  	<expand value="edu::teco::automata::generator::templates::c::encoderRoot::root FOR model"/>
+  	<outlet path="${outlet_path}/">
+		<postprocessor class="oaw.xpand2.output.JavaBeautifier"/>
+	</outlet>
+  	<beautifier	class="oaw.xpand2.output.JavaBeautifier"/>
+  </component> 
+  
+  <component adviceTarget="generatorEncC"
+  id="generatorEncCAdv" class="oaw.xpand2.GeneratorAdvice">			 
+  	<advices value="edu::teco::automata::generator::templates::c::encoderRoot"/>
+  </component> 
+</workflow>
