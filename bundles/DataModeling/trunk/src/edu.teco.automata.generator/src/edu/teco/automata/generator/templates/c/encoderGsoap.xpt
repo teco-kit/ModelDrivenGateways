@@ -4,9 +4,9 @@
 Â«EXTENSION edu::teco::automata::generator::templates::configÂ»
 Â«EXTENSION edu::teco::automata::generator::templates::AcceptorUtilÂ»
 
-Â«DEFINE root(String nameID) FOR Automata::StateMachineÂ»
-   Â«initQueries()Â»
-   Â«FILE "c/gsoap_encoder_automata" + nameID + ".c"Â»
+Â«DEFINE root(String nameID) FOR Automata::StateMachine»
+   «initQueries()»
+   «FILE "c/gsoap_encoder_automata" + nameID + ".c"»
 /* Generated file */
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,14 +29,14 @@ static void        *reader = NULL;
 #endif
 
 
-void gsoap_automata_initÂ«nameIDÂ»(struct soap *_soap, void * _reader)
+void gsoap_automata_init«nameID»(struct soap *_soap, void * _reader)
 {
    soap   = _soap;
    reader = _reader;
    label  = 0;
 }
 
-void gsoap_automata_runÂ«nameIDÂ»() 
+void gsoap_automata_run«nameID»() 
 {
    int   ret       = 0;
    char *str       = NULL;
@@ -44,152 +44,152 @@ void gsoap_automata_runÂ«nameIDÂ»()
    {
    switch (label)
    {
-   Â«clear()Â»
-   Â«resetCase()Â»
-   Â«FOREACH states AS stÂ»
-      Â«EXPAND encoderRoot::initNeeded FOR stÂ»
-   Â«ENDFOREACHÂ»
-   Â«clear()Â»
-   Â«resetCase()Â»
-   Â«FOREACH states AS st ITERATOR i-Â»
-      Â«EXPAND encoderRoot::state(i.counter0) FOR st-Â»
-   Â«ENDFOREACH-Â»
+   «clear()»
+   «resetCase()»
+   «FOREACH states AS st»
+      «EXPAND encoderRoot::initNeeded FOR st»
+   «ENDFOREACH»
+   «clear()»
+   «resetCase()»
+   «FOREACH states AS st ITERATOR i-»
+      «EXPAND encoderRoot::state(i.counter0) FOR st-»
+   «ENDFOREACH-»
    }
    }
 }
-   Â«ENDFILEÂ»
-Â«ENDDEFINEÂ»
+   «ENDFILE»
+«ENDDEFINE»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoop(Integer count) 
- FOR SimpleStateÂ»
-   /* constLoop Â«getCurrPath() + nameÂ» */
+«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoop(Integer count) 
+ FOR SimpleState»
+   /* constLoop «getCurrPath() + name» */
    while (1)
    {
-      static int lowBÂ«countÂ» = Â«lowerBoundÂ»;
-      if (lowBÂ«countÂ» <= 0)
+      static int lowB«count» = «lowerBound»;
+      if (lowB«count» <= 0)
          breatk;
-      lowBÂ«countÂ»--;
-    Â«targetDef.proceed()Â»
-Â«ENDAROUNDÂ»
+      lowB«count»--;
+    «targetDef.proceed()»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoopEnd(String endName) 
-FOR StateÂ»
-   } /* Â«endNameÂ» */
-Â«ENDAROUNDÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoopEnd(String endName) 
+FOR State»
+   } /* «endName» */
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::loop(Integer count) 
-FOR SimpleStateÂ»
-   /* loop Â«getCurrPath() + nameÂ» */
+«AROUND edu::teco::automata::generator::templates::encoderRoot::loop(Integer count) 
+FOR SimpleState»
+   /* loop «getCurrPath() + name» */
    while(read_bit(reader))
-   { /* depth Â«depthÂ» */
-   Â«targetDef.proceed()Â»
-Â«ENDAROUNDÂ»
+   { /* depth «depth» */
+   «targetDef.proceed()»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::loopEnd(String endName) 
-FOR StateÂ»
-   } /* Â«endNameÂ» */
-Â«ENDAROUNDÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::loopEnd(String endName) 
+FOR State»
+   } /* «endName» */
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoop(Integer count, Integer label) FOR SimpleStateÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoop(Integer count, Integer label) FOR SimpleState»
    if(read_bit(reader))
-   { /* depth Â«depthÂ»*/
-   Â«targetDef.proceed()Â»
+   { /* depth «depth»*/
+   «targetDef.proceed()»
    }
    else
    {
-      label = Â«getEndCase(name)Â» ;
+      label = «getEndCase(name)» ;
       continue;
-   } /* Â«nameÂ» */
-Â«ENDAROUNDÂ»
+   } /* «name» */
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoop(Integer count, Integer label) FOR SimpleStateÂ» 
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoop(Integer count, Integer label) FOR SimpleState» 
    if(read_bit(reader))
-   { /* depth Â«depthÂ»*/
-   Â«targetDef.proceed()Â»
+   { /* depth «depth»*/
+   «targetDef.proceed()»
    }
    else
    {
-      label = Â«getEndCase(name)Â»;
+      label = «getEndCase(name)»;
       continue;
-   } /* Â«nameÂ» */
-Â«ENDAROUNDÂ»
+   } /* «name» */
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameBegin 
-FOR SimpleStateÂ»
-   Â«IF type.metaType.name == complexTypeName()-Â»
-   soap_element_begin_out(soap, "Â«getNSPrefix()Â»1:Â«nameÂ»", 0, "");
-   Â«ENDIF-Â»
-Â«ENDAROUNDÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameBegin 
+FOR SimpleState»
+   «IF type.metaType.name == complexTypeName()-»
+   soap_element_begin_out(soap, "«getNSPrefix()»1:«name»", 0, "");
+   «ENDIF-»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd 
-FOR SimpleStateÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd 
+FOR SimpleState»
 
-Â«ENDAROUNDÂ»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::statePapaNameEnd 
-FOR StateÂ»
-   Â«IF getPapaKind() != "attribute"-Â»
-   soap_element_end_out(soap, "Â«getNSPrefix()Â»1:Â«getPapaName()Â»");
-   Â«ELSE-Â»
-   Â«ENDIF-Â»
-Â«ENDAROUNDÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateParentNameEnd 
+FOR State»
+   «IF getParentKind() != "attribute"-»
+   soap_element_end_out(soap, "«getNSPrefix()»1:«getParentName()»");
+   «ELSE-»
+   «ENDIF-»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::stateType 
-FOR SimpleStateÂ»
-  Â«IF kind != "attribute"-Â»
-  char * Â«nameÂ»_str;
-  Â«ENDIFÂ»
-   Â«EXPAND readFunctionÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateType 
+FOR SimpleState»
+  «IF kind != "attribute"-»
+  char * «name»_str;
+  «ENDIF»
+   «EXPAND readFunction»
    if (ret < 0)
    {
       fprintf(stderr, "Error reading input data. Errno: %s\n",
               strerror(errno));
       return;
    }
-   Â«IF kind == "attribute"-Â»
-   soap_attribute(soap,  "Â«getNSPrefix()Â»1:Â«nameÂ»", str);
-   Â«ELSE-Â»
-   Â«nameÂ»_str = soap_strdup(soap, str);
-   soap_outstring(soap, "Â«getNSPrefix()Â»1:Â«nameÂ»", -1, &Â«nameÂ»_str, "", SOAP_TYPE_string);
-   Â«ENDIF-Â» 
+   «IF kind == "attribute"-»
+   soap_attribute(soap,  "«getNSPrefix()»1:«name»", str);
+   «ELSE-»
+   «name»_str = soap_strdup(soap, str);
+   soap_outstring(soap, "«getNSPrefix()»1:«name»", -1, &«name»_str, "", SOAP_TYPE_string);
+   «ENDIF-» 
    free(str);
-Â«ENDAROUNDÂ»
+«ENDAROUND»
 
-Â«DEFINE readFunction FOR SimpleStateÂ»
-Â«LET getTypeMap(type.metaType.name).toLowerCase() AS tNameÂ»
-ret = str_read_Â«getTypeMap(type.metaType.name).toLowerCase()Â»(&str
-Â«IF tName == "string"-Â»
-   , Â«((Automata::TString)type).lengthÂ»
-Â«ELSEIF tName == "int" || tName == "short" || tName == "byte" -Â»
-   Â«LET ((Automata::TInt)type) AS type-Â»
-      Â«IF type.min != type.max-Â»
-         , Â«bitsLen(type.min, type.max)-Â»
-      Â«ELSE-Â»
+«DEFINE readFunction FOR SimpleState»
+«LET getTypeMap(type.metaType.name).toLowerCase() AS tName»
+ret = str_read_«getTypeMap(type.metaType.name).toLowerCase()»(&str
+«IF tName == "string"-»
+   , «((Automata::TString)type).length»
+«ELSEIF tName == "int" || tName == "short" || tName == "byte" -»
+   «LET ((Automata::TInt)type) AS type-»
+      «IF type.min != type.max-»
+         , «bitsLen(type.min, type.max)-»
+      «ELSE-»
          , 0
-      Â«ENDIF-Â»
-      Â«IF ( (type.min == 0)                                && 
+      «ENDIF-»
+      «IF ( (type.min == 0)                                && 
            ((type.max == twoPow(8)-1  && tName == "byte")  || 
            (type.max == twoPow(16)-1  && tName == "short") || 
-           (type.max == twoPow(32)-1  && tName == "int")))-Â»
+           (type.max == twoPow(32)-1  && tName == "int")))-»
         , 1
-      Â«ELSE-Â»
+      «ELSE-»
         , 0
-      Â«ENDIF-Â»
-   Â«ENDLET-Â»       
-Â«ELSEIF tName == "double"-Â»
-   Â«LET ((Automata::TDouble)type) AS type-Â»
-      Â«IF type.min != type.max-Â»
-         , Â«bitsLen(type.min, type.max)-Â»
-      Â«ELSE-Â»
+      «ENDIF-»
+   «ENDLET-»       
+«ELSEIF tName == "double"-»
+   «LET ((Automata::TDouble)type) AS type-»
+      «IF type.min != type.max-»
+         , «bitsLen(type.min, type.max)-»
+      «ELSE-»
          , 0
-      Â«ENDIF-Â»
-      Â«IF type.fractionDigits > 0-Â»
-         , Â«type.fractionDigitsÂ», Â«fracBitsLen(type.fractionDigits)-Â»
-      Â«ELSE-Â»
+      «ENDIF-»
+      «IF type.fractionDigits > 0-»
+         , «type.fractionDigits», «fracBitsLen(type.fractionDigits)-»
+      «ELSE-»
          , 0, 0
-      Â«ENDIF-Â»
-   Â«ENDLET-Â»
-Â«ENDIF-Â»
+      «ENDIF-»
+   «ENDLET-»
+«ENDIF-»
 , reader);
-Â«ENDLETÂ»
-Â«ENDDEFINEÂ»
+«ENDLET»
+«ENDDEFINE»

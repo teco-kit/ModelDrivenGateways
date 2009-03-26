@@ -1,4 +1,4 @@
-«IMPORT Automata»
+Â«IMPORT Automata»
 «IMPORT edu::teco::automata::generator::templates»
 «EXTENSION edu::teco::automata::generator::templates::util»
 «EXTENSION edu::teco::automata::generator::templates::AcceptorUtil»
