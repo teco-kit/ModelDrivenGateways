@@ -1,0 +1,40 @@
+  <workflow>
+  
+   <component id="generatorEncGSOAP" class="oaw.xpand2.Generator">           
+    <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
+         <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
+    </metaModel>
+    <expand value="edu::teco::automata::generator::templates::c::bin2SAX::root('') FOR model"/>
+    <outlet path="${outlet_path}/"/>
+    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
+   </component> 
+   <component adviceTarget="generatorEncGSOAP"
+      id="generatorGsoapAdv" class="oaw.xpand2.GeneratorAdvice">			 
+  	  <advices value="edu::teco::automata::generator::templates::c::bin2SAX"/>
+   </component> 
+   
+  <component id="generatorEncGSOAP_inv" class="oaw.xpand2.Generator">           
+    <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
+       <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
+    </metaModel>
+    <globalVarDef name="NSPrefix" value="'${NSPrefix}' + '_inv'"/>
+    <expand value="edu::teco::automata::generator::templates::c::bin2SAX::root('_inv') FOR model"/>
+    <outlet path="${outlet_path}/"/>
+   </component>
+   <component adviceTarget="generatorEncGSOAP_inv"
+     id="generatorGsoapInvAdv" class="oaw.xpand2.GeneratorAdvice">			 
+  	<advices value="edu::teco::automata::generator::templates::c::bin2SAX"/>
+   </component>  
+   
+  <component id="generatorWS4D" class="oaw.xpand2.Generator">           
+    <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
+         <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
+    </metaModel>
+    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
+    <globalVarDef name="DeviceName" value="'${DeviceName}'"/>
+    <globalVarDef name="MsgOutURI" value="'${MsgOutURI}'"/>
+    <globalVarDef name="MsgRspURI" value="'${MsgRspURI}'"/>
+    <expand value="edu::teco::automata::generator::templates::c::ws4d_gsoap::root FOR model"/>
+    <outlet path="${outlet_path}/"/>
+   </component>
+ </workflow>
