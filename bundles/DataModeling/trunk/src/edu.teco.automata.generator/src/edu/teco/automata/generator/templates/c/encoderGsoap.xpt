@@ -1,10 +1,10 @@
-Â«IMPORT AutomataÂ»
-Â«IMPORT edu::teco::automata::generator::templatesÂ»
-Â«EXTENSION edu::teco::automata::generator::templates::utilÂ»
-Â«EXTENSION edu::teco::automata::generator::templates::configÂ»
-Â«EXTENSION edu::teco::automata::generator::templates::AcceptorUtilÂ»
+«IMPORT Automata»
+«IMPORT edu::teco::automata::generator::templates»
+«EXTENSION edu::teco::automata::generator::templates::util»
+«EXTENSION edu::teco::automata::generator::templates::config»
+«EXTENSION edu::teco::automata::generator::templates::AcceptorUtil»
 
-Â«DEFINE root(String nameID) FOR Automata::StateMachine»
+«DEFINE root(String nameID) FOR Automata::StateMachine»
    «initQueries()»
    «FILE "c/gsoap_encoder_automata" + nameID + ".c"»
 /* Generated file */
