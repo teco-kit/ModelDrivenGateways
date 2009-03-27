@@ -1,16 +1,6 @@
 <workflow>
-  <property name="schemaFile" value="src/prs74.xsd"/>
-  <property name="packagePath" value="edu/teco/automata/generator"/>
-  <property name="outlet_path" value="src-gen/"/>
-  <!--<property name="modelFile" value="src-gen/edu/teco/automata/generator/gen/Mynew.automata"/>-->
-  <property name="NSPrefix" value="teco"/>
-  <property name="DeviceName" value="ParticleSensor"/>
-  <property name="MsgOutURI" value="http://www.teco.edu/SensorValues/SensorValuesEventOut"/>
-  <property name="MsgRspURI" value="http://www.teco.edu/SensorValues/GetSensorValuesOut"/>
-  <property name="doC" value="true"/>
-  <property name="doJava" value="true"/>
-  <property name="doWS4D" value="true"/>
-  <property name="doJennic" value="true"/>
+  <property file="generator.properties"/>
+  
   
    <bean class="org.eclipse.mwe.emf.StandaloneSetup">
       <platformUri value=".."/>
@@ -23,17 +13,9 @@
  <!-- <registerEcoreFile value="Automata"/>-->
 
  
-   <component id="xsdParser"
-    class="edu.teco.automata.generator.XSD2EcoreReader">
-    <xsdPath value="${schemaFile}"/>
-    <outputSlot value="SchemaModel"/>
-    <firstElementOnly value="true"/>
-  </component>
-  
-  <component class="edu.teco.automata.generator.transformer.Transformer">
-    <modelSlot value="SchemaModel"/>
-    <outputSlot value="model"/>
-  </component> 
+<component file="xsdautomata">
+
+</component>
  
 <if cond="${doC}"> 
    <component file="${packagePath}/targets/cXML.oaw" >
