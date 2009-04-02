@@ -1,8 +1,8 @@
-Â«IMPORT AutomataÂ»
-Â«EXTENSION edu::teco::automata::generator::templates::utilÂ»
+«IMPORT Automata»
+«EXTENSION edu::teco::automata::generator::templates::util»
 
-Â«DEFINE root FOR StateMachineÂ»
-   Â«FILE "DecoderAutomata.java"Â»
+«DEFINE root FOR StateMachine»
+   «FILE "DecoderAutomata.java"»
       package edu.teco.automata.generator.gen;
       
       import java.io.IOException;
@@ -27,11 +27,11 @@
          throws IOException {
             while (true) {
                switch (idx) {
-               Â«FOREACH states AS st ITERATOR iÂ»
-                  Â«EXPAND state(i.counter0) FOR stÂ»
-               Â«ENDFOREACHÂ»
+               «FOREACH states AS st ITERATOR i»
+                  «EXPAND state(i.counter0) FOR st»
+               «ENDFOREACH»
                default:
-                  if (idx < Â«states.sizeÂ»)
+                  if (idx < «states.size»)
                      idx++;
                   else 
                      idx = 1;
@@ -49,71 +49,71 @@
             }
          }
       }
-   Â«ENDFILEÂ»
-Â«ENDDEFINEÂ»
+   «ENDFILE»
+«ENDDEFINE»
 
-Â«DEFINE state(Integer count) FOR SimpleStateÂ»
-   case Â«countÂ»: // Â«nameÂ»
-      if ("Â«nameÂ»" != xmlElement)
+«DEFINE state(Integer count) FOR SimpleState»
+   case «count»: // «name»
+      if ("«name»" != xmlElement)
       {
          idx++;
-         Â«IF type.metaType.name == complexTypeName()-Â»
-            Â«IF (upperBound != 1 && upperBound != 0) || 
-                (upperBound == 1 && lowerBound == 0)-Â»
-            Â«FOREACH out AS tr ITERATOR itÂ»
-               Â«IF it.counter0 > 0Â»
+         «IF type.metaType.name == complexTypeName()-»
+            «IF (upperBound != 1 && upperBound != 0) || 
+                (upperBound == 1 && lowerBound == 0)-»
+            «FOREACH out AS tr ITERATOR it»
+               «IF it.counter0 > 0»
                else
-               Â«ENDIFÂ»
-               if ("Â«tr.nameÂ»" == xmlElement)
+               «ENDIF»
+               if ("«tr.name»" == xmlElement)
                {
-                  Â«IF upperBound > 0Â»
-                     if (elemCount > Â«upperBoundÂ»)
+                  «IF upperBound > 0»
+                     if (elemCount > «upperBound»)
                         System.err.println("Error. Wrong count of element " + 
-                                           "Â«nameÂ»" + " upB " +  "Â«upperBoundÂ»"
-                                         + " lowB " + "Â«lowerBoundÂ»");
-                  Â«ENDIFÂ»
-                  stack.push(new IdxMemo(Â«countÂ», elemCount));
+                                           "«name»" + " upB " +  "«upperBound»"
+                                         + " lowB " + "«lowerBound»");
+                  «ENDIF»
+                  stack.push(new IdxMemo(«count», elemCount));
                   elemCount = 0;
                   continue;
                } 
-            Â«ENDFOREACHÂ»
+            «ENDFOREACH»
               else {
-               Â«EXPAND nextSiblingState(count, depth) FOR thisÂ»
-               Â«IF lowerBound != upperBound-Â»
+               «EXPAND nextSiblingState(count, depth) FOR this»
+               «IF lowerBound != upperBound-»
                io.write_false();
-               Â«ENDIF-Â»
+               «ENDIF-»
                elemCount = 0;
                continue;
               }
-            Â«ENDIFÂ»
-         Â«ENDIFÂ»
+            «ENDIF»
+         «ENDIF»
 
-         Â«IF lowerBound != 0Â»
-            if (  Â«IF upperBound > 0Â»
-                 elemCount > Â«upperBoundÂ» ||
-            Â«ENDIFÂ»  elemCount < Â«lowerBoundÂ» )
+         «IF lowerBound != 0»
+            if (  «IF upperBound > 0»
+                 elemCount > «upperBound» ||
+            «ENDIF»  elemCount < «lowerBound» )
                System.err.println("Error. Wrong count of element " + 
-                                         "Â«nameÂ»" + " upB " +  "Â«upperBoundÂ»"
-                                         + " lowB " + "Â«lowerBoundÂ» ");
-         Â«ENDIFÂ»
+                                         "«name»" + " upB " +  "«upperBound»"
+                                         + " lowB " + "«lowerBound» ");
+         «ENDIF»
          
-         Â«IF type.metaType.name == complexTypeName()-Â»
-           Â«IF (upperBound == 1 || upperBound == 0) && 
-                (upperBound != 1 || lowerBound != 0)-Â»
-                Â«IF lowerBound != upperBound-Â»
+         «IF type.metaType.name == complexTypeName()-»
+           «IF (upperBound == 1 || upperBound == 0) && 
+                (upperBound != 1 || lowerBound != 0)-»
+                «IF lowerBound != upperBound-»
                 io.write_false();
-                Â«ENDIF-Â»
+                «ENDIF-»
                 elemCount = 0;
-           Â«ENDIFÂ»
-         Â«ELSE-Â»
+           «ENDIF»
+         «ELSE-»
            elemCount = 0;
-           Â«IF lowerBound != upperBoundÂ»
+           «IF lowerBound != upperBound»
            io.write_false();
-           Â«ENDIFÂ»
-         Â«ENDIFÂ»
+           «ENDIF»
+         «ENDIF»
          
-         Â«IF out.get(0).metaType.name == "Automata::SimpleState"-Â»
-            Â«IF ((SimpleState)out.get(0)).depth < depthÂ»  
+         «IF out.get(0).metaType.name == "Automata::SimpleState"-»
+            «IF ((SimpleState)out.get(0)).depth < depth»  
                if (!stack.isEmpty())
                {
                   IdxMemo memo = stack.pop(); 
@@ -122,8 +122,8 @@
                   continue;
                }
                
-            Â«ENDIFÂ»
-         Â«ELSEÂ»
+            «ENDIF»
+         «ELSE»
                if (!stack.isEmpty())
                {
                   IdxMemo memo = stack.pop(); 
@@ -131,36 +131,36 @@
                   elemCount = memo.elemCount;
                   continue;
                }
-         Â«ENDIFÂ»
+         «ENDIF»
             
 
       } else {
          elemCount++;
-         Â«IF lowerBound != upperBoundÂ»
+         «IF lowerBound != upperBound»
             io.write_true();
-         Â«ENDIFÂ»
-         return new TypesString.Â«getTypeMap(type.metaType.name)Â»();
+         «ENDIF»
+         return new TypesString.«getTypeMap(type.metaType.name)»();
       }
-Â«ENDDEFINEÂ»
+«ENDDEFINE»
 
-Â«DEFINE state(Integer count) FOR StartStateÂ»
-Â«ENDDEFINEÂ»
+«DEFINE state(Integer count) FOR StartState»
+«ENDDEFINE»
 
-Â«DEFINE nextSiblingState(Integer count, Integer papaDepth) FOR SimpleStateÂ»
-   Â«IF out.get(0).metaType.name == "Automata::SimpleState"-Â»
-      Â«IF ((SimpleState)out.get(0)).depth <= papaDepthÂ»
-         idx = Â«count + 1Â»;
-      Â«ELSEÂ»
-         Â«EXPAND nextSiblingState(count+1, papaDepth) FOR (SimpleState)out.get(0)Â»
-      Â«ENDIFÂ»
-   Â«ELSEÂ»
+«DEFINE nextSiblingState(Integer count, Integer ParentDepth) FOR SimpleState»
+   «IF out.get(0).metaType.name == "Automata::SimpleState"-»
+      «IF ((SimpleState)out.get(0)).depth <= ParentDepth»
+         idx = «count + 1»;
+      «ELSE»
+         «EXPAND nextSiblingState(count+1, ParentDepth) FOR (SimpleState)out.get(0)»
+      «ENDIF»
+   «ELSE»
       idx++;
-   Â«ENDIFÂ»
-Â«ENDDEFINEÂ»
+   «ENDIF»
+«ENDDEFINE»
 
-Â«DEFINE state(Integer count) FOR StopStateÂ»
-Â«ENDDEFINEÂ»
+«DEFINE state(Integer count) FOR StopState»
+«ENDDEFINE»
 
-Â«DEFINE state(Integer count) FOR StateÂ»
-Â«REMÂ»Should not be executedÂ«ENDREMÂ»
-Â«ENDDEFINEÂ»
+«DEFINE state(Integer count) FOR State»
+«REM»Should not be executed«ENDREM»
+«ENDDEFINE»

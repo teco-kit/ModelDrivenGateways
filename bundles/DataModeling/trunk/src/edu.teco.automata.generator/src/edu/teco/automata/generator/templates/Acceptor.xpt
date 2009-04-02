@@ -1,16 +1,16 @@
-Â«IMPORT AutomataÂ»
-Â«IMPORT edu::teco::automata::generator::templatesÂ»
-Â«EXTENSION edu::teco::automata::generator::templates::utilÂ»
-Â«EXTENSION edu::teco::automata::generator::templates::AcceptorUtilÂ»
+«IMPORT Automata»
+«IMPORT edu::teco::automata::generator::templates»
+«EXTENSION edu::teco::automata::generator::templates::util»
+«EXTENSION edu::teco::automata::generator::templates::AcceptorUtil»
 
-Â«DEFINE root FOR Automata::StateMachineÂ»
-   Â«initQueries()Â»
-   Â«FILE "Acceptor.java"Â»
+«DEFINE root FOR Automata::StateMachine»
+   «initQueries()»
+   «FILE "Acceptor.java"»
       package edu.teco.automata.generator.gen;
       import java.io.IOException;
       import edu.teco.automata.generator.core.BitsIO;
-      import edu.teco.automata.generator.types.TypesBin;
-      Â«getImports()Â»
+
+      «getImports()»
       
       public class Acceptor {
          private BitsIO io;
@@ -21,200 +21,200 @@
          }
          
          public void run() throws IOException {
-            Â«clear()Â»
-            Â«resetCase()Â»
-            Â«FOREACH states AS stÂ»
-               Â«EXPAND initNeeded FOR stÂ»
-            Â«ENDFOREACHÂ»
+            «clear()»
+            «resetCase()»
+            «FOREACH states AS st»
+               «EXPAND initNeeded FOR st»
+            «ENDFOREACH»
             while(true)
             {
             switch (label)
             {
-            Â«clear()Â»
-            Â«resetCase()Â»
-            Â«FOREACH states AS st ITERATOR iÂ»
-               Â«EXPAND encoderRoot::state(i.counter0) FOR stÂ»
-            Â«ENDFOREACHÂ»
-            Â«clear()Â»
-            Â«resetCase()Â»
+            «clear()»
+            «resetCase()»
+            «FOREACH states AS st ITERATOR i»
+               «EXPAND encoderRoot::state(i.counter0) FOR st»
+            «ENDFOREACH»
+            «clear()»
+            «resetCase()»
             }
             }
          }
       }
-   Â«ENDFILEÂ»
-Â«ENDDEFINEÂ»
+   «ENDFILE»
+«ENDDEFINE»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoop(Integer count) 
- FOR SimpleStateÂ»
-   // constLoop Â«getCurrPath() + nameÂ»
-   Â«IF isNeeded(getCurrPath() + name)Â»
-      Â«IF hasCondition(getCurrPath() + name)Â»
-         // Â«getCondition(getCurrPath() + name)Â»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoop(Integer count) 
+ FOR SimpleState»
+   // constLoop «getCurrPath() + name»
+   «IF isNeeded(getCurrPath() + name)»
+      «IF hasCondition(getCurrPath() + name)»
+         // «getCondition(getCurrPath() + name)»
          {
-      Â«ENDIFÂ»
-      int lowBÂ«countÂ» = Â«lowerBoundÂ»;
+      «ENDIF»
+      int lowB«count» = «lowerBound»;
       while (true)
       {
-      if (lowBÂ«countÂ» <= 0)
+      if (lowB«count» <= 0)
          breatk;
-      lowBÂ«countÂ»--;
-      Â«targetDef.proceed()Â»
-   Â«ELSEÂ»
-      // skip Â«countÂ» * TypesBin.sizeÂ«type.metaType.name.toFirstUpper()Â»
-   Â«ENDIFÂ»
-Â«ENDAROUNDÂ»
+      lowB«count»--;
+      «targetDef.proceed()»
+   «ELSE»
+      // skip «count» * TypesBin.size«type.metaType.name.toFirstUpper()»
+   «ENDIF»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoopEnd(String endName) 
-FOR StateÂ»
-   // constLoopEnd Â«endNameÂ»
-   Â«IF isNeeded(endName)Â»
-      Â«targetDef.proceed()Â»
-   Â«ENDIFÂ»
-Â«ENDAROUNDÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoopEnd(String endName) 
+FOR State»
+   // constLoopEnd «endName»
+   «IF isNeeded(endName)»
+      «targetDef.proceed()»
+   «ENDIF»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::loop(Integer count) 
-FOR SimpleStateÂ»
-   // loop Â«getCurrPath() + nameÂ»
-   Â«IF isNeeded(getCurrPath() + name)Â»
-      Â«IF hasCondition(getCurrPath() + name)Â»
-         // Â«getCondition(getCurrPath() + name)Â»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::loop(Integer count) 
+FOR SimpleState»
+   // loop «getCurrPath() + name»
+   «IF isNeeded(getCurrPath() + name)»
+      «IF hasCondition(getCurrPath() + name)»
+         // «getCondition(getCurrPath() + name)»
          {
-      Â«ENDIFÂ»
-      /* loop Â«getCurrPath() + nameÂ» */
+      «ENDIF»
+      /* loop «getCurrPath() + name» */
       while(io.read_bit())
-      { /* depth Â«depthÂ» */
-      Â«targetDef.proceed()Â»
-   Â«ELSEÂ»
-      // skip TypesBin.size Â«type.metaType.name.toFirstUpper()Â»
-   Â«ENDIFÂ»
-Â«ENDAROUNDÂ»
+      { /* depth «depth» */
+      «targetDef.proceed()»
+   «ELSE»
+      // skip TypesBin.size «type.metaType.name.toFirstUpper()»
+   «ENDIF»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::loopEnd(String endName) 
-FOR StateÂ»
-   // loopEnd Â«endNameÂ»
-   Â«IF isNeeded(endName)Â»
-      Â«targetDef.proceed()Â»
-   Â«ENDIFÂ»
-Â«ENDAROUNDÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::loopEnd(String endName) 
+FOR State»
+   // loopEnd «endName»
+   «IF isNeeded(endName)»
+      «targetDef.proceed()»
+   «ENDIF»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoop(Integer count, Integer label) FOR SimpleStateÂ»
-   Â«IF isNeeded(getCurrPath() + name)Â»
-      Â«IF hasCondition(getCurrPath() + name)Â»
-         // Â«getCondition(getCurrPath() + name)Â»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoop(Integer count, Integer label) FOR SimpleState»
+   «IF isNeeded(getCurrPath() + name)»
+      «IF hasCondition(getCurrPath() + name)»
+         // «getCondition(getCurrPath() + name)»
          {
-      Â«ENDIFÂ»
+      «ENDIF»
    if(io.read_bit())
-   { /* depth Â«depthÂ»*/
-   Â«targetDef.proceed()Â»
+   { /* depth «depth»*/
+   «targetDef.proceed()»
    }
    else
    {
-      label = Â«getEndCase(name)Â» ;
+      label = «getEndCase(name)» ;
       continue;
-   } /* Â«nameÂ» */
-   Â«ENDIFÂ»
-Â«ENDAROUNDÂ»
+   } /* «name» */
+   «ENDIF»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoop(Integer count, Integer label) FOR SimpleStateÂ» 
-   Â«IF isNeeded(getCurrPath() + name)Â»
-     Â«IF hasCondition(getCurrPath() + name)Â»
-         // Â«getCondition(getCurrPath() + name)Â»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoop(Integer count, Integer label) FOR SimpleState» 
+   «IF isNeeded(getCurrPath() + name)»
+     «IF hasCondition(getCurrPath() + name)»
+         // «getCondition(getCurrPath() + name)»
          {
-      Â«ENDIFÂ»
+      «ENDIF»
    if(io.read_bit())
-   { /* depth Â«depthÂ»*/
-   Â«targetDef.proceed()Â»
+   { /* depth «depth»*/
+   «targetDef.proceed()»
    }
    else
    {
-      label = Â«getEndCase(name)Â»;
+      label = «getEndCase(name)»;
       continue;
-   } /* Â«nameÂ» */
-   Â«ENDIFÂ»
-Â«ENDAROUNDÂ»
+   } /* «name» */
+   «ENDIF»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameBegin 
-FOR SimpleStateÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameBegin 
+FOR SimpleState»
 
-Â«ENDAROUNDÂ»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd 
-FOR SimpleStateÂ»
-   Â«REMÂ»
-      System.out.println("</Â«nameÂ»>");
-   Â«ENDREMÂ»
-Â«ENDAROUNDÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd 
+FOR SimpleState»
+   «REM»
+      System.out.println("</«name»>");
+   «ENDREM»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::statePapaEnd 
-FOR StateÂ»
-   //statePapaEnd Â«getPapaName()Â»
-   Â«IF isNeeded(getPapaName())Â»
-      Â«targetDef.proceed()Â»
-   Â«ELSEÂ»
-      Â«popStack()Â»   
-   Â«ENDIFÂ»
-Â«ENDAROUNDÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateParentEnd 
+FOR State»
+   //stateParentEnd «getParentName()»
+   «IF isNeeded(getParentName())»
+      «targetDef.proceed()»
+   «ELSE»
+      «popStack()»   
+   «ENDIF»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::statePapaNameEnd 
-FOR StateÂ»
-   Â«REMÂ»
-      System.out.println("</Â«getPapaName()Â»>");
-   Â«ENDREMÂ»
-Â«ENDAROUNDÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateParentNameEnd 
+FOR State»
+   «REM»
+      System.out.println("</«getParentName()»>");
+   «ENDREM»
+«ENDAROUND»
 
-Â«AROUND edu::teco::automata::generator::templates::encoderRoot::stateType 
-FOR SimpleStateÂ»
-   // stateType Â«getCurrPath() + nameÂ»
-   Â«IF isNeeded(getCurrPath() + name)Â»
-      Â«IF hasAction(getCurrPath() + name)Â»
-         Â«getAction(getCurrPath() + name, type.metaType.name)Â»
-      Â«ENDIFÂ»
-   Â«ENDIFÂ»
-Â«ENDAROUNDÂ»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateType 
+FOR SimpleState»
+   // stateType «getCurrPath() + name»
+   «IF isNeeded(getCurrPath() + name)»
+      «IF hasAction(getCurrPath() + name)»
+         «getAction(getCurrPath() + name, type.metaType.name)»
+      «ENDIF»
+   «ENDIF»
+«ENDAROUND»
 
 
-Â«REMÂ» 
+«REM» 
 Implementing this with Xpand is not such a good idea
-Â«ENDREMÂ»
-Â«DEFINE initNeeded FOR SimpleStateÂ»
-   // initNeeded Â«nameÂ»
-   Â«IF ! isStackEmpty()Â»
-   Â«IF getPapaDepth() >= depthÂ»
-      Â«IF isCurrNeeded()Â»
-         Â«EXPAND stIterator(getSize()-1)Â»
-      Â«ELSEÂ»
-         Â«popStack()Â»
-      Â«ENDIFÂ»
-   Â«ENDIFÂ»
-   Â«ENDIFÂ» 
-   Â«IF type.metaType.name == complexTypeName()Â»
-      Â«pushType(name, depth, lowerBound, upperBound, kind, lowerBound)Â»
-   Â«ELSEÂ»
-      Â«IF isNeeded(getCurrPath() + name)Â»
-         // setNeeded Â«getCurrPath() + nameÂ»
-         Â«setCurrNeeded(true)Â»
-         Â«setNeeded(getCurrPath() + name, true)Â»
-      Â«ENDIFÂ»
-   Â«ENDIFÂ»
-Â«ENDDEFINEÂ»
+«ENDREM»
+«DEFINE initNeeded FOR SimpleState»
+   // initNeeded «name»
+   «IF ! isStackEmpty()»
+   «IF getParentDepth() >= depth»
+      «IF isCurrNeeded()»
+         «EXPAND stIterator(getSize()-1)»
+      «ELSE»
+         «popStack()»
+      «ENDIF»
+   «ENDIF»
+   «ENDIF» 
+   «IF type.metaType.name == complexTypeName()»
+      «pushType(name, depth, lowerBound, upperBound, kind, lowerBound)»
+   «ELSE»
+      «IF isNeeded(getCurrPath() + name)»
+         // setNeeded «getCurrPath() + name»
+         «setCurrNeeded(true)»
+         «setNeeded(getCurrPath() + name, true)»
+      «ENDIF»
+   «ENDIF»
+«ENDDEFINE»
 
-Â«DEFINE initNeeded FOR StopStateÂ»
-   Â«IF ! isStackEmpty()Â»
-      Â«EXPAND stIterator(getSize()-1)Â»
-   Â«ENDIFÂ»
-Â«ENDDEFINEÂ»
+«DEFINE initNeeded FOR StopState»
+   «IF ! isStackEmpty()»
+      «EXPAND stIterator(getSize()-1)»
+   «ENDIF»
+«ENDDEFINE»
 
-Â«DEFINE initNeeded FOR StateÂ»
-Â«ENDDEFINEÂ»
+«DEFINE initNeeded FOR State»
+«ENDDEFINE»
 
-Â«DEFINE stIterator(Integer count) FOR StateÂ»
-   // stIterator Â«nameÂ»
-   // setNeeded2 Â«getPapaName()Â» Â«isCurrNeeded()Â»
-   Â«setNeeded(getPapaName(), isCurrNeeded())Â»
-   Â«popStack()Â»
-   Â«IF count > 0Â»
-      Â«EXPAND stIterator(count-1)Â»
-   Â«ELSEÂ»
-      Â«setCurrNeeded(false)Â»
-   Â«ENDIFÂ»
-Â«ENDDEFINEÂ»
+«DEFINE stIterator(Integer count) FOR State»
+   // stIterator «name»
+   // setNeeded2 «getParentName()» «isCurrNeeded()»
+   «setNeeded(getParentName(), isCurrNeeded())»
+   «popStack()»
+   «IF count > 0»
+      «EXPAND stIterator(count-1)»
+   «ELSE»
+      «setCurrNeeded(false)»
+   «ENDIF»
+«ENDDEFINE»
