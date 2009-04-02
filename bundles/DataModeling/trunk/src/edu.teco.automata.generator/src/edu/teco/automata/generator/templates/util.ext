@@ -43,10 +43,10 @@ int getZero(): 0;
 Boolean isStackEmpty():
     JAVA edu.teco.automata.generator.templates.CTypeStack.isEmpty();
 
-String getPapaName():
+String getParentName():
     JAVA edu.teco.automata.generator.templates.CTypeStack.getName();
 
-int getPapaDepth():
+int getParentDepth():
     JAVA edu.teco.automata.generator.templates.CTypeStack.getDepth();
 
 int getLowB():
@@ -70,11 +70,11 @@ String getCurrPath():
 String getStructPath():
     JAVA edu.teco.automata.generator.templates.CTypeStack.getStructPath(); 
 
-String getCurrPapaPath():
-    JAVA edu.teco.automata.generator.templates.CTypeStack.getCurrentPapaPath();
+String getCurrParentPath():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.getCurrentParentPath();
 
-String getPapaKind():
-    JAVA edu.teco.automata.generator.templates.CTypeStack.getPapaKind();
+String getParentKind():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.getParentKind();
 
 int getNextCase():
    JAVA edu.teco.automata.generator.templates.CTypeStack.getNextCase();
@@ -96,5 +96,15 @@ int getEndCase(String name):
   
 String complexTypeName():
     JAVA edu.teco.automata.generator.transformer.DataTypes.getComplexTypeName();
+    
+Void set_reset():
+	JAVA  edu.teco.automata.generator.templates.Set.reset();
+
+Boolean set_has(String name):
+	JAVA  edu.teco.automata.generator.templates.Set.has(java.lang.String);
+	
+Void set_add(String name):
+	JAVA  edu.teco.automata.generator.templates.Set.add(java.lang.String);
+
 
 

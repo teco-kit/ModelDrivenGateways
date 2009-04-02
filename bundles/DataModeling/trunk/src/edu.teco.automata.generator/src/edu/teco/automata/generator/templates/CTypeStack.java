@@ -63,7 +63,7 @@ public class CTypeStack {
    /**
     * @return The type of the top element in the stack
     */
-   public static String getPapaKind() {
+   public static String getParentKind() {
       return stack.peek().kind;
    }
    
@@ -121,7 +121,7 @@ public class CTypeStack {
     * adds a trailing / at the end if not empty 
     */
    public static String getCurrentPath() {
-      String ret = getCurrentPapaPath();
+      String ret = getCurrentParentPath();
       
       return ret == "" ? ret : (ret += "/");
    }
@@ -129,7 +129,7 @@ public class CTypeStack {
    /**
     * @return The path to the current element in Unix path style
     */
-   public static String getCurrentPapaPath() {
+   public static String getCurrentParentPath() {
       String ret = "";
       for (int i = 0; i < stack.size(); i++)
          ret += "/" + stack.get(i).name;
