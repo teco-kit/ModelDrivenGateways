@@ -15,22 +15,44 @@ import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
 
 
 public class Runner {
-    public static void main(String xsdPath,String genDir,String[] target)
-    {
+	
+	public static void main(Map<String, String> properties,String[] target)
+	{
     	final String wfFileAutomata="src/edu/teco/automata/generator/xsdautomata.oaw";
         final String wfFileTargetPrefix="src/edu/teco/automata/generator/targets/";
         final String wfFileTargetSuffix=".oaw";
+
         
-        for(String t:target)
-        {
-        if(!(new File(wfFileTargetPrefix+t+wfFileTargetSuffix)).exists())
-        {
-      	  System.out.println("target " + wfFileTargetPrefix+t+wfFileTargetSuffix+ " doesn't exist");
-      	  System.exit(1);
-        }
-        }
+		 for(String t:target)
+	        {
+	        if(!(new File(wfFileTargetPrefix+t+wfFileTargetSuffix)).exists())
+	        {
+	      	  System.out.println("target " + wfFileTargetPrefix+t+wfFileTargetSuffix+ " doesn't exist");
+	      	  System.exit(1);
+	        }
+	        }
+		 
+		 properties.put("outputSlot", "model" ); 
+		 
+		 org.openarchitectureware.workflow.monitor.ProgressMonitor ProgressMonitor=new NullProgressMonitor();
+	      
+	      Map<String, EPackage> slotContents = new HashMap<String, EPackage>();
+	        
+	        WorkflowRunner r=new WorkflowRunner();
+	        if(!r.run(wfFileAutomata, ProgressMonitor,
+	                properties, slotContents)) System.exit(1);
+	        for(String t:target)
+	        {
+	        	if(!r.run(wfFileTargetPrefix+t+wfFileTargetSuffix, ProgressMonitor,
+	                properties, slotContents)) System.exit(1);
+	        }
+	     
+		
+	}
+    public static void main(String xsdPath,String genDir,String[] target)
+    {
+
         
-        Map<String, EPackage> slotContents = new HashMap<String, EPackage>();
         Map<String, String> properties = new HashMap<String, String>();
         
         java.util.Properties  propertiesFile = new java.util.Properties();
@@ -38,38 +60,38 @@ public class Runner {
         File p=new File("generator.properties");
         if(p.exists())
         {
-        	
-        try {
-			propertiesFile.load(new FileReader(p));
-			for(Entry<Object, Object> e:propertiesFile.entrySet())
-				properties.put((String)e.getKey(), (String)e.getValue());
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-        } catch (Exception e) {
-        	e.printStackTrace();
+        	FileReader rp=null;
+			try {
+				rp = new FileReader(p);
+			
+			try {
+				propertiesFile.load(rp);
+				for(Entry<Object, Object> e:propertiesFile.entrySet())
+					properties.put((String)e.getKey(), (String)e.getValue());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+			} catch (FileNotFoundException e1) {
+				
+			}
+			finally
+			{
+				try {
+					if(rp!=null)
+						rp.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
         }
-        
-        }
-        
-        org.openarchitectureware.workflow.monitor.ProgressMonitor ProgressMonitor=new NullProgressMonitor();
-       
         if(xsdPath!=null)
         	properties.put("schemaFile", xsdPath);
         
         if(genDir!=null)
         	properties.put("outlet_path", genDir);
         
-        properties.put("outputSlot", "model" );
-        
-        WorkflowRunner r=new WorkflowRunner();
-        if(!r.run(wfFileAutomata, ProgressMonitor,
-                properties, slotContents)) System.exit(1);
-        for(String t:target)
-        {
-        	if(!r.run(wfFileTargetPrefix+t+wfFileTargetSuffix, ProgressMonitor,
-                properties, slotContents)) System.exit(1);
-        }
-        
+        main(properties,target);
     }
     
 	public static void main(String args[]) {

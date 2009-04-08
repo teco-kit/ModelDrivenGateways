@@ -1,4 +1,4 @@
-<SensorValues>
+<SensorValues xmlns="http://www.teco.edu/SensorValuesSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.teco.edu/SensorValuesSchema prs74.xsd ">
 	<AcclX>
 		<AcclValue>300</AcclValue>
 		<AcclIdx>0</AcclIdx>
@@ -11,5 +11,9 @@
       <AcclValue>300</AcclValue>
       <AcclIdx>0</AcclIdx>
    </AcclZ>
+   <Temperature>
+   	<TempValue>4</TempValue>
+   	<TempIdx>0</TempIdx>
+   </Temperature>
    <Voltage>3400</Voltage>
 </SensorValues>

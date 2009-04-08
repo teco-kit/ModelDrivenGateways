@@ -17,22 +17,20 @@ public class Encoder {
       out = outs;
    }
 
-   public void run() {
-         try {
+   public void run() throws IOException {
             EncoderAutomata automata = new EncoderAutomata(io, out);
             automata.run();
-         } catch (IOException e) {
-            e.printStackTrace();
-         }
    }
 
    public static void main(String argv[]) {
       try {
          FileInputStream fis = new FileInputStream("src-gen/edu/teco/automata/generator/gen/output.bin");
-
+         if(fis.available()==0)
+        	 throw new IOException();
+        	 
          Encoder reader = new Encoder(fis, System.out);
          reader.run();
-      } catch (FileNotFoundException e) {
+      } catch (Exception e) {
          e.printStackTrace();
       }
    }

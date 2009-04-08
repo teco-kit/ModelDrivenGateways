@@ -5,10 +5,11 @@
   		<metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
   	</metaModel>
   	<expand value="edu::teco::automata::generator::templates::c::decoderRoot::root FOR model"/>
-  	<outlet path="${outlet_path}/">
-		<postprocessor class="oaw.xpand2.output.JavaBeautifier"/>
-	</outlet>
-  	<beautifier	class="oaw.xpand2.output.JavaBeautifier"/>
+  	<outlet path="${outlet_path}/"/>
+		
+	<output file="cppoutput.oaw" />
+    <beautifier file="cppbeautifier.oaw" />
+  
   </component>  
 
   <component id="generatorDecCSet" class="oaw.xpand2.Generator">           
@@ -17,6 +18,9 @@
     </metaModel>
     <expand value="edu::teco::automata::generator::templates::c::decoderSetStruct::root FOR model"/>
     <outlet path="${outlet_path}/"/>
+    
+    <output file="cppoutput.oaw" />
+    <beautifier file="cppbeautifier.oaw" />
   </component>  
   
   <component id="generatorDecCSend" class="oaw.xpand2.Generator">           
@@ -25,6 +29,8 @@
     </metaModel>
     <expand value="edu::teco::automata::generator::templates::c::decoderSend::root FOR model"/>
     <outlet path="${outlet_path}/"/>
+    <output file="cppoutput.oaw" />
+    <beautifier file="cppbeautifier.oaw" />
   </component>  
 
   <component id="generatorEncC" class="oaw.xpand2.Generator">			 
@@ -32,10 +38,10 @@
   		 <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
   	</metaModel>
   	<expand value="edu::teco::automata::generator::templates::c::encoderRoot::root FOR model"/>
-  	<outlet path="${outlet_path}/">
-		<postprocessor class="oaw.xpand2.output.JavaBeautifier"/>
-	</outlet>
-  	<beautifier	class="oaw.xpand2.output.JavaBeautifier"/>
+  	<outlet path="${outlet_path}/"/>
+
+    <output file="cppoutput.oaw" />
+    <beautifier file="cppbeautifier.oaw" />
   </component> 
   
   <component adviceTarget="generatorEncC"

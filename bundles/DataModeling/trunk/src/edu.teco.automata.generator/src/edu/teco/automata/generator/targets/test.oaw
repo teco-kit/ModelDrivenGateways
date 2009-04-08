@@ -1,0 +1,16 @@
+<workflow>    
+  <component id="generatorAcc" class="oaw.xpand2.Generator">
+    <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
+         <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
+    </metaModel>
+    <expand value="edu::teco::automata::generator::templates::Acceptor::root FOR model"/>
+    <outlet path="${outlet_path}/">
+        <postprocessor class="oaw.xpand2.output.JavaBeautifier"/>
+    </outlet>
+    <beautifier class="oaw.xpand2.output.JavaBeautifier"/>
+  </component>  
+  <component adviceTarget="generatorAcc"
+  id="generatorAccAdv" class="oaw.xpand2.GeneratorAdvice">			 
+  	<advices value="edu::teco::automata::generator::templates::Acceptor"/>
+</component>
+</workflow>  

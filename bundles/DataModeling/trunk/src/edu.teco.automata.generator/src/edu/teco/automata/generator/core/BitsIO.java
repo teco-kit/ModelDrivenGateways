@@ -26,35 +26,21 @@ public class BitsIO {
       this.os = os;
    }
 
-   public boolean read_bit() {
+   public boolean read_bit() throws IOException{
       byte val[] = new byte[1];
-      try {
-         read_bits(val, 1);
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+      read_bits(val, 1);
+      
       return val[0] == 1 ? true : false;
    }
 
-   public void write_true() {
+   public void write_true() throws IOException {
       byte val[] = { 1 };
-      try {
-         write_bits(val, 1);
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+      write_bits(val, 1);
    }
 
-   public void write_false() {
+   public void write_false() throws IOException {
       byte val[] = { 0 };
-      try {
-         write_bits(val, 1);
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+      write_bits(val, 1);
    }
 
    /*
@@ -161,8 +147,7 @@ public class BitsIO {
 
                res = is.read(b);
                if (res < 0) {
-                  System.out.println("Error reading. EOF");
-                  return (-1);
+                  throw new IOException("Error reading. EOF");
                }
                ret += res;
                tmp_byte = low_n_bits_shift(b[0], i_currBit);
@@ -203,8 +188,7 @@ public class BitsIO {
          if (bytes > 0) {
             res = is.read(dst_buf, 0, bytes);
             if (res < 0) {
-               System.out.println("Error reading. EOF");
-               return (-1);
+               throw new IOException("Error reading. EOF");
             }
             ret += res;
          }
@@ -214,8 +198,7 @@ public class BitsIO {
             res = is.read(b);
 
             if (res < 0) {
-               System.out.println("Error reading. EOF");
-               return (-1);
+            	throw new IOException("Error reading. EOF");
             }
             ret += res;
             i_lastByte = low_n_bits_shift(b[0], (byte) (8 - rest_len));

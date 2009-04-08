@@ -26,6 +26,13 @@
             {
             switch (label)
             {
+             «clear()»
+  			 «resetCase()»
+   			 «FOREACH states AS st»
+     		 «EXPAND encoderRoot::initNeeded FOR st»
+   			 «ENDFOREACH»
+  			 «clear()»
+  			 «resetCase()»
             «resetCase()»
             «FOREACH states AS st ITERATOR i»
                «EXPAND encoderRoot::state(i.counter0) FOR st»

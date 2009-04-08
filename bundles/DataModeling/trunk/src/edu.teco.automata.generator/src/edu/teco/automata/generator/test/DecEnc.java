@@ -4,11 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.junit.Before;
+import org.xml.sax.SAXException;
 
 import edu.teco.automata.generator.Runner;
 import edu.teco.automata.generator.core.Decoder;
@@ -21,24 +25,38 @@ public class DecEnc extends TestCase {
    
    String genDir  = "src-gen/edu/teco/automata/generator/gen";
    String testDir = "src/edu/teco/automata/generator/test/";
+   String xmlPath= testDir + "/prs74.xml";
+   String xsdPath     = testDir + "/prs74.xsd";
    
    @Before
    public void setUp() throws Exception {
-      String xsdPath     = testDir + "/prs74.xsd";
-
       
-      DeleteDir.deleteDirectory(new File(genDir));
-      Runner.main(new String[] { xsdPath, genDir });
-   }
+      
+	  Map<String, String> properties = new HashMap<String, String>();
+	  properties.put("schemaFile", xsdPath);
+	  properties.put("writeAutomataFile", "false");
+	  
+	  properties.put("NSPrefix", "teco");
+	  
+	  DeleteDir.deleteDirectory(new File(genDir));
+	  properties.put("outlet_path", genDir);
+	//  properties.put("automataFile", automataPath);
 
-   public void testDecEnc() {
+	  String[] target=new String[] { "JavaXML" };
+      Runner.main(properties,target);
+      
+   } 
+   
+
+   public void testDecEnc() throws IOException, SAXException {
       Decoder  w       = new Decoder(genDir + "/output.bin");
       CHandler handler = new CHandler(w);
+     
       XmlReader xml    = 
-         new XmlReader(testDir + "/prs74.xml", handler);
+         new XmlReader(xmlPath, handler,handler);
       
-      xml.parse();
-      w.finish();
+      
+      xml.parse(true);
       
       try {
          FileInputStream fis = new FileInputStream(genDir + "/output.bin");

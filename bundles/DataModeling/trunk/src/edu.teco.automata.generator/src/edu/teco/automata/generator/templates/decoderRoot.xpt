@@ -36,7 +36,7 @@
                   else 
                      idx = 1;
                   elemCount = 0;
-                  System.err.println("Unknown id");
+                  throw new IOException("Unknown id");
                }
             }
          }
@@ -68,7 +68,7 @@
                {
                   «IF upperBound > 0»
                      if (elemCount > «upperBound»)
-                        System.err.println("Error. Wrong count of element " + 
+                            throw new IOException("Error. Wrong count of element " + 
                                            "«name»" + " upB " +  "«upperBound»"
                                          + " lowB " + "«lowerBound»");
                   «ENDIF»
@@ -92,7 +92,7 @@
             if (  «IF upperBound > 0»
                  elemCount > «upperBound» ||
             «ENDIF»  elemCount < «lowerBound» )
-               System.err.println("Error. Wrong count of element " + 
+               throw new IOException("Error. Wrong count of element " + 
                                          "«name»" + " upB " +  "«upperBound»"
                                          + " lowB " + "«lowerBound» ");
          «ENDIF»

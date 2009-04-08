@@ -30,20 +30,14 @@ public class Decoder {
       }
    }
 
-   public void element(String xmlElement) {
+   public void element(String xmlElement) throws IOException {
      
-      try {
          type  = decoder.element(xmlElement);
-         saved = false;
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+         saved = false; 
       
    }
 
-   public void elementData(String value) {
-      try {
+   public void elementData(String value) throws IOException {
          if (saved) // elementData is called twice?
             return;
          if (value == null) // just be sure
@@ -53,18 +47,10 @@ public class Decoder {
          
          type.write(value, io);
          saved = true;
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
    }
    
-   public void finish() {
-      try {
+   public void finish() throws IOException {
          io.write_finish();
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
    }
    
    
@@ -72,10 +58,15 @@ public class Decoder {
       Decoder    w       = 
          new Decoder("src/edu/teco/automata/generator/test/output.bin");
       CHandler  handler = new CHandler(w);
-      XmlReader xml     = 
-         new XmlReader("src/edu/teco/automata/generator/test/prs74.xml", 
-                       handler);
-      xml.parse();
-      w.finish();
+      XmlReader xml     =          new XmlReader("src/edu/teco/automata/generator/test/prs74.xml", 
+                       handler, handler);
+      
+      
+      try {
+        xml.parse(); 
+	} catch (Exception e) {
+		e.printStackTrace();
+		System.exit(1);
+	}
    }
 }
