@@ -114,7 +114,7 @@ public class Transformer extends SimpleJavaModificationComponent {
             if (ann.getDetails().containsKey("appinfo")) {
                String appInfo = ann.getDetails().get("appinfo");
 
-               XmlReader parser = new XmlReader(spContent);
+               XmlReader parser = new XmlReader(spContent,null);
                parser.parse(appInfo);
             }
             

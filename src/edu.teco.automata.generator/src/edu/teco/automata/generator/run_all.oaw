@@ -13,8 +13,11 @@
  <!-- <registerEcoreFile value="Automata"/>-->
 
  
-<component file="xsdautomata">
-
+<component file="${packagePath}/xsdautomata.oaw">
+	<outputSlot value="model"/>
+	<schemaFile value="${schemaFile}"/>
+	<writeAutomataFile value="${writeAutomataFile}"/>
+	<automataFile value="${automataFile}"/>
 </component>
  
 <if cond="${doC}"> 

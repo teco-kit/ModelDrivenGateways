@@ -128,22 +128,29 @@ typedef struct «nameID»_event
 «ENDFILE»
 «ENDDEFINE»
 
+
 «DEFINE value_type FOR SimpleState»
-«LET getTypeMap(type.metaType.name).toLowerCase() AS tName»
-«IF !set_has(name+tName) && type.metaType!=complexType»
-	«tName» «name»_«tName»;
-	«set_add(name+tName)»
-«ENDIF»
+«LET getTypeMap(type.metaType.name).toLowerCase() AS tName»	
+	«IF !(set_has(name+tName)) && type.metaType!=complexType»
+		«tName» «name»_«tName»;
+		«set_add(name+tName)»
+	«ENDIF»
 
 «ENDLET»
 «ENDDEFINE»
 
 «DEFINE value_type FOR StartState»
 «ENDDEFINE»
+
+
 «DEFINE value_type FOR StopState»
 «ENDDEFINE»
+
+
 «DEFINE value_type FOR State»
 «ENDDEFINE»
+
+
 
 «DEFINE event_types FOR SimpleState»
 «LET getTypeMap(type.metaType.name).toLowerCase() AS tName»

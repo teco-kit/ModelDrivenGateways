@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.Log4jFactory;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -26,8 +25,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.xsd.ecore.XSDEcoreBuilder;
 import org.openarchitectureware.workflow.WorkflowRunner;
 import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
-import org.openarchitectureware.workflow.util.ResourceLoaderFactory;
-import org.openarchitectureware.workflow.util.ResourceLoaderImpl;
+
 
 
 public class WRunner implements IObjectActionDelegate {

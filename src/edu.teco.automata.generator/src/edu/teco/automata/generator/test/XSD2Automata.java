@@ -2,6 +2,8 @@ package edu.teco.automata.generator.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,7 +31,8 @@ public class XSD2Automata extends TestCase {
       File genDirFile    = new File(genDir);
       
       DeleteDir.deleteDirectory(genDirFile);
-      generateAutomata(xsdPath);
+      genDirFile.mkdir();
+      generateAutomata(xsdPath,automataNew);
       compareAutomata(automataOrg, automataNew);
       DeleteDir.deleteDirectory(genDirFile);
    }
@@ -41,13 +44,20 @@ public class XSD2Automata extends TestCase {
       File genDirFile    = new File(genDir);
       
       DeleteDir.deleteDirectory(genDirFile);
-      generateAutomata(xsdPath);
+      genDirFile.mkdir();
+
+      generateAutomata(xsdPath,automataNew);
       compareAutomata(automataOrg, automataNew);
       DeleteDir.deleteDirectory(genDirFile);
+
    }
    
-   private void generateAutomata(String xsdPath) {
-      Runner.main(new String[] { xsdPath, genDir });
+   private void generateAutomata(String xsdPath,String automataPath) {
+	  Map<String, String> properties = new HashMap<String, String>();
+	  properties.put("schemaFile", xsdPath);
+	  properties.put("writeAutomataFile", "true");
+	  properties.put("automataFile", automataPath);
+      Runner.main(properties,new String[] {});
    }
    
    private void compareAutomata(String automataOrg, 

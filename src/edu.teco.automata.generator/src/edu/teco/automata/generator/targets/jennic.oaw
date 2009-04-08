@@ -1,15 +1,16 @@
  <workflow>
+  
+   <property name="jennic_outlet_path" value="${outlet_path}/jennic"/>
+   
    <component id="generatorBin2SAX" class="oaw.xpand2.Generator">           
     <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
         <metaModelFile value="Automata.ecore"/>
     </metaModel>
     <expand value="edu::teco::automata::generator::templates::c::bin2SAX::root('') FOR model"/>
-    <outlet path="${outlet_path}/"/>
-    <!--
-    <output class="org.openarchitectureware.xpand2.output.CppOutput"/>
-        -->
-    <beautifier class="org.openarchitectureware.xpand2.output.CppBeautifier"  
-                  configFile="cformat.xml"/>
+    <outlet path="${jennic_outlet_path}/"/>
+    
+    <output file="cppoutput.oaw" />
+    <beautifier file="cppbeautifier.oaw" />
   
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
    </component> 

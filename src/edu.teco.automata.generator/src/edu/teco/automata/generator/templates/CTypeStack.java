@@ -123,7 +123,7 @@ public class CTypeStack {
    public static String getCurrentPath() {
       String ret = getCurrentParentPath();
       
-      return ret == "" ? ret : (ret += "/");
+      return ret == "" ? ret : (ret + "/");
    }
    
    /**
@@ -201,7 +201,10 @@ public class CTypeStack {
     * @return 
     */
    public static int getEndCase(String name) {
-         return childrenSet.get(name);
+	 //  if(childrenSet.containsKey(name))          
+		   return childrenSet.get(name);
+	 //  else
+	//	   return -1;
    }
    
 }
