@@ -56,11 +56,10 @@
    «IF ! isStackEmpty()»
       «EXPAND stackItr(getSize()-1)»
    «ENDIF»
-   default: //StopState
-   	break;
-«REM»     return;«ENDREM»
-
+   «EXPAND StateBegin»
+   «EXPAND StateEnd»
 «ENDDEFINE»
+  
 
 «DEFINE state(Integer count) FOR State»
 «REM»Should not be executed«ENDREM»
@@ -73,138 +72,10 @@
    «ENDIF»
 «ENDDEFINE»
 
-«REM»
-The one below are define separate in order to enable 
-easy AROUND statements.
-«ENDREM»
-
-«DEFINE loop(Integer count) FOR SimpleState»
-   « EXPAND stateNameBegin »
-   « EXPAND stateType      »
-   « EXPAND stateNameEnd   »
-«ENDDEFINE»
-
-«DEFINE loopEnd(String endName) FOR State»
-   } /* «endName» */
-«ENDDEFINE»
-
-«DEFINE constLoop(Integer count) FOR SimpleState»
-   « EXPAND stateNameBegin »
-   « EXPAND stateType      »
-   « EXPAND stateNameEnd   »
-«ENDDEFINE»
-
-«DEFINE constLoopEnd(String endName) FOR State»
-   } /* «endName» */
-«ENDDEFINE»
-
-«DEFINE complexLoop(Integer count, Integer label) FOR SimpleState»
-   « EXPAND stateNameBegin »   
-   « pushType(name, depth, lowerBound, upperBound, kind, label) »
-«ENDDEFINE»
-
-«DEFINE complexLoopEnd1(String endName) FOR State»
-   label = «getBeginCase()»;
-«ENDDEFINE»
-
-«DEFINE complexLoopEnd2(String endName) FOR State»
-   continue;
-«ENDDEFINE»
-
-
-«DEFINE complexConstLoop(Integer count, Integer label) FOR SimpleState»
-   « EXPAND stateNameBegin »
-   « pushType(name, depth, lowerBound, upperBound, kind, label) »
-«ENDDEFINE»
-
-«DEFINE complexConstLoopEnd1(String endName) FOR State»
-   label = «getBeginCase()»;
-«ENDDEFINE»
-
-«DEFINE complexConstLoopEnd2(String endName) FOR State»
-   continue;
-«ENDDEFINE»
-
-«DEFINE stateNameBegin FOR SimpleState»
-   «IF kind != "attribute"-»
-      «IF out.get(0).metaType.name == "Automata::SimpleState"-»
-         «IF ((Automata::SimpleState)out.get(0)).kind != "attribute"-»
-      out.println("<«name»>");
-         «ELSE»
-      out.print("<«name»");
-         «ENDIF»
-      «ELSE»
-      out.println("<«name»>");
-      «ENDIF»
-   «ELSE»
-      out.print(" «name»=\"");
-   «ENDIF»
-«ENDDEFINE»
-
-«DEFINE stateNameEnd FOR SimpleState»
-   «IF kind != "attribute"-»
-   out.println("</«name»>");
-   «ELSE-»
-      out.print("\"");
-      «IF out.get(0).metaType.name == "Automata::SimpleState"-»
-         «IF ((Automata::SimpleState)out.get(0)).kind != "attribute"-»
-         out.println(">");
-         «ENDIF»
-      «ENDIF»
-   «ENDIF»
-«ENDDEFINE»
-
-«DEFINE stateParentEnd FOR State»
-   case «getNextCase()»:  //stateParentEnd(«name»)
-   {
-      «IF getLowB() == getUpB()»
-      «EXPAND complexConstLoopEnd1(getCurrParentPath())»
-      «ELSE»
-      «EXPAND complexLoopEnd1(getCurrParentPath())»
-      «ENDIF»
-   «EXPAND stateParentNameEnd»
-   «IF getLowB() != getUpB() || getLowB() != 1»
-      «IF getLowB() == getUpB()»
-      «EXPAND complexConstLoopEnd2(getCurrParentPath())»
-      «ELSE»
-      «EXPAND complexLoopEnd2(getCurrParentPath())»
-      «ENDIF»
-   «ENDIF»
-   } /* case */
-   «popStack()»
-«ENDDEFINE»
-
-
-«DEFINE stateParentNameEnd FOR State»
-  «IF getParentKind() != "attribute"-»
-  out.println("</«getParentName()»>");
-  «ENDIF»
-«ENDDEFINE»
-
-«DEFINE stateType FOR SimpleState»
-  «IF kind != "attribute"-»
-  out.println
-  «ELSE»
-  out.print
-  «ENDIF»
-  ( new TypesString.«getTypeMap(type.metaType.name)»().read(io) );
-«ENDDEFINE»
-«DEFINE stateBegin(Integer count) FOR State»
-   case «getNextCase()» : //stateBegin(«name»)
-   {
-      label++; 
-«ENDDEFINE»
-«DEFINE stateEnd FOR State»
-   } /* stateEnd */
-«ENDDEFINE»
-«DEFINE stateParentBegin(Integer count, Integer label) FOR State»
-   case «label» ://stateParentBegin(«name»)
-   {
-   label++;
-«ENDDEFINE»
-
 «REM» 
 ========================================================================
+Stack initializer 
+needs to be called at beginning of each template
 «ENDREM»
 «DEFINE initNeeded FOR SimpleState»
    «incCase()»
@@ -249,4 +120,148 @@ easy AROUND statements.
       «setCurrNeeded(false)»
    «ENDIF»
    «ENDIF»
+«ENDDEFINE»
+
+«REM»
+The one below are define separate in order to enable 
+easy AROUND statements.
+«ENDREM»
+
+«DEFINE loop(Integer count) FOR SimpleState»
+   « EXPAND stateNameBegin »
+   « EXPAND stateType      »
+   « EXPAND stateNameEnd   »
+«ENDDEFINE»
+
+«DEFINE loopEnd(String endName) FOR State»
+   } /* «endName» */
+«ENDDEFINE»
+
+«DEFINE constLoop(Integer count) FOR SimpleState»
+   « EXPAND stateNameBegin »
+   « EXPAND stateType      »
+   « EXPAND stateNameEnd   »
+«ENDDEFINE»
+
+«DEFINE constLoopEnd(String endName) FOR State»
+   } /* constLoopEnd «endName» */
+«ENDDEFINE»
+
+«DEFINE complexLoop(Integer count, Integer label) FOR SimpleState»
+   « EXPAND stateNameBegin »   
+   « pushType(name, depth, lowerBound, upperBound, kind, label) »
+«ENDDEFINE»
+
+«DEFINE complexLoopEnd1(String endName) FOR State»
+   label = «getBeginCase()»; /* constLoopEnd1 «endName» */
+«ENDDEFINE»
+
+«DEFINE complexLoopEnd2(String endName) FOR State»
+   continue; /* constLoopEnd2 «endName» */
+«ENDDEFINE»
+
+
+«DEFINE complexConstLoop(Integer count, Integer label) FOR SimpleState»
+   « EXPAND stateNameBegin »
+   « pushType(name, depth, lowerBound, upperBound, kind, label) »
+«ENDDEFINE»
+
+«DEFINE complexConstLoopEnd1(String endName) FOR State»
+   label = «getBeginCase()»; /* complexLoopEnd1 «endName» */
+«ENDDEFINE»
+
+«DEFINE complexConstLoopEnd2(String endName) FOR State»
+   continue;  /* complexLoopEnd2 «endName» */
+«ENDDEFINE»
+
+«DEFINE stateNameBegin FOR SimpleState»
+   «IF kind != "attribute"-»
+      «IF out.get(0).metaType.name == "Automata::SimpleState"-»
+         «IF ((Automata::SimpleState)out.get(0)).kind != "attribute"-»
+      out.println("<«name»>");
+         «ELSE»
+      out.print("<«name»");
+         «ENDIF»
+      «ELSE»
+      out.println("<«name»>");
+      «ENDIF»
+   «ELSE»
+      out.print(" «name»=\"");
+   «ENDIF»
+«ENDDEFINE»
+
+«DEFINE stateNameEnd FOR SimpleState»
+   «IF kind != "attribute"-»
+   out.println("</«name»>");
+   «ELSE-»
+      out.print("\"");
+      «IF out.get(0).metaType.name == "Automata::SimpleState"-»
+         «IF ((Automata::SimpleState)out.get(0)).kind != "attribute"-»
+         out.println(">");
+         «ENDIF»
+      «ENDIF»
+   «ENDIF»
+«ENDDEFINE»
+
+«DEFINE stateParentEnd FOR State»
+   case «getNextCase()»:  //stateParentEnd(«name») : «getLowB()»..«getUpB()»
+   {
+    «IF getLowB() != 1 || getUpB() != 1»
+      «IF getLowB() == getUpB()» «REM» TODO «ENDREM»
+      «EXPAND complexConstLoopEnd1(getCurrParentPath())»
+      «ELSE»
+      «EXPAND complexLoopEnd1(getCurrParentPath())»
+      «ENDIF»
+    «ELSE»
+    label++; 
+   «ENDIF»
+   «EXPAND stateParentNameEnd»
+   «IF getLowB() != getUpB() || getLowB() != 1»
+      «IF getLowB() == getUpB()»
+      «EXPAND complexConstLoopEnd2(getCurrParentPath())»
+      «ELSE»
+      «EXPAND complexLoopEnd2(getCurrParentPath())»
+      «ENDIF»
+   «ENDIF»
+   } /* case */
+   «popStack()»
+«ENDDEFINE»
+
+«DEFINE stateParentNameEnd FOR State»
+  «IF getParentKind() != "attribute"-»
+  out.println("</«getParentName()»>");
+  «ENDIF»
+«ENDDEFINE»
+
+«DEFINE stateType FOR SimpleState»
+  «IF kind != "attribute"-»
+  out.println
+  «ELSE»
+  out.print
+  «ENDIF»
+  ( new TypesString.«getTypeMap(type.metaType.name)»().read(io) );
+«ENDDEFINE»
+
+«DEFINE stateBegin(Integer count) FOR State»
+   case «getNextCase()» : //stateBegin(«name»)
+   {
+      label++; 
+«ENDDEFINE»
+
+«DEFINE stateEnd FOR State»
+   } /* stateEnd */
+«ENDDEFINE»
+
+«DEFINE stateParentBegin(Integer count, Integer label) FOR State»
+   case «label» ://stateParentBegin(«name»)
+   {
+   label++;
+«ENDDEFINE»
+
+«DEFINE StateBegin FOR StopState»
+ default: //StopState
+«ENDDEFINE»
+
+«DEFINE StateEnd FOR StopState»
+ return;
 «ENDDEFINE»
