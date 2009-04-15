@@ -8,20 +8,26 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.transform.*;
+import javax.xml.transform.sax.*;
+import javax.xml.transform.stream.*;
+import org.xml.sax.*;
+
 import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xml.sax.SAXException;
+
+
 
 import edu.teco.automata.generator.Runner;
 
+import edu.teco.automata.generator.core.SAXDeserializer;
 import edu.teco.automata.generator.core.SAXSerializer;
-import edu.teco.automata.generator.core.BinXMLPrinter;
 import edu.teco.automata.generator.xml.XmlReader;
 
-public class DecEnc extends TestCase {
+public class DecEncSAX extends TestCase {
 
 	String genDir = "src-gen/edu/teco/automata/generator/gen/";
 	String binDir = "bin/edu/teco/automata/generator/gen/";
@@ -43,36 +49,46 @@ public class DecEnc extends TestCase {
 		properties.put("outlet_path", genDir);
 		// properties.put("automataFile", automataPath);
 
-		String[] target = new String[] { "JavaXML" };
+		String[] target = new String[] { "JavaXML2" };
 		Runner.main(properties, target);
 		assertTrue(0 == com.sun.tools.javac.Main.compile(new String[] {
 				"-classpath", "bin", "-d", "bin",
-				genDir + "EncoderAutomata.java",
-				genDir + "DecoderAutomata.java" }));
+				genDir + "EncoderSAXAutomata.java",
+				genDir + "DecoderAutomata.java" })); //re-compilation of DecoderAutomata will have no effect if class is already loaded
 		return;
 	}
 
 	@Test
-	public void testDecEnc() throws IOException, SAXException,
-			InstantiationException {
+	public void testDecEncSAX() throws IOException, SAXException,
+			InstantiationException, TransformerFactoryConfigurationError, TransformerException {
+		
 		assertFalse(new File(genDir + "/output.bin").exists());
 		FileOutputStream fos           = new FileOutputStream(genDir + "/output.bin");
-		SAXSerializer w = new SAXSerializer(fos);
+		SAXSerializer w = new SAXSerializer(fos,"edu.teco.automata.generator.gen.DecoderAutomata");
 		
 		XmlReader xml = new XmlReader(xmlPath, w, w);
+	
 
 		xml.parse(true);
 		fos.close();
 		assertTrue(new File(genDir + "/output.bin").exists());
+		
 	//	FileOutputStream fos = null;
 		FileInputStream fis = null;
 
 		fis = new FileInputStream(genDir + "/output.bin");
 		fos = new FileOutputStream(genDir + "/prs74.xml");
-
-		BinXMLPrinter reader = new BinXMLPrinter();
-		reader.run(fis, fos);
-
+		
+		
+		XMLReader reader=new SAXDeserializer();
+		reader.setProperty(SAXDeserializer.AUTOMATA_URI, "edu.teco.automata.generator.gen.EncoderSAXAutomata");
+		
+		Source source=new SAXSource(reader,new InputSource(fis));
+		Result result=new StreamResult(fos);
+		
+		Transformer transformer=TransformerFactory.newInstance().newTransformer();
+		transformer.transform(source,result);
+		
 		fos.close();
 		fis.close();
 

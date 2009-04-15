@@ -1,11 +1,11 @@
 <workflow>  
 
-  
   <component id="generatorDec" class="oaw.xpand2.Generator">			 
   	<metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
   		<metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
   	</metaModel>
   	<expand value="edu::teco::automata::generator::templates::decoderRoot::root FOR model"/>
+  	
   	<outlet path="${outlet_path}/">
 		<postprocessor class="oaw.xpand2.output.JavaBeautifier"/>
 	</outlet>
@@ -16,9 +16,11 @@
     <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
  		<metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>        
     </metaModel>
-    <globalVarDef name="JavaInterfaceName" value="'edu.teco.automata.generator.core.BinXMLPrinterAutomata'"/>
-    <globalVarDef name="JavaClassName" value="'EncoderAutomata'"/>
+    
+  	<globalVarDef name="JavaInterfaceName" value="'edu.teco.automata.generator.core.BinXMLReaderAutomata'"/>
+    <globalVarDef name="JavaClassName" value="'EncoderSAXAutomata'"/>
     <globalVarDef name="JavaPackageName" value="'edu.teco.automata.generator.gen'"/>
+     
     <expand value="edu::teco::automata::generator::templates::readBitsIO::root FOR model"/>
     <outlet path="${outlet_path}/">
         <postprocessor class="oaw.xpand2.output.JavaBeautifier"/>
@@ -33,7 +35,7 @@
   
   <component adviceTarget="generatorEnc"
   id="generatorEncAdv" class="oaw.xpand2.GeneratorAdvice">			 
-  	<advices value="edu::teco::automata::generator::templates::writeXMLPrintStream"/>
+  	<advices value="edu::teco::automata::generator::templates::writeSAX"/>
   </component> 
 
 

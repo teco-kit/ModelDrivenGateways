@@ -46,10 +46,12 @@
 </if>
  
 <if cond="${doJava}"> 
-   <component file="${packagePath}/targets/javaXML.oaw" >
+   
+   <component file="${packagePath}/targets/JavaXML2.oaw" >
     <outlet_path value="${outlet_path}/${packagePath}/gen"/>
     <NSPrefix value="${NSPrefix}"/>
    </component>
+
 </if>
 
 

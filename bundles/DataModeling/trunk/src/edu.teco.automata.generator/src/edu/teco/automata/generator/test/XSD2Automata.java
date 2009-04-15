@@ -30,11 +30,12 @@ public class XSD2Automata extends TestCase {
       String xsdPath     = testDir + "/prs74.xsd";
       File genDirFile    = new File(genDir);
       
-      DeleteDir.deleteDirectory(genDirFile);
-      genDirFile.mkdir();
+      assertTrue("clean up", 
+    		  DeleteDir.deleteDirectory(genDirFile) &&
+    		  genDirFile.mkdir());
+      
       generateAutomata(xsdPath,automataNew);
       compareAutomata(automataOrg, automataNew);
-      DeleteDir.deleteDirectory(genDirFile);
    }
    
    public void testSensorX() {
@@ -43,8 +44,9 @@ public class XSD2Automata extends TestCase {
       String xsdPath     = testDir + "/SensorX-Schema.xsd";
       File genDirFile    = new File(genDir);
       
-      DeleteDir.deleteDirectory(genDirFile);
-      genDirFile.mkdir();
+      assertTrue("clean up", 
+    		  DeleteDir.deleteDirectory(genDirFile) &&
+    		  genDirFile.mkdir());
 
       generateAutomata(xsdPath,automataNew);
       compareAutomata(automataOrg, automataNew);

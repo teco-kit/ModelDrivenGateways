@@ -2,3 +2,7 @@ String getNSPrefix(): GLOBALVAR NSPrefix;
 String getMsgOutURI(): GLOBALVAR MsgOutURI;
 String getMsgRspURI(): GLOBALVAR MsgRspURI;
 String getDeviceName(): GLOBALVAR DeviceName;
+
+String getJavaClassName(): GLOBALVAR JavaClassName;
+String getJavaPackageName(): GLOBALVAR JavaPackageName;
+String getJavaInterfaceName(): GLOBALVAR JavaInterfaceName;

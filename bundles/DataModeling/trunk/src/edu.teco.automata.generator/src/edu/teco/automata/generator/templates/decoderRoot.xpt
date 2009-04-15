@@ -12,16 +12,18 @@
       import edu.teco.automata.generator.types.TypesString;
       import edu.teco.automata.generator.core.BitsIO;
       
-      public class DecoderAutomata {
-         private int              elemCount = 0;
-         private int              idx       = 1;
-         private BitsIO           io;
-         private Stack<IdxMemo>   stack     = null;
+	  public class DecoderAutomata extends edu.teco.automata.generator.core.DecoderAutomata 
+	  {
+	    public DecoderAutomata(BitsIO io) {
+		 	super(io);
+	    }
+	    
+	    private int elemCount = 0;
+		private int idx = 1;
+		private Stack<IdxMemo> stack = new Stack<IdxMemo>();
 
-         public DecoderAutomata ( BitsIO io )  {
-            this.io = io;
-            stack = new Stack<IdxMemo>();
-         }
+
+
          
          public TypeStringIntf element(String xmlElement) 
          throws IOException {

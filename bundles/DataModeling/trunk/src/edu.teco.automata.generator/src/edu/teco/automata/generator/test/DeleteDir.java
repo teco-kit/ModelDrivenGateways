@@ -8,17 +8,19 @@ public class DeleteDir {
   }
 
   static public boolean deleteDirectory(File path) {
+	boolean ret=true;
     if( path.exists() ) {
       File[] files = path.listFiles();
       for(int i=0; i<files.length; i++) {
          if(files[i].isDirectory()) {
-           deleteDirectory(files[i]);
+           ret=deleteDirectory(files[i])&&ret;
          }
          else {
-           files[i].delete();
+        	 ret=files[i].delete()&&ret;
          }
       }
+      return( path.delete()&&ret );
     }
-    return( path.delete() );
+    else return true;
   }
 }

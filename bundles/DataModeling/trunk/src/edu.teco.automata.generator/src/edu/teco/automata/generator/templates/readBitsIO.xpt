@@ -1,26 +1,16 @@
 «IMPORT Automata»
 «IMPORT edu::teco::automata::generator::templates»
 «EXTENSION edu::teco::automata::generator::templates::util»
+«EXTENSION edu::teco::automata::generator::templates::config»
 
 «DEFINE root FOR StateMachine»
-   «FILE "EncoderAutomata.java"»
+   «FILE getJavaClassName()+".java"»
       package edu.teco.automata.generator.gen;
-      import java.io.IOException;
-      import java.io.PrintStream;
-      import edu.teco.automata.generator.types.TypesString;
-      import edu.teco.automata.generator.core.BitsIO;
-      
-      public class EncoderAutomata {
-         private BitsIO   io;
-         private int         label = 0;
-         private PrintStream out = null;
 
-         public EncoderAutomata ( BitsIO io, PrintStream out ) {
-            this.io       = io;
-            this.out      = out;
-         }
+      public class «getJavaClassName()» «IF getJavaInterfaceName()!=null-»implements «getJavaInterfaceName()-»«ENDIF-» {
+         private int         label = 0;
          
-         public void run() throws IOException {
+         public void run(«EXPAND encoderRoot::inArg»,  «EXPAND encoderRoot::outArg») throws  java.io.IOException,org.xml.sax.SAXException {
             
             while(true)
             {
@@ -41,8 +31,12 @@
             }
          }
       }
-   «ENDFILE»
+   «ENDFILE»   
 «ENDDEFINE»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::inArg FOR StateMachine»
+edu.teco.automata.generator.core.BitsIO in
+«ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::constLoop(Integer count) 
  FOR SimpleState»
@@ -58,13 +52,13 @@
 «AROUND edu::teco::automata::generator::templates::encoderRoot::loop(Integer count) 
 FOR SimpleState»
    /* loop «getCurrPath() + name» */
-   while(io.read_bit())
+   while(in.read_bit())
    { /* depth «depth» */
    «targetDef.proceed()»
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoop(Integer count, Integer label) FOR SimpleState»
-   if(io.read_bit())
+   if(in.read_bit())
    { /* depth «depth»*/
    «targetDef.proceed()»
    }
@@ -76,7 +70,7 @@ FOR SimpleState»
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoop(Integer count, Integer label) FOR SimpleState» 
-   if(io.read_bit())
+   if(in.read_bit())
    { /* depth «depth»*/
    «targetDef.proceed()»
    }
@@ -86,3 +80,5 @@ FOR SimpleState»
       continue;
    } /* «name» */
 «ENDAROUND»
+
+
