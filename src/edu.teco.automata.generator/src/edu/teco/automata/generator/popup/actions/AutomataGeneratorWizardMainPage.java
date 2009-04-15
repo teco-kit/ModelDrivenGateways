@@ -89,14 +89,14 @@ public class AutomataGeneratorWizardMainPage extends WizardPage implements
 		String selectedFile = "";
 		String selectedFileFolder = "";
 		
-		if (selection instanceof IStructuredSelection) {
+	//	if (selection instanceof IStructuredSelection) {
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 			IFile selectedIFile = (IFile) structuredSelection.getFirstElement();
 			selectedFile = selectedIFile.getName();
 			String fullPath = selectedIFile.getLocation().toString();
 			int i = fullPath.lastIndexOf("/");
 			selectedFileFolder = fullPath.substring(0, i);
-		}
+	//	}
 
 		// create the desired layout for this wizard page
 		GridLayout gl = new GridLayout();

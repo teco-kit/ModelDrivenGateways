@@ -9,7 +9,6 @@ import java.util.Stack;
 */
 
 public class CppOutput extends OutputImpl {
-    private final static char NEWLINE = '\n';
     
   
 	public void write(final String bytes) {

@@ -12,6 +12,7 @@ public class AllTests {
       //new StandaloneSetup().setPlatformUri("../"); 
       suite.addTestSuite(XSD2Automata.class);
       suite.addTestSuite(DecEnc.class);
+      suite.addTestSuite(DecEncSAX.class);
 //      ResourcesPlugin.getWorkspace().getRoot();
       //$JUnit-END$
       return suite;

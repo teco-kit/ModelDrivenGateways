@@ -1,0 +1,51 @@
+«IMPORT Automata»
+«IMPORT edu::teco::automata::generator::templates»
+«EXTENSION edu::teco::automata::generator::templates::util»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::outArg FOR StateMachine»
+  org.xml.sax.ContentHandler out
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameBegin FOR SimpleState»
+   «IF kind != "attribute"-»
+      «IF out.get(0).metaType.name == "Automata::SimpleState"-»
+         «IF ((Automata::SimpleState)out.get(0)).kind != "attribute"-»
+         out.startElement("", "«name»", "«name»", null);
+         «ELSE»
+         throw new IOException("Attributes not yet supported");
+         //out.print("<«name»");
+         «ENDIF»
+      «ELSE»
+      out.startElement("", "«name»", "«name»", null);
+      «ENDIF»
+   «ELSE»
+       throw new IOException("Attributes not yet supported");
+   «ENDIF»
+«ENDAROUND»
+
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd FOR SimpleState»
+   «IF kind != "attribute"-»
+   out.endElement("", "«name»", "«name»");
+   «ELSE-»
+   throw new IOException("Attributes not yet supported");
+   «ENDIF»
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateType FOR SimpleState»
+  «IF kind != "attribute"-»
+  				{
+					char[] ch=edu.teco.automata.generator.types.TypesString.«getTypeMap(type.metaType.name)».read(in).toCharArray();
+					out.characters(ch, 0, ch.length);
+			    }
+
+  «ELSE»
+  //out.print
+  «ENDIF»
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateParentNameEnd FOR State»
+  «IF getParentKind() != "attribute"-»
+  out.endElement("", "«getParentName()»", "«getParentName()»");
+  «ENDIF»
+«ENDAROUND»

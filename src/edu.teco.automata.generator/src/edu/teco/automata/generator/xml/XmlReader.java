@@ -26,10 +26,7 @@ public class XmlReader {
       this(null,handler,ehandler);
    }
    
-   public XmlReader(CHandler spContent) {
-	      this.handler = spContent;
-	      this.ehandler = spContent;
-	}
+
 	   
    public void parse() throws SAXException, IOException {
 	   parse(false);

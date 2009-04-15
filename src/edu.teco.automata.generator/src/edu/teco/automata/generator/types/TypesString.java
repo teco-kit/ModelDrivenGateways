@@ -5,7 +5,16 @@ import java.io.IOException;
 import edu.teco.automata.generator.core.BitsIO;
 
 public class TypesString {
-
+	
+    public static final BYTE BYTE=new BYTE();
+    public static final SHORT SHORT=new SHORT();
+    public static final INT INT=new INT();
+    public static final LONG LONG=new LONG();
+    public static final DOUBLE DOUBLE=new DOUBLE();
+    public static final STRING STRING=new STRING();
+    public static final CHAR CHAR=new CHAR();
+    
+    
 	public static class BYTE implements TypeStringIntf {
 		public int write(String value, BitsIO io) throws IOException {
 			byte val[] = {Byte.parseByte(value.trim())};
@@ -18,7 +27,7 @@ public class TypesString {
 		   byte val[] = {0};
 		   io.read_bits(val, Byte.SIZE);
 		   
-			return (new Byte(val[0])).toString();
+			return ( Byte.valueOf(val[0])).toString();
 		}	
 	}
 	
@@ -31,7 +40,7 @@ public class TypesString {
 		public String read(BitsIO io) throws IOException {
 		   byte[] byteArray = new byte[Short.SIZE/8];
 	      io.read_bits(byteArray, Short.SIZE);
-		   return (new Short(Common.bytes2short(byteArray))).toString();
+		   return (Short.valueOf(Common.bytes2short(byteArray))).toString();
 		}	
 	}
 	
@@ -45,7 +54,7 @@ public class TypesString {
 		public String read(BitsIO io) throws IOException {
 		   byte[] byteArray = new byte[Integer.SIZE/8];
 		   io.read_bits(byteArray, Integer.SIZE);
-			return (new Integer(Common.bytes2int(byteArray))).toString();
+			return (Integer.valueOf(Common.bytes2int(byteArray))).toString();
 		}	
 	}
 	
@@ -58,7 +67,7 @@ public class TypesString {
 		public String read(BitsIO io) throws IOException {
 		   byte[] byteArray = new byte[Long.SIZE/8];
 	      io.read_bits(byteArray, Long.SIZE);
-			return (new Long(Common.bytes2long(byteArray)).toString());
+			return (Long.valueOf(Common.bytes2long(byteArray)).toString());
 		}	
 	}
 	
@@ -115,7 +124,7 @@ public class TypesString {
 	   public String read(BitsIO io) throws IOException {
 	      byte[] byteArray = new byte[Character.SIZE/8];
 	      io.read_bits(byteArray, Character.SIZE);      
-	      return (new Character(Common.bytes2char(byteArray))).toString();
+	      return (Character.valueOf(Common.bytes2char(byteArray))).toString();
 	   }  
 	}
 	

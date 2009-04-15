@@ -1,0 +1,52 @@
+«IMPORT Automata»
+«IMPORT edu::teco::automata::generator::templates»
+«EXTENSION edu::teco::automata::generator::templates::util»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::outArg FOR StateMachine»
+java.io.PrintStream out
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameBegin FOR SimpleState»
+   «IF kind != "attribute"-»
+      «IF out.get(0).metaType.name == "Automata::SimpleState"-»
+         «IF ((Automata::SimpleState)out.get(0)).kind != "attribute"-»
+      out.println("<«name»>");
+         «ELSE»
+      out.print("<«name»");
+         «ENDIF»
+      «ELSE»
+      out.println("<«name»>");
+      «ENDIF»
+   «ELSE»
+      out.print(" «name»=\"");
+   «ENDIF»
+«ENDAROUND»
+
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd FOR SimpleState»
+   «IF kind != "attribute"-»
+   out.println("</«name»>");
+   «ELSE-»
+      out.print("\"");
+      «IF out.get(0).metaType.name == "Automata::SimpleState"-»
+         «IF ((Automata::SimpleState)out.get(0)).kind != "attribute"-»
+         out.println(">");
+         «ENDIF»
+      «ENDIF»
+   «ENDIF»
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateType FOR SimpleState»
+  «IF kind != "attribute"-»
+  out.println
+  «ELSE»
+  out.print
+  «ENDIF»
+  ( edu.teco.automata.generator.types.TypesString.«getTypeMap(type.metaType.name)».read(in) );
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateParentNameEnd FOR State»
+  «IF getParentKind() != "attribute"-»
+  out.println("</«getParentName()»>");
+  «ENDIF»
+«ENDAROUND»
