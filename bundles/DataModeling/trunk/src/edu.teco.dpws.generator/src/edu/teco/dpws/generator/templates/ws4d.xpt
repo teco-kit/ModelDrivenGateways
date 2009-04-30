@@ -1,0 +1,333 @@
+«IMPORT mex»
+«IMPORT wsdp»
+
+«EXTENSION edu::teco::dpws::generator::templates::ws4d»
+
+«DEFINE setup_Host FOR wsdp::HostServiceType»
+{
+  int ret = 0;
+
+  ret = dpws_add_hosting_service (&device, &service, 0,
+                                  "«serviceId»",
+                                  uuid,
+                                  100);
+
+  if (ret != WS4D_OK)
+    {
+      fprintf (stderr, "%s:%d:Can't init device and services\n",__FILE__,__LINE__);
+      dpws_done (&device);
+      exit (1);
+    }
+  
+   «EXPAND addType("&device","") FOREACH types»«REM»ignore syntax error«ENDREM»
+  
+}
+«ENDDEFINE»
+
+
+«DEFINE setup_Service FOR wsdp::HostServiceType»
+ {
+  char uri[DPWS_URI_MAX_LEN] = "http://host:0/";
+  struct ws4d_epr *dpws_service = dpws_service_init(&device, "«serviceId»");
+
+  if (dpws_service_bind (&device, dpws_service, &service, uri, DPWS_URI_MAX_LEN, 100))
+    {
+      fprintf (stderr, "%s:%d:Can't init device and services\n",__FILE__,__LINE__);
+      dpws_done (&device);
+      exit (1);
+    }
+
+  «EXPAND addType("dpws_service","service_") FOREACH types»«REM»ignore syntax error«ENDREM»
+
+
+  dpws_append_wsdl (&device,"«serviceId»",«serviceId.getQuotedWSDL()»);
+  
+  if (dpws_service_set_wsdl(dpws_service, "«serviceId»"))
+  {
+      fprintf (stderr, "%s:%d:Can't init device and services\n",__FILE__,__LINE__);
+      dpws_done (&device);
+      exit (1);
+    }
+
+  if(dpws_add_hosted_service (&device, dpws_service, uri, DPWS_URI_MAX_LEN))
+  {
+      fprintf (stderr, "%s:%d:Can't init device and services\n",__FILE__,__LINE__);
+      dpws_done (&device);
+      exit (1);
+  }
+ }
+«ENDDEFINE»
+
+
+«DEFINE addType(String parent,String prefix) FOR type::QName»
+{
+  struct ws4d_qname *service_type=ws4d_qname_alloc (1, &device.alloc_list);
+  service_type->ns = ws4d_strdup (
+               "«namespaceURI»" 
+               , &device.alloc_list);
+  service_type->name = ws4d_strdup (
+         "«localPart»"
+         , &device.alloc_list);
+  if(dpws_«prefix»add_type («parent», service_type))
+  {
+      fprintf (stderr, "%s:%d:Can't init device and services\n",__FILE__,__LINE__);
+      dpws_done (&device);
+      exit (1);
+  }
+}
+«ENDDEFINE»
+
+«DEFINE set_metadata_ThisDevice FOR ThisDeviceType»
+{
+  /*set_metadata_ThisDevice*/
+  struct ws4d_thisDevice *_device = dpws_change_thisdevice(&device);
+  const ws4d_device_FriendlyName_var(friendlyName) = {«EXPAND loc_strings FOREACH this.friendlyName»};
+  
+  ws4d_device_set_FriendlyName(_device, friendlyName,2);
+  ws4d_device_set_FirmwareVersion(_device, "«this.firmwareVersion»");
+  ws4d_device_set_SerialNumber(_device, "«this.serialNumber»");
+}
+
+«ENDDEFINE»
+
+«DEFINE set_metadata_ThisModel FOR ThisModelType»
+ { /*set_metadata_ThisModel*/
+    struct ws4d_thisModel *model = dpws_change_thismodel(&device);
+    const ws4d_model_Name_var(name) = {«EXPAND loc_strings FOREACH this.modelName»};
+    const ws4d_model_Manufacturer_var(manufacturer)={«EXPAND loc_strings FOREACH this.manufacturer»};
+    
+    ws4d_model_set_Manufacturer(model, manufacturer,«this.manufacturer.size»);
+    ws4d_model_set_ManufacturerUrl(model, "«this.manufacturerUrl»");
+    ws4d_model_set_Name(model, name,«this.modelName.size»);
+    ws4d_model_set_Number(model, "«this.modelNumber»");
+    ws4d_model_set_Url(model, "«this.modelUrl»");
+}
+«ENDDEFINE»
+
+«DEFINE loc_strings FOR LocalizedStringType»
+ws4d_locstring_init_string("«getLang()»","«value»"),
+«ENDDEFINE»
+
+«DEFINE Root FOR mex::MetadataType»
+«metaType.toString()»
+«FOREACH metadataSection.getHostRel() AS rel»
+«LET rel.getHostService("host") AS host»
+«LET rel.getHostService("hosted") AS hosted»
+«FILE "device.c"»
+«REM»«FILE host.serviceId+"_host.c"»«ENDREM»
+/* Generated file */  
+#include "«hosted.serviceId».nsmap"
+#include <dpws_device.h>
+
+#include <signal.h>
+
+#include <bitsio/read_bits_buf.h>
+#include "event_worker.h"
+#include "../src/wsdl.h"
+
+struct soap service;
+struct dpws_s device;
+
+void
+service_exit ()
+{
+#ifdef DEBUG
+  printf ("\nSensor Monitor: shutting down...\n");
+#endif
+
+  event_worker_shutdown();
+
+  dpws_deactivate_hosting_service (&device);
+  soap_done (&service);
+  dpws_done (&device);
+
+  exit (0);
+}
+
+int
+main (int argc, char **argv)
+{
+#ifndef WIN32
+  struct sigaction sa;
+#endif
+  char *interface = NULL;
+  char *uuid = NULL;
+
+  /* parsing command line options */
+  while (argc > 1)
+    {
+      if (argv[1][0] == '-')
+        {
+          char *option = &argv[1][1];
+
+          switch (option[0])
+            {
+            case 'i': /* set interface with option -i */
+              if (strlen (option) > 2)
+                {
+                  ++option;
+                  interface = option;
+                }
+              else
+                {
+                  --argc;
+                  ++argv;
+                  interface = argv[1];
+                }
+#ifdef DEBUG
+              printf ("\nSensor Monitor: Set interface to \"%s\"\n", interface);
+#endif
+              break;
+            case 'u': /* set id with option -u */
+              if (strlen (option) > 2)
+                {
+                  ++option;
+                  uuid = option;
+                }
+              else
+                {
+                  --argc;
+                  ++argv;
+                  uuid = argv[1];
+                }
+#ifdef DEBUG
+              printf ("\nSensor Monitor: Set uuid to \"%s\"\n", uuid);
+#endif
+              break;
+            default:
+              fprintf (stderr, "\nSensor Monitor: Bad option %s\n", argv[1]);
+              printf ("\n%s -i [interface address] -u urn:uuid[uuid]\n", argv[0]);
+         exit(1);
+            }
+        }
+      --argc;
+      ++argv;
+    }
+
+  if (interface == NULL)
+    {
+      fprintf (stderr, "\nSensor Monitor: No interface addrss was specified!\n");
+      exit (1);
+    }
+
+  /* initialize soap handle */
+  soap_init (&service);
+#ifdef DEBUG
+  soap_omode (&service, SOAP_XML_INDENT);
+#endif
+  soap_set_namespaces (&service, namespaces);
+
+  /* initialize device and services */
+  
+  if (dpws_init (&device, interface))
+  {
+      fprintf (stderr, "%s:%d:Can't init device and services\n",__FILE__,__LINE__);
+      dpws_done (&device);
+      exit (1);
+    }
+  
+  «EXPAND setup_Host FOR host»
+  «EXPAND setup_Service FOR hosted»
+
+  /* Set Metadata */
+  «EXPAND set_metadata_ThisDevice FOREACH metadataSection.getThisDevice()»;
+  «EXPAND set_metadata_ThisModel FOREACH metadataSection.getThisModel()»;
+  
+
+  /* Update Metadata */
+  if (dpws_update_Metadata (&device))
+  {
+      fprintf (stderr, "\nSensor Monitor: Can't init metadata\n");
+      dpws_done (&device);
+      exit (1);
+  }
+
+  /* install signal handler for SIGINT or Ctrl-C */
+#ifdef WIN32
+  signal (SIGINT, service_exit);
+#else
+  memset (&sa, 0, sizeof (sa));
+  sa.sa_handler = service_exit;
+  sigaction (SIGINT, &sa, NULL);
+#endif
+
+  /* Tell hosting service to start advertising its hosted services */
+  if (dpws_activate_hosting_service (&device))
+    {
+      fprintf (stderr, "\nSensor Monitor: Can't activate device\n");
+      dpws_done (&device);
+      exit (1);
+    }
+
+  /* activate eventing. */
+  if (dpws_activate_eventsource (&device, &service))
+    {
+      printf ("\nSensor Monitor: Can't activate eventing\n");
+      dpws_done (&device);
+      exit (0);
+    }
+
+  if (event_worker_init(&device))
+  {
+      printf ("\nSensor Monitor: Can't init event worker\n");
+      dpws_done (&device);
+      exit (0);
+  }
+
+
+#ifdef DEBUG
+  printf ("\nSensor Monitor: ready to serve... (Ctrl-C for shut down)\n");
+#endif
+
+  for (;;)
+    {
+     «EXPAND extern_serve_requests FOREACH hosted.types»
+      struct soap *handle = NULL, *soap_set[] = SOAP_HANDLE_SET (&service);
+      int (*serve_requests[]) (struct soap * soap) =
+        SOAP_SERVE_SET («EXPAND serve_requests FOREACH hosted.types SEPARATOR "," »);
+
+#ifdef DEBUG
+      printf ("\nSensor Monitor: waiting for request\n");
+#endif
+
+      /* waiting for new messages */
+      handle = dpws_maccept (&device, 100000, 1, soap_set);
+
+      if (handle)
+        {
+
+#ifdef DEBUG
+          printf ("\nSensor Monitor: processing request from %s:%d\n",
+                  inet_ntoa (handle->peer.sin_addr),
+                  ntohs (handle->peer.sin_port));
+#endif
+
+          /* dispatch messages */
+          if (dpws_mserve (handle, 1, serve_requests))
+            {
+              soap_print_fault (handle, stderr);
+            }
+
+          /* clean up soaps internaly allocated memory */
+          soap_end (handle);
+        }
+      
+      dpws_check_subscriptions(&device);
+    }
+
+  return -1;
+}
+«ENDFILE»
+«ENDLET»
+«ENDLET»
+«ENDFOREACH»
+«ENDDEFINE»
+
+«DEFINE serve_requests FOR type::QName»
+«localPart»_serve_request
+«ENDDEFINE»
+
+«DEFINE extern_serve_requests FOR type::QName»
+extern int «localPart»_serve_request(struct soap * soap);
+«ENDDEFINE»
+

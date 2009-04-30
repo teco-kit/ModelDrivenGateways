@@ -1,0 +1,88 @@
+«IMPORT wsdl11»
+
+
+«EXTENSION edu::teco::dpws::generator::templates::wsdl»
+
+«DEFINE Root FOR TDefinitions»
+«EXPAND service FOREACH service »
+«EXPAND deliver_event::deliverEvent FOREACH service»
+«ENDDEFINE»
+
+«DEFINE service FOR TService»
+«FILE name+"Server.c"»
+#include <soap.h>
+#include <dpws_device.h>
+#include <stdsoap2.h>
+#include <bitsio/read_bits_buf.h>
+
+	«EXPAND call FOREACH port.getPortType().operation.select(e|e.input!=null)-»
+	«EXPAND server-»
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE server FOR TService»
+int  «name»_serve_request(struct soap *soap)
+{
+	soap_peek_element(soap);
+	«EXPAND dispatch FOREACH port.getPortType().operation.select(e|e.input!=null)-»
+	return soap->error = SOAP_NO_METHOD;
+}
+«ENDDEFINE»
+
+«DEFINE dispatch FOR TOperation»
+	if ((!soap->action && !soap_match_tag(soap, soap->tag, "«getNSPrefix()»:«name»")) || (soap->action && !strcmp(soap->action, "«input.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»")))
+		return soap_serve_«name»(soap);
+«ENDDEFINE»
+
+«DEFINE call FOR TOperation»
+static int soap_serve_«name»(struct soap *soap)
+{
+
+  «FOREACH this.input.getMessage().part.element AS arg»
+  {
+      extern void «arg.localPart»_gsoap_parser_init(struct soap *, void *);
+      extern void «arg.localPart»_gsoap_parser_run(void );
+      «arg.localPart»_gsoap_parser_init(soap, (void*)&reader);
+      «arg.localPart»_gsoap_parser_run();
+  }
+  «ENDFOREACH»
+      
+  /* create response header */
+  dpws_header_gen_response (soap, NULL, wsa_header_get_ReplyTo (soap),
+                            "http://www.teco.edu/SensorValues/GetSensorValuesOut",
+                            wsa_header_get_MessageId (soap),
+                            sizeof (struct SOAP_ENV__Header));
+
+   if ( soap_response(soap, SOAP_OK)
+       || soap_envelope_begin_out(soap)
+       || soap_putheader(soap)
+       || soap_body_begin_out(soap) )
+   {
+    	return soap->error;
+   }
+   
+   {
+   	  struct READER_STRUCT reader;
+   	  extern char *«name»_ret_buf();
+      read_init(&reader, «name»_ret_buf());
+      «FOREACH this.output.getMessage().part.element AS arg»
+      {
+      extern void «arg.localPart»_gsoap_automata_init(struct soap *, void *);
+      extern void «arg.localPart»_gsoap_automata_run(void );
+      
+      «arg.localPart»_gsoap_automata_init(soap, (void*)&reader);
+      «arg.localPart»_gsoap_automata_run();
+      }
+      «ENDFOREACH»
+   }
+
+   if ( soap_body_end_out(soap)
+       || soap_envelope_end_out(soap)
+       || soap_end_send(soap) )
+   {
+    	return soap->error;
+   }
+	
+   return    soap_closesock(soap);
+}
+«ENDDEFINE»
