@@ -1,0 +1,38 @@
+<workflow>
+<property name="outlet" value="../edu.teco.dpws.example/src-gen"/>
+<property name="src" value="../edu.teco.dpws.example/src"/>
+  <component class="org.openarchitectureware.xsd.XMLReader">
+    <modelSlot value="wsdl" />
+    <uri value="${src}/SensorValues.wsdl" />
+    
+    <metaModel id="wsdl"
+      class="org.openarchitectureware.xsd.XSDMetaModel">
+      <schemaFile value="model/wsdl11.xsd" />
+    </metaModel>
+  </component>
+  
+  <component class="org.openarchitectureware.xsd.XMLReader">
+    <modelSlot value="metadata" />
+    <uri value="${src}/SSimp.metadata" />
+    
+    <metaModel id="metadata"
+      class="org.openarchitectureware.xsd.XSDMetaModel">
+      <schemaFile value="model/wsdl11.xsd" />
+    </metaModel>
+  </component>
+  
+   <component class="org.openarchitectureware.xpand2.Generator">
+   <metaModel idRef="metadata" />
+    <expand value="edu::teco::dpws::generator::templates::ws4d::Root FOR metadata" />
+    <outlet path="${outlet}" />
+    <globalVarDef name="WSDLPath" value="'${src}'"/>
+  </component>
+  
+  <component class="org.openarchitectureware.xpand2.Generator">
+   <metaModel idRef="wsdl" />
+    <expand value="edu::teco::dpws::generator::templates::server::Root FOR wsdl" />
+    <outlet path="${outlet}" />
+  </component>
+  
+  
+</workflow>
