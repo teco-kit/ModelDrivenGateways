@@ -14,8 +14,16 @@ import org.openarchitectureware.workflow.WorkflowRunner;
 import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
 
 
+/**
+ * @author riedel
+ *
+ */
 public class Runner {
 	
+	/**
+	 * @param properties workflow properties
+	 * @param target	transformations to be executed
+	 */
 	public static void main(Map<String, String> properties,String[] target)
 	{
     	final String wfFileAutomata="src/edu/teco/automata/generator/xsdautomata.oaw";
@@ -49,6 +57,13 @@ public class Runner {
 	     
 		
 	}
+    /**
+     * @param xsdPath Path to xsd or wsdl file  (will be added to workflow properties)
+     * @param genDir target directory  (will be added to workflow properties)
+     * @param target same as {@link #main(Map ,String[])}
+     * 
+     * reads file generator.properties for default properties
+     */
     public static void main(String xsdPath,String genDir,String[] target)
     {
 
@@ -94,6 +109,10 @@ public class Runner {
         main(properties,target);
     }
     
+	/**
+	 * @param args "usage: Runner xsdPath genDir target*"
+	 * invokes {@link #main(String ,String ,String[])}
+	 */
 	public static void main(String args[]) {
       
 	  if(args.length<3)

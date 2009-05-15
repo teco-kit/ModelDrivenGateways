@@ -1,9 +1,13 @@
 package org.openarchitectureware.xpand2.output;
 
+import java.io.File;
+import java.net.URL;
+
 import org.openarchitectureware.expression.ast.SyntaxElement;
 import org.openarchitectureware.xpand2.XpandExecutionContext;
 import org.openarchitectureware.xpand2.ast.TextStatement;
-import org.openarchitectureware.workflow.util.ResourceLoaderFactory;
+
+import org.openarchitectureware.workflow.util.*;
 /*
 import java.util.Stack;
 */
@@ -111,7 +115,11 @@ private String cur_file;
     @SuppressWarnings("deprecation")
 	private String change_file(String _file,int line)
 	{
-		String file= java.net.URLDecoder.decode(ResourceLoaderFactory.createResourceLoader().getResource(cur_file).getPath());
+		URL url = ResourceLoaderFactory.createResourceLoader().getResource(cur_file); 
+		String file=(url.getFile());//java.net.URLDecoder.decode
+		file=new File(file).getPath();
+		file=file.replace("\\bin\\", "\\src\\").replace("\\", "\\\\\\\\");; //hack
+		
 		return "# "+line
 		+ " \""+file+"\""
 		+"\n";

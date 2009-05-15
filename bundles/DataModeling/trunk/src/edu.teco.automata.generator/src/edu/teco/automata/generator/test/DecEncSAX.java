@@ -2,9 +2,9 @@ package edu.teco.automata.generator.test;
 
 import java.io.File;
 import java.io.FileInputStream;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,21 +19,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
-
 import edu.teco.automata.generator.Runner;
 
 import edu.teco.automata.generator.core.SAXDeserializer;
 import edu.teco.automata.generator.core.SAXSerializer;
-import edu.teco.automata.generator.xml.XmlReader;
+
 
 public class DecEncSAX extends TestCase {
 
-	String genDir = "src-gen/edu/teco/automata/generator/gen/";
-	String binDir = "bin/edu/teco/automata/generator/gen/";
-	String testDir = "src/edu/teco/automata/generator/test/";
-	String xmlPath = testDir + "/prs74.xml";
-	String xsdPath = testDir + "/prs74.xsd";
+	final String genDir = "src-gen/edu/teco/automata/generator/gen/";
+	final String binDir = "bin/edu/teco/automata/generator/gen/";
+	final String testDir = "src/edu/teco/automata/generator/test/";
+	final String xmlPath = testDir + "xsd/config.xml";
+	final String xsdPath = testDir + "xsd/config.xsd";
 
 	@Before
 	public void setUp() throws Exception {
@@ -60,37 +58,40 @@ public class DecEncSAX extends TestCase {
 
 	@Test
 	public void testDecEncSAX() throws IOException, SAXException,
-			InstantiationException, TransformerFactoryConfigurationError, TransformerException {
-		
+	InstantiationException, TransformerFactoryConfigurationError, TransformerException {
+
 		assertFalse(new File(genDir + "/output.bin").exists());
-		FileOutputStream fos           = new FileOutputStream(genDir + "/output.bin");
-		SAXSerializer w = new SAXSerializer(fos,"edu.teco.automata.generator.gen.DecoderAutomata");
-		
-		XmlReader xml = new XmlReader(xmlPath, w, w);
-	
 
-		xml.parse(true);
-		fos.close();
-		assertTrue(new File(genDir + "/output.bin").exists());
-		
-	//	FileOutputStream fos = null;
-		FileInputStream fis = null;
+		{
+			FileOutputStream fos  = new FileOutputStream(genDir + "/prs74.bin");try{	
+			Source source=new StreamSource(new File(xmlPath));
+			Result result=new SAXResult(new SAXSerializer(fos,"edu.teco.automata.generator.gen.DecoderAutomata"));
 
-		fis = new FileInputStream(genDir + "/output.bin");
-		fos = new FileOutputStream(genDir + "/prs74.xml");
-		
-		
-		XMLReader reader=new SAXDeserializer();
-		reader.setProperty(SAXDeserializer.AUTOMATA_URI, "edu.teco.automata.generator.gen.EncoderSAXAutomata");
-		
-		Source source=new SAXSource(reader,new InputSource(fis));
-		Result result=new StreamResult(fos);
-		
-		Transformer transformer=TransformerFactory.newInstance().newTransformer();
-		transformer.transform(source,result);
-		
-		fos.close();
-		fis.close();
+			Transformer xml2bin=TransformerFactory.newInstance().newTransformer();
+			xml2bin.transform(source,result);
+			}finally{fos.close();}
+		}
+
+		assertTrue(new File(genDir + "/prs74.bin").exists());
+
+		{
+			FileInputStream fis = new FileInputStream(genDir + "/prs74.bin");try{
+			FileOutputStream fos = new FileOutputStream(genDir + "/prs74.xml");try{       
+
+			XMLReader reader=new SAXDeserializer();
+
+			reader.setProperty(SAXDeserializer.AUTOMATA_URI, "edu.teco.automata.generator.gen.EncoderSAXAutomata");
+			{
+				Source source=new SAXSource(reader,new InputSource(fis));
+				Result result=new StreamResult(fos);
+
+				Transformer bin2xml=TransformerFactory.newInstance().newTransformer();
+				bin2xml.transform(source,result);
+			}
+
+			}finally{fos.close();}
+			}finally{fis.close();}
+		}
 
 		assertTrue("XML Files Differ", XMLDiff.diffXML(testDir + "/prs74.xml",
 				genDir + "/prs74.xml"));

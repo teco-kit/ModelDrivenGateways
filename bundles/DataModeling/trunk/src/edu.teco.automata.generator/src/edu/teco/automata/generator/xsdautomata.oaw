@@ -1,5 +1,6 @@
  <workflow>
   <property name="automataFile" value=""/>
+  
   <component id="xsdParser"
     class="edu.teco.automata.generator.XSD2EcoreReader">
     <xsdPath value="${schemaFile}"/>

@@ -1,0 +1,17 @@
+ <workflow>
+  <property name="automataFile" value=""/>
+  
+  <component id="xsdParser"
+    class="edu.teco.automata.generator.XSD2EcoreReader">
+    <xsdPath value="../ABB/SensorValues.wsdl"/>
+    <outputSlot value="SchemaModel"/>
+    <firstElementOnly value="true"/>
+  </component>
+  
+ <component id="xmiWrite"
+    class="org.openarchitectureware.emf.XmiWriter">
+    <modelFile value="src-gen/test.ecore"/>
+    <inputSlot value="SchemaModel"/>
+  </component>
+  
+ </workflow>

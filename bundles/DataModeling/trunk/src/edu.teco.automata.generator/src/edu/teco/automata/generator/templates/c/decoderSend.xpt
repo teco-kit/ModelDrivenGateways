@@ -46,11 +46,15 @@ int «name»_it;
 
 «DEFINE state(Integer count, String rootName) FOR SimpleState-»
 «IF count == 1»
+
+«pushType(depth)»
+«REM»
 «pushType(rootName, depth, lowerBound, upperBound, kind, depth)»
+«ENDREM»
 «ENDIF»
 «IF count > 1»
    «IF ! isStackEmpty()»
-      «IF getParentDepth() >= depth»
+      «IF getParent().depth >= depth»
          «EXPAND stateParentEnd»
       «ENDIF»
    «ENDIF»
@@ -67,8 +71,11 @@ int «name»_it;
          {
          «ENDIF»
       «ENDIF»
-      
-      « pushType(name + "_elem", depth, lowerBound, upperBound, kind, depth) »
+    
+    «pushType(depth) »
+    «REM» 
+      « pushType(name + "_elem"!!!, depth, lowerBound, upperBound, kind, depth???) »
+    «ENDREM»
  
    «ELSE»
       « IF upperBound != lowerBound »
@@ -245,10 +252,10 @@ int «name»_it;
    «ENDIF»
 «ENDDEFINE»
 
-«DEFINE stateParentEnd FOR State»
+«DEFINE stateParentEnd FOR SimpleState»
    «IF getSize() > 1»
    }
-   « IF getLowB() != getUpB() »
+   « IF lowerBound != upperBound »
    bytes_to_send += write_false();
    «IF getUpB() != 1»
    «getStructPath().split(getParentName()).get(0)»«getParentName().split("_elem").get(0)»_count = 0;

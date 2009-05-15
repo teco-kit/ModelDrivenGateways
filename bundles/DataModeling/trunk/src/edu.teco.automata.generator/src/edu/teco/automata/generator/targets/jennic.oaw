@@ -9,8 +9,8 @@
     <expand value="edu::teco::automata::generator::templates::c::bin2SAX::root('') FOR model"/>
     <outlet path="${jennic_outlet_path}/"/>
     
-    <output file="cppoutput.oaw" />
-    <beautifier file="cppbeautifier.oaw" />
+     <output file="edu/teco/automata/generator/cppoutput.oaw" />
+    <beautifier file="edu/teco/automata/generator/cppbeautifier.oaw" />
   
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
    </component> 

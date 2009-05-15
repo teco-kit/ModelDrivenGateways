@@ -1,0 +1,231 @@
+«IMPORT Automata»
+«IMPORT edu::teco::automata::generator::templates»
+«EXTENSION edu::teco::automata::generator::templates::util»
+«EXTENSION edu::teco::automata::generator::templates::c::util»
+
+
+«EXTENSION edu::teco::automata::generator::templates::config»
+«EXTENSION edu::teco::automata::generator::templates::AcceptorUtil»
+
+«DEFINE root(String nameID) FOR Automata::StateMachine»
+   «initQueries()»
+    «clear()»
+   «resetCase()»
+   «FOREACH states AS st»
+      «EXPAND encoderRoot::initNeeded FOR st»
+   «ENDFOREACH»
+   «clear()»
+   «resetCase()»
+   
+   «FILE this.states.typeSelect(StartState).first().out.name+"_sax2bin.c"»
+   «EXPAND header(nameID)»
+   for (;;)
+   {
+   switch (label)
+   {
+
+   «FOREACH states AS st ITERATOR i-»
+      «EXPAND encoderRoot::state(i.counter0) FOR st-»
+   «ENDFOREACH-»
+   
+   }
+   }
+   «EXPAND footer(nameID)»
+   «ENDFILE»
+«ENDDEFINE»
+
+«DEFINE header(String nameID) FOR StateMachine»
+/* Generated file */
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <limits.h>
+#include <errno.h>
+#include <stdsoap2.h>
+
+
+#include <bitsio/read_bits.h>
+#include <strio/str_func.h>
+
+static struct soap *soap   = NULL;
+static        unsigned int   label  = 0;
+static void        *writer = NULL;
+
+#ifndef SOAP_TYPE_string
+#define SOAP_TYPE_string 0
+#endif
+
+void «this.states.typeSelect(StartState).first().out.name»_sax2bin_init(struct soap *_soap, void * _writer)
+{
+   soap   = _soap;
+   writer = _writer;
+   label  = 0;
+   «REM»
+   TODO: return lock state or make reentrant (watch static lowB{count})
+   
+   to make reentrant move soap argument to run and attach label and lowB[{count}] to reader (needs header for maxdepth/count)
+   «ENDREM»
+}
+
+static int gsoap_automata();
+
+int «this.states.typeSelect(StartState).first().out.name»_sax2bin_run() 
+{
+	int ret;
+	while((ret=gsoap_automata())>0);
+	
+    return ret;	
+}
+// return:  0 if EOF, 0<for fault, and  read bits else (TODO)
+static int gsoap_automata()
+{
+«ENDDEFINE»
+
+«DEFINE footer(String nameID) FOR StateMachine»
+return 1;
+}
+«ENDDEFINE»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoopBegin(Integer count) 
+ FOR SimpleState»
+ «IF lowerBound!=upperBound»
+ «ERROR name+" not constant"» 
+ «ENDIF»
+   /* constLoop «getCurrPath() + name» */
+   static int lowB«count»;
+   for (lowB«count»=«lowerBound»;lowB«count»>0 && (soap_element_begin_in(soap,"«getNSPrefix()»:«name»")==SOAP_OK) ;lowB«count»--)
+    «targetDef.proceed()»
+     write_true(writer); //XXX: not necessary, right now symetric to bin2sax...
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoopEnd(String endName) FOR SimpleState»
+«targetDef.proceed()»
+	write_false(writer); //XXX: not necessary, right now symetric to bin2sax...
+«ENDAROUND»
+
+
+«DEFINE IsElement FOR SimpleState»(soap_element_begin_in(soap,"«getNSPrefix()»:«name»",0,NULL)==SOAP_OK)«ENDDEFINE»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::loopBegin(Integer count) 
+FOR SimpleState»
+   /* loop «getCurrPath() + name» */
+   while(«EXPAND IsElement -»)
+     «targetDef.proceed()»
+     write_true(writer);
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::loopEnd(String endName) FOR SimpleState»
+«targetDef.proceed()»
+	write_false(writer); //XXX: not necessary, right now symetric to bin2sax...
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoopBegin(Integer count, Integer label) FOR SimpleState»
+   if(«EXPAND IsElement -»)
+   { /* depth «depth»*/
+   	«targetDef.proceed()»
+   	write_true(writer);
+   }
+   else
+   {
+      label = «getEndCase()» ; //TODO: xx
+      write_false(writer);
+      continue;
+   } /* «name» */
+«ENDAROUND»
+
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoopBegin(Integer count, Integer label) FOR SimpleState»
+   
+   if(/*TODO: lowB«count» */«EXPAND IsElement -»)
+   { /* depth «depth»*/
+   	«targetDef.proceed()»
+   	write_true(_writer); //XXX: not necessary, right now symetric to bin2sax...
+   }
+   else
+   {
+      label = «getEndCase()» ;
+      write_false(_writer);
+      continue;
+   } /* «name» */
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexBegin(Integer label) FOR SimpleState» 
+   if(!«EXPAND IsElement -»)
+   	return -1;
+   
+   «targetDef.proceed()»
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::simpleBegin(Integer label) FOR SimpleState» 
+   if(!«EXPAND IsElement -»)
+   	return -1;
+   
+   «targetDef.proceed()»
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameBegin 
+FOR SimpleState»
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd 
+FOR SimpleState»
+   «IF kind != "attribute"-»
+    if(!soap_element_end_in(soap,"«getNSPrefix()»:«name»")==SOAP_OK) return -1; 
+    «ELSE-»
+   		«ERROR "attributes not supported yet"»
+   «ENDIF-»
+   «targetDef.proceed()»
+«ENDAROUND»
+
+
+«REM»
+=======================================BinOut===========================================
+«ENDREM»
+
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::stateType 
+FOR SimpleState»
+  {
+  	const char *str = soap_value(soap);
+  	«EXPAND write FOR type»
+  }
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::StateEnd FOR StopState»
+ return 0;
+«ENDAROUND»
+
+«DEFINE write FOR TString»
+ «length*8»
+«ENDDEFINE»
+
+«DEFINE write FOR TInt»
+str_write_«IF (min>=0 && max!=min) -»u«ENDIF-»int32_t(writer,str);
+«ENDDEFINE»
+
+«DEFINE write FOR TByte»
+str_write_«IF (min>=0 && max!=min) -»u«ENDIF-»int8_t(writer,str);
+«ENDDEFINE»
+
+«DEFINE write FOR TShort»
+str_write_«IF (min>=0 && max!=min) -»u«ENDIF-»int16_t(writer,str);
+«ENDDEFINE»
+
+«DEFINE break FOR SimpleState»
+«IF name==null»
+«ERROR "null"»
+«ENDIF»
+«ENDDEFINE»
+
+«DEFINE write FOR DataType»
+«ERROR "DataType "+metaType.name+" not supported"»
+«ENDDEFINE»
+
+
+«REM»
+«AROUND * FOR SimpleState»/*<«targetDef.name» for=«name»>*/«targetDef.proceed()-»/*</«targetDef.name»>*/«ENDAROUND»
+«AROUND * FOR StartState»/*<«targetDef.name» for=«name»>*/«targetDef.proceed()-»/*</«targetDef.name»>*/«ENDAROUND»
+«AROUND * FOR StopState»/*<«targetDef.name» for=«name»>*/«targetDef.proceed()-»/*</«targetDef.name»>*/«ENDAROUND»
+«AROUND * FOR State»/*<«targetDef.name» for=«name»>*/«targetDef.proceed()-»/*</«targetDef.name»>*/«ENDAROUND»
+«ENDREM»

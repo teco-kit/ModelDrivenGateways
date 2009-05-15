@@ -25,9 +25,9 @@ public class XSD2Automata extends TestCase {
    String testDir = "src/edu/teco/automata/generator/test";
 
    public void testPrs74() {
-      String automataOrg = testDir + "/prs74.automata";
+      String automataOrg = testDir + "/automata/prs74.automata";
       String automataNew = genDir  + "/prs74.automata";
-      String xsdPath     = testDir + "/prs74.xsd";
+      String xsdPath     = testDir + "/xsd/prs74.xsd";
       File genDirFile    = new File(genDir);
       
       assertTrue("clean up", 
@@ -39,9 +39,9 @@ public class XSD2Automata extends TestCase {
    }
    
    public void testSensorX() {
-      String automataOrg = testDir + "/SensorX-Schema.automata";
+      String automataOrg = testDir + "/automata/SensorX-Schema.automata";
       String automataNew = genDir  + "/SensorX-Schema.automata";
-      String xsdPath     = testDir + "/SensorX-Schema.xsd";
+      String xsdPath     = testDir + "/xsd/SensorX-Schema.xsd";
       File genDirFile    = new File(genDir);
       
       assertTrue("clean up", 

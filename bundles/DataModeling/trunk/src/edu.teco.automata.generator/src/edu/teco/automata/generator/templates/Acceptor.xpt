@@ -109,7 +109,7 @@ FOR State»
    }
    else
    {
-      label = «getEndCase(name)» ;
+      label = «getEndCase()» ;
       continue;
    } /* «name» */
    «ENDIF»
@@ -127,7 +127,7 @@ FOR State»
    }
    else
    {
-      label = «getEndCase(name)»;
+      label = «getEndCase()»;
       continue;
    } /* «name» */
    «ENDIF»
@@ -147,8 +147,8 @@ FOR SimpleState»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateParentEnd 
 FOR State»
-   //stateParentEnd «getParentName()»
-   «IF isNeeded(getParentName())»
+   //stateParentEnd«name»
+   «IF isNeeded(name)»
       «targetDef.proceed()»
    «ELSE»
       «popStack()»   
@@ -179,7 +179,7 @@ Implementing this with Xpand is not such a good idea
 «DEFINE initNeeded FOR SimpleState»
    // initNeeded «name»
    «IF ! isStackEmpty()»
-   «IF getParentDepth() >= depth»
+   «IF getParent().depth >= depth»
       «IF isCurrNeeded()»
          «EXPAND stIterator(getSize()-1)»
       «ELSE»
@@ -188,7 +188,10 @@ Implementing this with Xpand is not such a good idea
    «ENDIF»
    «ENDIF» 
    «IF type.metaType.name == complexTypeName()»
-      «pushType(name, depth, lowerBound, upperBound, kind, lowerBound)»
+   «pushType(lowerBound)»
+   «REM»
+      «pushType(name, depth, lowerBound, upperBound, kind, lowerBound????)»
+  «ENDREM»
    «ELSE»
       «IF isNeeded(getCurrPath() + name)»
          // setNeeded «getCurrPath() + name»
@@ -209,8 +212,8 @@ Implementing this with Xpand is not such a good idea
 
 «DEFINE stIterator(Integer count) FOR State»
    // stIterator «name»
-   // setNeeded2 «getParentName()» «isCurrNeeded()»
-   «setNeeded(getParentName(), isCurrNeeded())»
+   // setNeeded2 «getParent().name» «isCurrNeeded()»
+   «setNeeded(getParent().name, isCurrNeeded())»
    «popStack()»
    «IF count > 0»
       «EXPAND stIterator(count-1)»

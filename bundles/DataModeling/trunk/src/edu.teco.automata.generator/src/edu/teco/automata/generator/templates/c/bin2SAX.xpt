@@ -1,25 +1,30 @@
 «IMPORT Automata»
 «IMPORT edu::teco::automata::generator::templates»
 «EXTENSION edu::teco::automata::generator::templates::util»
+«EXTENSION edu::teco::automata::generator::templates::c::util»
+
+
 «EXTENSION edu::teco::automata::generator::templates::config»
 «EXTENSION edu::teco::automata::generator::templates::AcceptorUtil»
 
 «DEFINE root(String nameID) FOR Automata::StateMachine»
    «initQueries()»
-   «FILE nameID+"/bin2sax.c"»
-   «EXPAND header(nameID)»
-   «EXPAND readFunctionInit»
-   while (1)
-   {
-   switch (label)
-   {
-   «clear()»
+    «clear()»
    «resetCase()»
    «FOREACH states AS st»
       «EXPAND encoderRoot::initNeeded FOR st»
    «ENDFOREACH»
    «clear()»
    «resetCase()»
+   
+   «FILE this.states.typeSelect(StartState).first().out.name+"_bin2sax.c"»
+   «EXPAND header(nameID)»
+   «EXPAND readFunctionInit» 
+   while (1)
+   {
+   switch (label)
+   {
+
    «FOREACH states AS st ITERATOR i-»
       «EXPAND encoderRoot::state(i.counter0) FOR st-»
    «ENDFOREACH-»
@@ -40,8 +45,8 @@
 #include <stdsoap2.h>
 
 
-#include "../../bitsio/bits_io.h"
-#include "../../enc/read_str_func.h"
+#include <bitsio/read_bits.h>
+#include <enc/read_str_func.h>
 
 static struct soap *soap   = NULL;
 static        int   label  = 0;
@@ -51,83 +56,92 @@ static void        *reader = NULL;
 #define SOAP_TYPE_string 0
 #endif
 
-void gsoap_automata_init«nameID»(struct soap *_soap, void * _reader)
+void «this.states.typeSelect(StartState).first().out.name»_bin2sax_init(struct soap *_soap, void * _reader)
 {
    soap   = _soap;
    reader = _reader;
    label  = 0;
+   «REM»
+   TODO: return lock state or make reentrant (watch static lowB{count})
+   
+   to make reentrant move soap argument to run and attach label and lowB[{count}] to reader (needs header for maxdepth/count)
+   «ENDREM»
 }
 
-static void gsoap_automata_«nameID»();
+static int gsoap_automata();
 
-void gsoap_automata_run«nameID»() 
+int «this.states.typeSelect(StartState).first().out.name»_bin2sax_run() 
 {
-	while(0==gsoap_automata_«nameID»());
+	int ret;
+	while((ret=gsoap_automata())>0);
+	
+    return ret;	
 }
-
-static void gsoap_automata_«nameID»()
+// return:  0 if EOF, 0<for fault, and  read bits else (TODO)
+static int gsoap_automata()
 {
 «ENDDEFINE»
 
 «DEFINE footer(String nameID) FOR StateMachine»
-return 0;
+return 1;
 }
 «ENDDEFINE»
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoop(Integer count) 
+«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoopBegin(Integer count) 
  FOR SimpleState»
    /* constLoop «getCurrPath() + name» */
-   while (1)
    {
-      static int lowB«count» = «lowerBound»;
-      if (lowB«count» <= 0)
-         break;
-      lowB«count»--;
+   static int lowB«count»;
+   for (lowB«count»=0;lowB«count»>0;lowB«count»--)
     «targetDef.proceed()»
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::constLoopEnd(String endName) 
-FOR State»
+FOR SimpleState»
    } /* «endName» */
 «ENDAROUND»
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::loop(Integer count) 
-FOR SimpleState»
-   /* loop «getCurrPath() + name» */
+«AROUND edu::teco::automata::generator::templates::encoderRoot::loopBegin(Integer count) FOR SimpleState»
+   /* loop «getCurrPath() + name» label=label */
    while(read_bit(reader))
-   { /* depth «depth» */
-   label=label;//loop
-   «targetDef.proceed()»
+     «targetDef.proceed()»  
 «ENDAROUND»
+
+«REM»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::loopEnd(String endName) 
-FOR State»
+FOR SimpleState»
    } /* «endName» */
 «ENDAROUND»
+«ENDREM»
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoop(Integer count, Integer label) FOR SimpleState»
+
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoopBegin(Integer count, Integer label) FOR SimpleState»
    if(read_bit(reader))
    { /* depth «depth»*/
    «targetDef.proceed()»
    }
    else
    {
-      label = «getEndCase(name)» ;
+      label = «getEndCase()» ;
       continue;
    } /* «name» */
 «ENDAROUND»
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoop(Integer count, Integer label) FOR SimpleState» 
-   if(read_bit(reader))
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoopBegin(Integer count, Integer label) FOR SimpleState» 
+   if(read_bit(reader)) «REM» TODO: Same as complexLoop Can be optimized by counting occurences«ENDREM»
    { /* depth «depth»*/
    «targetDef.proceed()»
    }
    else
    {
-      label = «getEndCase(name)»;
+      label = «getEndCase()»;
       continue;
    } /* «name» */
 «ENDAROUND»
+
+
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameBegin 
 FOR SimpleState»
@@ -138,17 +152,16 @@ FOR SimpleState»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd 
 FOR SimpleState»
-
-«ENDAROUND»
-
-«AROUND edu::teco::automata::generator::templates::encoderRoot::stateParentNameEnd 
-FOR State»
-   «IF getParentKind() != "attribute"-»
+   «IF kind != "attribute"-»
    «EXPAND generateSaxEndEvent»
    «ELSE-»
    «ENDIF-»
 «ENDAROUND»
 
+
+«REM»
+=======================================SAXOut===========================================
+«ENDREM»
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateType 
 FOR SimpleState»
    «EXPAND readFunction»
@@ -162,24 +175,28 @@ FOR SimpleState»
    «EXPAND readFunctionCleanUp» 
 «ENDAROUND»
 
+«AROUND edu::teco::automata::generator::templates::encoderRoot::StateEnd FOR StopState»
+ return 0;
+«ENDAROUND»
+
 «DEFINE generateSaxBeginEvent FOR SimpleState»
-	soap_element_begin_out(soap, "«getNSPrefix()»1:«name»", 0, "");
+	soap_element_begin_out(soap, "«getNSPrefix()»:«name»", 0, "");
 «ENDDEFINE»
 
-«DEFINE generateSaxEndEvent FOR State»
-	soap_element_end_out(soap, "«getNSPrefix()»1:«getParentName()»");
+
+«DEFINE generateSaxEndEvent FOR SimpleState»
+	soap_element_end_out(soap, "«getNSPrefix()»:«name»");
 «ENDDEFINE»
 
 «DEFINE generateSaxValueEvent FOR SimpleState»
    {
-     char * 
-   	  «name»_str = soap_strdup(soap, str);
-     soap_outstring(soap, "«getNSPrefix()»1:«name»", -1, «name»_str, "", SOAP_TYPE_string);
+     char * «name»_str = soap_strdup(soap, str);
+     soap_outstring(soap, "«getNSPrefix()»:«name»", -1, &«name»_str, "", SOAP_TYPE_string);
    }
 «ENDDEFINE»
 
 «DEFINE generateSaxAttributeEvent FOR SimpleState»
- 	soap_attribute(soap,  "«getNSPrefix()»1:«name»",str);
+ 	soap_attribute(soap,  "«getNSPrefix()»:«name»",str);
 «ENDDEFINE»
 
 
@@ -220,11 +237,13 @@ ret = str_read_«getTypeMap(type.metaType.name).toLowerCase()»(&str
 «ENDIF-»
 , reader);
 «ENDLET»
+
+
  if (ret < 0)
    {
       fprintf(stderr,"Error reading input data. Errno: %s\n",
               strerror(errno));
-      return;
+      return -1;
    }
 «ENDDEFINE»
 

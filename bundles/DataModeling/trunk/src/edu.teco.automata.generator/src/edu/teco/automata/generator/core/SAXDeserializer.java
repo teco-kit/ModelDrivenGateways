@@ -15,6 +15,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 
@@ -82,9 +83,9 @@ public void parse(InputSource input) throws IOException, SAXException {
 		automata.run(io,contentHandler);
 		contentHandler.endDocument();
 	}
-	catch(/*SAXParse*/Exception e)
+	catch(SAXParseException e)
 	{
-		//errorHandler.fatalError(e);
+		errorHandler.fatalError(e);
 	}
 }
 
