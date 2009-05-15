@@ -27,16 +27,13 @@
    </component>
 </if>
 
-<if cond="${doWS4D}"> 
-   <component file="${packagePath}/targets/WS4D.oaw" >
-    <outlet_path value="${outlet_path}/WSD4D"/>
+
+<if cond="${doGsoap}"> 
+   <component file="${packagePath}/targets/gsoap.oaw" >
+    <outlet_path value="${outlet_path}/gsoap"/>
     <NSPrefix value="${NSPrefix}"/>
-    <DeviceName value="${DeviceName}"/>
-    <MsgOutURI value="${MsgOutURI}"/>
-    <MsgRspURI value="${MsgRspURI}"/>
    </component>
 </if>
-
 
 <if cond="${doJennic}"> 
    <component file="${packagePath}/targets/jennic.oaw" >

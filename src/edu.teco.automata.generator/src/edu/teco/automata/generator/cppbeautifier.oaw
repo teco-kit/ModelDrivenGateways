@@ -1,0 +1,2 @@
+<beautifier class="org.openarchitectureware.xpand2.output.CppBeautifier"  
+                  configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>

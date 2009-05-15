@@ -16,6 +16,7 @@
     <directories value="${src-gen}"/>
   </component> 
   -->
+  
   <component id="generator"
     class="org.openarchitectureware.xpand2.Generator">
     <metaModel id="mm"
@@ -27,9 +28,11 @@
         <postprocessor
             class="org.openarchitectureware.xpand2.output.JavaBeautifier"/>
     </outlet>
+  
     <!--
     <extensionAdvices value="${extensions}"/>
     -->
+  
     <beautifier
         class="org.openarchitectureware.xpand2.output.JavaBeautifier"/>
   </component>  

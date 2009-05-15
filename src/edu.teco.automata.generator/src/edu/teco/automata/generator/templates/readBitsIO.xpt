@@ -38,47 +38,39 @@
 edu.teco.automata.generator.core.BitsIO in
 «ENDAROUND»
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoop(Integer count) 
+«AROUND edu::teco::automata::generator::templates::encoderRoot::constLoopBegin(Integer count) 
  FOR SimpleState»
-   int lowB«count» = «lowerBound»;
-   while (true)
-   {
-      if (lowB«count» <= 0)
-         breatk;
-      lowB«count»--;
+   for (int lowB«count» = «lowerBound»true, lowB«count» > 0,lowB«count»--;)      
     «targetDef.proceed()»
 «ENDAROUND»
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::loop(Integer count) 
+«AROUND edu::teco::automata::generator::templates::encoderRoot::loopBegin(Integer count) 
 FOR SimpleState»
    /* loop «getCurrPath() + name» */
-   while(in.read_bit())
-   { /* depth «depth» */
+   while(in.read_bit())  /* depth «depth» */
    «targetDef.proceed()»
 «ENDAROUND»
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoop(Integer count, Integer label) FOR SimpleState»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoopBegin(Integer count, Integer label) FOR SimpleState»
    if(in.read_bit())
    { /* depth «depth»*/
    «targetDef.proceed()»
    }
    else
    {
-      label = «getEndCase(name)» ;
+      label = «getEndCase()» ;
       continue;
    } /* «name» */
 «ENDAROUND»
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoop(Integer count, Integer label) FOR SimpleState» 
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoopBegin(Integer count, Integer label) FOR SimpleState» 
    if(in.read_bit())
    { /* depth «depth»*/
    «targetDef.proceed()»
    }
    else
    {
-      label = «getEndCase(name)»;
+      label = «getEndCase()»;
       continue;
    } /* «name» */
 «ENDAROUND»
-
-

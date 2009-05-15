@@ -89,7 +89,7 @@ FOR State»
    }
    else
    {
-      label = «getEndCase(name)» ;
+      label = «getEndCase()» ;
       continue;
    } /* «name» */
 «ENDAROUND»
@@ -101,7 +101,7 @@ FOR State»
    }
    else
    {
-      label = «getEndCase(name)»;
+      label = «getEndCase()»;
       continue;
    } /* «name» */
 «ENDAROUND»
@@ -138,9 +138,9 @@ FOR SimpleState»
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateParentNameEnd 
-FOR State»
-   «IF getParentKind() != "attribute"-»
-   write(out, "</«getParentName()»>\n", «getParentName().length + "</>\n".length»);
+FOR SimpleState»
+   «IF kind != "attribute"-»
+   write(out, "</«name»>\n", «name.length + "</>\n".length»);
    «ELSE-»
    «ENDIF-»
 «ENDAROUND»

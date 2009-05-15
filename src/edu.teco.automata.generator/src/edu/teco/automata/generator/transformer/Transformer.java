@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
+import org.openarchitectureware.workflow.WorkflowComponent;
 import org.openarchitectureware.workflow.WorkflowContext;
 import org.openarchitectureware.workflow.issues.Issues;
 import org.openarchitectureware.workflow.lib.SimpleJavaModificationComponent;
@@ -30,8 +31,30 @@ public class Transformer extends SimpleJavaModificationComponent {
    private boolean firstElementOnly = true;
    private State previousState= null;
    private static int depth = 0;
+   
+	private String rootElement=null;
+	
+	public void setRootElement(String rootElement) {
+	      this.rootElement = rootElement;
+	}
+	
+	
 
    @Override
+	public String getComponentName() {
+		return "Ecore2AutomataTransformer";
+	}
+
+
+
+	@Override
+	public String getLogMessage() {
+		return "generating automata"+(rootElement==null?"":" for "+rootElement) +" into slot "+outputSlot;
+	}
+
+
+
+@Override
    protected void doModification(WorkflowContext ctx, ProgressMonitor monitor,
          Issues issues, Object model) {
       EPackage ecoreP = (EPackage) model;
@@ -45,14 +68,16 @@ public class Transformer extends SimpleJavaModificationComponent {
       depth         = 0;
 
       EClassifier docRoot = getElement("DocumentRoot", ecoreP.getEClassifiers());
-
+      boolean multiple=false;
       for (EObject obj : docRoot.eContents()) {
+    	 
          if (obj.eClass().getInstanceClass() == EReference.class) {
             EReference rootRef = (EReference) obj;
-
+            if(rootElement!=null&& !rootRef.getName().equals(rootElement)) continue; //generate only specific root element
+            if(multiple) {issues.addWarning("found multiple root elements"); }
+            multiple=true;
             for (EAnnotation ann : rootRef.getEAnnotations()) {
-               if (ann.getDetails().get("kind").equals("element")) { 
-
+               if (ann.getDetails().get("kind").equals("element")) {
                   handleAnnot(rootRef.getName(), 
                               rootRef.getEAnnotations(),
                               rootRef.getEReferenceType().getName(), 
@@ -64,10 +89,10 @@ public class Transformer extends SimpleJavaModificationComponent {
                }
                else
                {
-            	 //TODO: what happens to other
+                  //issues.addWarning(this,"found unhandled attribute annotation on root level: "+ rootRef.getName());
                }
             }
-         } else if (obj.eClass().getInstanceClass() == EAttribute.class) {
+         } else if (obj.eClass().getInstanceClass() == EAttribute.class)/*TODO: is this branch needed==rootAttribute???*/ {
             EAttribute attr = (EAttribute) obj;
             for (EAnnotation ann : attr.getEAnnotations()) {
                if (ann.getDetails().get("kind").equals("element")) {
@@ -82,14 +107,22 @@ public class Transformer extends SimpleJavaModificationComponent {
                }
                else
                {
-            	 //TODO: what happens to other
+            	   //issues.addWarning("found unhandled attribute annotation on root level:"+ attr.getName());
                }
             }
          }
       }
+      
+      if(multiple=false){issues.addWarning(this.getContainer(),"no root element" + (rootElement==null?"":rootElement) + "found", this); }
 
       StopState stop = AutomataFactory.eINSTANCE.createStopState();
       stop.setName("Stop");
+      if(previousState==start)
+      {
+    	  start.setOut(stop);
+    	  issues.addWarning(this,"empty StateMachine");
+      }
+      else
       ((SimpleState) previousState).getOut().add(stop);
       states.add(stop);
      

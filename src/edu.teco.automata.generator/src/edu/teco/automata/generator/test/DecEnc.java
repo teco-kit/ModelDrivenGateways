@@ -26,8 +26,8 @@ public class DecEnc extends TestCase {
 	String genDir = "src-gen/edu/teco/automata/generator/gen/";
 	String binDir = "bin/edu/teco/automata/generator/gen/";
 	String testDir = "src/edu/teco/automata/generator/test/";
-	String xmlPath = testDir + "/prs74.xml";
-	String xsdPath = testDir + "/prs74.xsd";
+	String xmlPath = testDir + "xsd/prs74.xml";
+	String xsdPath = testDir + "xsd/prs74.xsd";
 
 	@Before
 	public void setUp() throws Exception {
@@ -56,34 +56,40 @@ public class DecEnc extends TestCase {
 	public void testDecEnc() throws IOException, SAXException,
 			InstantiationException {
 		assertFalse(new File(genDir + "/output.bin").exists());
-		FileOutputStream fos           = new FileOutputStream(genDir + "/output.bin");
+		FileOutputStream fos=null;
+		
+		
+		fos= new FileOutputStream(genDir + "/output.bin");
+		try{
 		SAXSerializer w = new SAXSerializer(fos);
 		
 		XmlReader xml = new XmlReader(xmlPath, w, w);
 
 		xml.parse(true);
+		}finally
+		{
 		fos.close();
+		}
 		assertTrue(new File(genDir + "/output.bin").exists());
 	//	FileOutputStream fos = null;
 		FileInputStream fis = null;
+		
+		
+		fis = new FileInputStream(genDir + "/output.bin");try{
+		fos = new FileOutputStream(genDir + "/prs74.xml");try{
+			BinXMLPrinter reader = new BinXMLPrinter();
+			reader.run(fis, fos);
+		}finally {	fos.close();}
+		}finally {	fis.close();}
 
-		fis = new FileInputStream(genDir + "/output.bin");
-		fos = new FileOutputStream(genDir + "/prs74.xml");
-
-		BinXMLPrinter reader = new BinXMLPrinter();
-		reader.run(fis, fos);
-
-		fos.close();
-		fis.close();
-
-		assertTrue("XML Files Differ", XMLDiff.diffXML(testDir + "/prs74.xml",
+		assertTrue("XML Files Differ", XMLDiff.diffXML(xmlPath,
 				genDir + "/prs74.xml"));
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		assertTrue("clean", DeleteDir.deleteDirectory(new File(binDir)));
-		assertTrue("clean", DeleteDir.deleteDirectory(new File(genDir)));	
+		//assertTrue("clean", DeleteDir.deleteDirectory(new File(genDir)));	
 	}
 
 }

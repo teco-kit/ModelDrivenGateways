@@ -9,8 +9,8 @@
 	return ret;
 «ENDAROUND»
 
-«AROUND edu::teco::automata::generator::templates::c::bin2SAX::generateSaxEndEvent FOR State»
-	out->type=«getNSPrefix()»_«getParentName()»_end;
+«AROUND edu::teco::automata::generator::templates::c::bin2SAX::generateSaxEndEvent FOR SimpleState»
+	out->type=«getNSPrefix()»_«name»_end;
 	return ret;
 «ENDAROUND»
 

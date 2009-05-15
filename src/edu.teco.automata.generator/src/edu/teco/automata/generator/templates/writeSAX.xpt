@@ -40,12 +40,6 @@
 			    }
 
   «ELSE»
-  //out.print
-  «ENDIF»
-«ENDAROUND»
-
-«AROUND edu::teco::automata::generator::templates::encoderRoot::stateParentNameEnd FOR State»
-  «IF getParentKind() != "attribute"-»
-  out.endElement("", "«getParentName()»", "«getParentName()»");
+     throw new IOException("Attributes not yet supported");
   «ENDIF»
 «ENDAROUND»

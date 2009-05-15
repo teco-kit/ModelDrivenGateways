@@ -8,45 +8,55 @@
    «ENDFOREACH»
 «ENDDEFINE»
 
+
 «DEFINE state(Integer count) FOR SimpleState»
+
    «IF ! isStackEmpty()»
-      «IF getParentDepth() >= depth»
-         «EXPAND stateParentEnd»
+      «IF getParent().depth >= depth» «REM»leaving state«ENDREM»
+         «EXPAND stateComplexEnd(getCurrParentPath()) FOR getParent()»
       «ENDIF»
-   «ENDIF»
-   «IF type.metaType.name == complexTypeName()»
-      «LET getNextCase() AS label»
-      «EXPAND stateParentBegin(count, label)»
-      « IF lowerBound == upperBound »
-         « IF lowerBound != 1 »
-            «EXPAND complexConstLoop(count, label)»
+   «ENDIF»   
+   
+   «IF type.metaType == complexType»   
+      «LET getNextCase() AS next»
+      
+      «EXPAND stateComplexBegin(count, next)»      
+       
+      «IF lowerBound == upperBound » «REM»fixed number of elements«ENDREM»
+         « IF lowerBound == 1 » 
+           «EXPAND complexBegin(next)»
          « ELSE »
-            « EXPAND stateNameBegin »
-            « pushType(name, depth, lowerBound, upperBound, kind, label) »
+           «EXPAND complexConstLoopBegin(count, next)»
          « ENDIF »
       « ELSE »
-         « EXPAND complexLoop(count, label) »
+           « EXPAND complexLoopBegin(count, next) »
       « ENDIF »
+      
       «EXPAND stateEnd»
+      
       «ENDLET»
    «ELSE»
-      «EXPAND stateBegin(count)»
+   
+      «EXPAND stateBegin(count)»      
+      
       « IF lowerBound == upperBound »
          « IF lowerBound != 1 »
-            «EXPAND constLoop(count)»
+            «EXPAND constLoopBegin(count)»
             «EXPAND constLoopEnd(name)»
-         « ELSE  »
-            « EXPAND stateNameBegin »
-            « EXPAND stateType      »
-            « EXPAND stateNameEnd   »
+         « ELSE »
+         	«EXPAND simpleBegin(count)»
+         	«EXPAND simpleEnd»
          « ENDIF »
       « ELSE »
-         « EXPAND loop(count)  »
+         « EXPAND loopBegin(count)  »
          « EXPAND loopEnd(name)»
       « ENDIF »
+      
       «EXPAND stateEnd»
    «ENDIF»
+   
 «ENDDEFINE»
+
 
 «DEFINE state(Integer count) FOR StartState»
 // Start State
@@ -66,7 +76,7 @@
 «ENDDEFINE»
 
 «DEFINE stackItr(Integer count) FOR StopState»
-   «EXPAND stateParentEnd»
+   «EXPAND stateComplexEnd(getCurrParentPath()) FOR getParent()»
    «IF count > 0»
       «EXPAND stackItr(count-1)»
    «ENDIF»
@@ -77,19 +87,28 @@
 Stack initializer 
 needs to be called at beginning of each template
 «ENDREM»
+
 «DEFINE initNeeded FOR SimpleState»
    «incCase()»
    «IF ! isStackEmpty()»
-      «IF getParentDepth() >= depth»
+      «LET getParent() AS parent»
+      «IF parent.depth >= depth»
+      «EXPAND stIterator(depth)»
+      «REM»
          «IF isCurrNeeded()»
             «EXPAND stIterator(depth)»
          «ELSE»
+            «ERROR "Why not"+ name»
             «popStack()»
          «ENDIF»
+        «ENDREM»
       «ENDIF»
+   «ENDLET»
    «ENDIF» 
-   «IF type.metaType.name == complexTypeName()»
-      «pushType(name, depth, lowerBound, upperBound, kind, lowerBound)»
+   
+   «IF type.metaType == complexType»
+      «pushType(lowerBound)»
+   «REM»  «pushType(name, depth, lowerBound, upperBound, kind, lowerBound?????)» «ENDREM»
    «ELSE»
       «IF isNeeded(getCurrPath() + name)»
          «setCurrNeeded(true)»
@@ -109,12 +128,12 @@ needs to be called at beginning of each template
 
 «DEFINE stIterator(Integer depth) FOR State»
    «LET getNextCase() AS label»
-   «setEndCase(getParentName(), label)»
-   «setNeeded(getParentName(), isCurrNeeded())»
+   «setEndCase(getParent(), label)»
+   «setNeeded(getParent().name, isCurrNeeded())»
    «popStack()»
    «ENDLET»
    «IF ! isStackEmpty()»
-   «IF getParentDepth() >= depth»
+   «IF getParent().depth >= depth»
       «EXPAND stIterator(depth)»
    «ELSE»
       «setCurrNeeded(false)»
@@ -127,98 +146,18 @@ The one below are define separate in order to enable
 easy AROUND statements.
 «ENDREM»
 
-«DEFINE loop(Integer count) FOR SimpleState»
-   « EXPAND stateNameBegin »
-   « EXPAND stateType      »
-   « EXPAND stateNameEnd   »
-«ENDDEFINE»
+«REM»============state============«ENDREM»
 
-«DEFINE loopEnd(String endName) FOR State»
-   } /* «endName» */
-«ENDDEFINE»
-
-«DEFINE constLoop(Integer count) FOR SimpleState»
-   « EXPAND stateNameBegin »
-   « EXPAND stateType      »
-   « EXPAND stateNameEnd   »
-«ENDDEFINE»
-
-«DEFINE constLoopEnd(String endName) FOR State»
-   } /* constLoopEnd «endName» */
-«ENDDEFINE»
-
-«DEFINE complexLoop(Integer count, Integer label) FOR SimpleState»
-   « EXPAND stateNameBegin »   
-   « pushType(name, depth, lowerBound, upperBound, kind, label) »
-«ENDDEFINE»
-
-«DEFINE complexLoopEnd1(String endName) FOR State»
-   label = «getBeginCase()»; /* constLoopEnd1 «endName» */
-«ENDDEFINE»
-
-«DEFINE complexLoopEnd2(String endName) FOR State»
-   continue; /* constLoopEnd2 «endName» */
-«ENDDEFINE»
-
-
-«DEFINE complexConstLoop(Integer count, Integer label) FOR SimpleState»
-   « EXPAND stateNameBegin »
-   « pushType(name, depth, lowerBound, upperBound, kind, label) »
-«ENDDEFINE»
-
-«DEFINE complexConstLoopEnd1(String endName) FOR State»
-   label = «getBeginCase()»; /* complexLoopEnd1 «endName» */
-«ENDDEFINE»
-
-«DEFINE complexConstLoopEnd2(String endName) FOR State»
-   continue;  /* complexLoopEnd2 «endName» */
-«ENDDEFINE»
-
-
-
-«DEFINE stateParentEnd FOR State»
-   case «getNextCase()»:  //stateParentEnd(«name») : «getLowB()»..«getUpB()»
-   {
-    «IF getLowB() != 1 || getUpB() != 1»
-      «IF getLowB() == getUpB()» «REM» TODO «ENDREM»
-      «EXPAND complexConstLoopEnd1(getCurrParentPath())»
-      «ELSE»
-      «EXPAND complexLoopEnd1(getCurrParentPath())»
-      «ENDIF»
-    «ELSE»
-    label++; «REM»TODO: is this always correct??«ENDREM»
-   «ENDIF»
-   «EXPAND stateParentNameEnd»
-   «IF getLowB() != getUpB() || getLowB() != 1»
-      «IF getLowB() == getUpB()»
-      «EXPAND complexConstLoopEnd2(getCurrParentPath())»
-      «ELSE»
-      «EXPAND complexLoopEnd2(getCurrParentPath())»
-      «ENDIF»
-   «ELSE»
-   break;
-   «ENDIF»
-   } /* case */
-   «popStack()»
-«ENDDEFINE»
-
-
-
-«DEFINE stateBegin(Integer count) FOR State»
+«DEFINE stateBegin(Integer count) FOR SimpleState»
    case «getNextCase()» : //stateBegin(«name»)
    {
       label++; 
 «ENDDEFINE»
 
-«DEFINE stateEnd FOR State»
-	 break;
-   } /* stateEnd */
-«ENDDEFINE»
-
-«DEFINE stateParentBegin(Integer count, Integer label) FOR State»
-   case «label» ://stateParentBegin(«name»)
+«DEFINE stateBegin FOR StartState»
+   case «getNextCase()» : //stateBegin(«getCurrPath()»)
    {
-   label++;
+      label++; 
 «ENDDEFINE»
 
 «DEFINE StateBegin FOR StopState»
@@ -229,6 +168,12 @@ easy AROUND statements.
  return;
 «ENDDEFINE»
 
+«DEFINE stateEnd FOR State»
+	 break;
+   } /* stateEnd */
+«ENDDEFINE»
+
+
 «DEFINE stateNameBegin FOR SimpleState»
 //stateNameBegin «name»
 «ENDDEFINE»
@@ -237,14 +182,127 @@ easy AROUND statements.
 //stateNameEnd «name»
 «ENDDEFINE»
 
-«DEFINE stateParentNameEnd FOR State»
-// stateParentNameEnd «getParentName()»
-«ENDDEFINE»
-
 «DEFINE stateType FOR SimpleState»
 // stateType «getTypeMap(type.metaType.name)»
 «ENDDEFINE»
 
+«REM»============stateComplex============«ENDREM»
+
+«DEFINE stateComplexBegin(Integer count, Integer label) FOR SimpleState»
+   case «label» ://stateComplexBegin(«name»)
+   {
+   label++;
+«ENDDEFINE»
+
+«DEFINE stateComplexEnd(String path) FOR SimpleState» 
+   case «getNextCase()»:  //stateComplexEnd(«name») : «lowerBound»..«upperBound»
+   {
+    «IF lowerBound != 1 || upperBound != 1»«REM» TODO: why is this split into 2 ends??? «ENDREM»
+      «IF lowerBound == upperBound» 
+      «EXPAND complexConstLoopEnd1(path)»
+      «ELSE»
+      «EXPAND complexLoopEnd1(path)»
+      «ENDIF»
+    «ELSE»
+      «EXPAND complexEnd»
+   «ENDIF»
+   
+   «EXPAND stateNameEnd»
+   
+   «IF lowerBound != upperBound || lowerBound != 1»
+      «IF lowerBound == upperBound»
+      «EXPAND complexConstLoopEnd2(path)»
+      «ELSE»
+      «EXPAND complexLoopEnd2(path)»
+      «ENDIF»
+   «ELSE»
+   break;
+   «ENDIF»
+   } /* case */
+   «popStack()»
+«ENDDEFINE»
+
+«REM»==== simpleElement  ====«ENDREM»
+
+«DEFINE simpleBegin(Integer label) FOR SimpleState»
+{
+               « EXPAND stateNameBegin »
+   			   « EXPAND stateType      »
+   			   « EXPAND stateNameEnd   »
+«ENDDEFINE»
+
+«DEFINE simpleEnd FOR SimpleState»
+}
+«ENDDEFINE»
+
+«REM»==== loop ====«ENDREM»
+
+«DEFINE loopBegin(Integer count) FOR SimpleState»
+  {
+   « EXPAND stateNameBegin »
+   « EXPAND stateType      »
+   « EXPAND stateNameEnd   »
+«ENDDEFINE»
+
+«DEFINE loopEnd(String endName) FOR SimpleState»
+   } /* «endName» */
+«ENDDEFINE»
+
+«REM»==== constLoop ====«ENDREM»
+
+«DEFINE constLoopBegin(Integer count) FOR SimpleState»
+ /* constLoopBegin «name» */{ 
+   « EXPAND stateNameBegin »
+   « EXPAND stateType      »
+   « EXPAND stateNameEnd   »
+«ENDDEFINE»
+
+«DEFINE constLoopEnd(String endName) FOR SimpleState»
+   } /* constLoopEnd «endName» */
+«ENDDEFINE»
+
+«REM»==== complexElement  ====«ENDREM»
+
+«DEFINE complexBegin(Integer label) FOR SimpleState»
+            « EXPAND stateNameBegin »
+            « pushType(label) »
+«ENDDEFINE»
+
+«DEFINE complexEnd FOR SimpleState»
+     label++; «REM»TODO: is this always correct??«ENDREM»
+«ENDDEFINE»
+
+«REM»==== complexLoop  ====«ENDREM»
+
+«DEFINE complexLoopBegin(Integer count, Integer label) FOR SimpleState»
+   « EXPAND stateNameBegin »   
+   « pushType(label) »
+«ENDDEFINE»
+
+«DEFINE complexLoopEnd1(String endName) FOR SimpleState»
+   label = «getBeginCase()»; /* constLoopEnd1 «endName» */
+«ENDDEFINE»
+
+«DEFINE complexLoopEnd2(String endName) FOR SimpleState»
+   continue; /* constLoopEnd2 «endName» */
+«ENDDEFINE»
+
+«REM»==== complexConstLoop  ====«ENDREM»
+
+«DEFINE complexConstLoopBegin(Integer count, Integer label) FOR SimpleState»
+   « EXPAND stateNameBegin »
+   « pushType(label) »
+«ENDDEFINE»
+
+«DEFINE complexConstLoopEnd1(String endName) FOR SimpleState»
+   label = «getBeginCase()»; /* complexLoopEnd1 «endName» */
+«ENDDEFINE»
+
+«DEFINE complexConstLoopEnd2(String endName) FOR SimpleState»
+   continue;  /* complexLoopEnd2 «endName» */
+«ENDDEFINE»
+
+«REM»============args============«ENDREM»
 «DEFINE inArg FOR StateMachine»
 /*in*/
 «ENDDEFINE»

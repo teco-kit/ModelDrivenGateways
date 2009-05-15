@@ -22,8 +22,10 @@ import org.openarchitectureware.workflow.monitor.ProgressMonitor;
 
 /**
  * @author riedel
- *
+ * 
+ * OAW Workflow component to read XSD (and WSDL Files) as ecore Models
  */
+
 public class XSD2EcoreReader extends AbstractWorkflowComponent {
 	private String outputSlot;
 	   public void setOutputSlot(final String outputSlot) {
@@ -39,19 +41,22 @@ public class XSD2EcoreReader extends AbstractWorkflowComponent {
 	public void setXsdPath(String xsdPath) {
 	      this.xsdPath = xsdPath;
 	   }
-	/**
-	 * 
-	 */
+	
 	public XSD2EcoreReader() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.openarchitectureware.workflow.WorkflowComponent#checkConfiguration(org.openarchitectureware.workflow.issues.Issues)
 	 */
+	
 	@Override
 	public void checkConfiguration(Issues issues) {
-		// TODO Auto-generated method stub
+		File xsdFile = new File(xsdPath);  
+		if (!xsdFile.exists()) {
+		         issues.addError("File "+xsdPath+" doesn't exist");
+		         return;
+		      }
 
 	}
 
@@ -59,16 +64,11 @@ public class XSD2EcoreReader extends AbstractWorkflowComponent {
 	 * @see org.openarchitectureware.workflow.WorkflowComponent#invoke(org.openarchitectureware.workflow.WorkflowContext, org.openarchitectureware.workflow.monitor.ProgressMonitor, org.openarchitectureware.workflow.issues.Issues)
 	 */
 
-	
 	@Override
 	public void invoke(WorkflowContext ctx, ProgressMonitor monitor,
 			Issues issues) {
 	      
 	      File xsdFile = new File(xsdPath);
-	      if (!xsdFile.exists()) {
-	         System.out.println("File doesn't exist");
-	         return;
-	      }
 
 	      XSDEcoreBuilder xsdEcoreBuilder = new XSDEcoreBuilder();
 	      Collection<EObject> eCorePackages = xsdEcoreBuilder.generate(URI
