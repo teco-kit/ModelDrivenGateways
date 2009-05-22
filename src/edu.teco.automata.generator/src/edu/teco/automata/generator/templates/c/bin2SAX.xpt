@@ -9,12 +9,12 @@
 
 «DEFINE root(String nameID) FOR Automata::StateMachine»
    «initQueries()»
-    «clear()»
+   «stack_clear()»
    «resetCase()»
    «FOREACH states AS st»
       «EXPAND encoderRoot::initNeeded FOR st»
    «ENDFOREACH»
-   «clear()»
+   «stack_clear()»
    «resetCase()»
    
    «FILE this.states.typeSelect(StartState).first().out.name+"_bin2sax.c"»
@@ -89,7 +89,7 @@ return 1;
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::constLoopBegin(Integer count) 
  FOR SimpleState»
-   /* constLoop «getCurrPath() + name» */
+   /* constLoop «stack_getCurrPath() + name» */
    {
    static int lowB«count»;
    for (lowB«count»=0;lowB«count»>0;lowB«count»--)
@@ -102,7 +102,7 @@ FOR SimpleState»
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::loopBegin(Integer count) FOR SimpleState»
-   /* loop «getCurrPath() + name» label=label */
+   /* loop «stack_getCurrPath() + name» label=label */
    while(read_bit(reader))
      «targetDef.proceed()»  
 «ENDAROUND»

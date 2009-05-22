@@ -26,10 +26,7 @@ public class SAXSerializer  implements ContentHandler,ErrorHandler{
    private boolean             saved;
    private DecoderAutomata     decoder;
 
-   public SAXSerializer (OutputStream os) throws FileNotFoundException, InstantiationException
-   {
-	   this(os,"edu.teco.automata.generator.gen.DecoderAutomata");
-   }
+
    
    @SuppressWarnings("unchecked")
 public SAXSerializer(OutputStream os, String decoderAutomataClass) throws FileNotFoundException,  InstantiationException  {
@@ -110,6 +107,7 @@ public SAXSerializer(OutputStream os, String decoderAutomataClass) throws FileNo
 	@Override
 	public void endDocument() throws SAXException {
 		try {
+			decoder.element("stop");
 			finish();
 		} catch (IOException e) {
 			throw new SAXException(e);
@@ -162,10 +160,10 @@ public SAXSerializer(OutputStream os, String decoderAutomataClass) throws FileNo
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String name,
+	public void startElement(String uri, String localName, String qname,
 			Attributes atts) throws SAXException {
 		try {
-			element(name);
+			element(localName);
 		
 		for (int i = 0; i < atts.getLength(); i++)
 		{
@@ -206,7 +204,7 @@ public SAXSerializer(OutputStream os, String decoderAutomataClass) throws FileNo
       SAXSerializer w;
 	try {
 		FileOutputStream fos           = new FileOutputStream("src/edu/teco/automata/generator/test/output.bin");
-		w = new SAXSerializer(fos);
+		w = new SAXSerializer(fos,argv[0]);
 	} catch (FileNotFoundException e1) {
 		e1.printStackTrace();
 		System.exit(1);

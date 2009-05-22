@@ -16,10 +16,7 @@ public class BinXMLPrinter{
  
    private BinXMLPrinterAutomata automata;
    
-   public BinXMLPrinter() throws FileNotFoundException, InstantiationException
-   {
-	   this("edu.teco.automata.generator.gen.EncoderAutomata");
-   }
+
    
    @SuppressWarnings("unchecked")
    public BinXMLPrinter(String encoderAutomataClass) throws FileNotFoundException,  InstantiationException  {	     
@@ -54,7 +51,7 @@ public class BinXMLPrinter{
          if(fis.available()==0)
         	 throw new IOException();
          
-         BinXMLPrinter reader = new BinXMLPrinter();
+         BinXMLPrinter reader = new BinXMLPrinter(argv[0]);
          reader.run(fis, System.out);
       } catch (Exception e) {
          e.printStackTrace();

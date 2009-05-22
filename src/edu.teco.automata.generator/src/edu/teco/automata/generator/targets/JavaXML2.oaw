@@ -14,7 +14,7 @@
   
   
   
-  <component id="generatorEnc" class="oaw.xpand2.Generator">           
+  <component id="generatorEnc2" class="oaw.xpand2.Generator">           
     <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
  		<metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>        
     </metaModel>
@@ -30,12 +30,12 @@
     <beautifier class="oaw.xpand2.output.JavaBeautifier"/>
   </component>  
   
-  <component adviceTarget="generatorEnc"
+  <component adviceTarget="generatorEnc2"
   id="generatorEncAdv" class="oaw.xpand2.GeneratorAdvice">			 
   	<advices value="edu::teco::automata::generator::templates::readBitsIO"/>
   </component> 
   
-  <component adviceTarget="generatorEnc"
+  <component adviceTarget="generatorEnc2"
   id="generatorEncAdv" class="oaw.xpand2.GeneratorAdvice">			 
   	<advices value="edu::teco::automata::generator::templates::writeSAX"/>
   </component> 

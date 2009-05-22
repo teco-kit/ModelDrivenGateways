@@ -112,7 +112,6 @@ private String cur_file;
 	
 
 */
-    @SuppressWarnings("deprecation")
 	private String change_file(String _file,int line)
 	{
 		URL url = ResourceLoaderFactory.createResourceLoader().getResource(cur_file); 

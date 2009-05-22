@@ -32,6 +32,7 @@ public class DecEncSAX extends TestCase {
 	final String testDir = "src/edu/teco/automata/generator/test/";
 	final String xmlPath = testDir + "xsd/config.xml";
 	final String xsdPath = testDir + "xsd/config.xsd";
+	String rootElem ="SensorConfiguration";
 
 	@Before
 	public void setUp() throws Exception {
@@ -51,8 +52,8 @@ public class DecEncSAX extends TestCase {
 		Runner.main(properties, target);
 		assertTrue(0 == com.sun.tools.javac.Main.compile(new String[] {
 				"-classpath", "bin", "-d", "bin",
-				genDir + "EncoderSAXAutomata.java",
-				genDir + "DecoderAutomata.java" })); //re-compilation of DecoderAutomata will have no effect if class is already loaded
+				genDir + rootElem +"EncoderSAXAutomata.java",
+				genDir + rootElem +"DecoderAutomata.java" })); //re-compilation of DecoderAutomata will have no effect if class is already loaded
 		return;
 	}
 
@@ -60,27 +61,28 @@ public class DecEncSAX extends TestCase {
 	public void testDecEncSAX() throws IOException, SAXException,
 	InstantiationException, TransformerFactoryConfigurationError, TransformerException {
 
-		assertFalse(new File(genDir + "/output.bin").exists());
+		assertFalse(new File(genDir + "/out.bin").exists());
 
 		{
-			FileOutputStream fos  = new FileOutputStream(genDir + "/prs74.bin");try{	
+			FileOutputStream fos  = new FileOutputStream(genDir + "/out.bin");try{	
 			Source source=new StreamSource(new File(xmlPath));
-			Result result=new SAXResult(new SAXSerializer(fos,"edu.teco.automata.generator.gen.DecoderAutomata"));
+			Result result=new SAXResult(new SAXSerializer(fos,"edu.teco.automata.generator.gen."+rootElem+"DecoderAutomata"));
 
 			Transformer xml2bin=TransformerFactory.newInstance().newTransformer();
 			xml2bin.transform(source,result);
 			}finally{fos.close();}
 		}
 
-		assertTrue(new File(genDir + "/prs74.bin").exists());
+		assertTrue(new File(genDir + "/out.bin").exists());
+		assertFalse(new File(genDir + "/out.xml").exists());
 
 		{
-			FileInputStream fis = new FileInputStream(genDir + "/prs74.bin");try{
-			FileOutputStream fos = new FileOutputStream(genDir + "/prs74.xml");try{       
+			FileInputStream fis = new FileInputStream(genDir + "/out.bin");try{
+			FileOutputStream fos = new FileOutputStream(genDir + "/out.xml");try{       
 
 			XMLReader reader=new SAXDeserializer();
 
-			reader.setProperty(SAXDeserializer.AUTOMATA_URI, "edu.teco.automata.generator.gen.EncoderSAXAutomata");
+			reader.setProperty(SAXDeserializer.AUTOMATA_URI, "edu.teco.automata.generator.gen."+rootElem+"EncoderSAXAutomata");
 			{
 				Source source=new SAXSource(reader,new InputSource(fis));
 				Result result=new StreamResult(fos);
@@ -93,14 +95,14 @@ public class DecEncSAX extends TestCase {
 			}finally{fis.close();}
 		}
 
-		assertTrue("XML Files Differ", XMLDiff.diffXML(testDir + "/prs74.xml",
-				genDir + "/prs74.xml"));
+		assertTrue("XML Files Differ", XMLDiff.diffXML(xmlPath,
+				genDir + "/out.xml"));
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		assertTrue("clean", DeleteDir.deleteDirectory(new File(binDir)));
-		assertTrue("clean", DeleteDir.deleteDirectory(new File(genDir)));	
+		//assertTrue("clean", DeleteDir.deleteDirectory(new File(genDir)));	
 	}
 
 }

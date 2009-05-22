@@ -36,12 +36,12 @@ void encoder_automata_run()
    {
    switch (label)
    {
-   «clear()»
+   «stack_clear()»
    «resetCase()»
    «FOREACH states AS st»
       «EXPAND encoderRoot::initNeeded FOR st»
    «ENDFOREACH»
-   «clear()»
+   «stack_clear()»
    «resetCase()»
    «FOREACH states AS st ITERATOR i-»
       «EXPAND encoderRoot::state(i.counter0) FOR st-»
@@ -54,7 +54,7 @@ void encoder_automata_run()
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::constLoop(Integer count) 
  FOR SimpleState»
-   /* constLoop «getCurrPath() + name» */
+   /* constLoop «stack_getCurrPath() + name» */
    while (1)
    {
       static int lowB«count» = «lowerBound»;
@@ -71,7 +71,7 @@ FOR State»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::loop(Integer count) 
 FOR SimpleState»
-   /* loop «getCurrPath() + name» */
+   /* loop «stack_getCurrPath() + name» */
    while(read_bit(reader))
    { /* depth «depth» */
    «targetDef.proceed()»

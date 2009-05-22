@@ -9,7 +9,7 @@ import  edu.teco.automata.Automata.SimpleState;
  * Used to save the parent complex elements.
  */
 public class CTypeStack {
-   private static Stack<CTypeStack> stack = new Stack<CTypeStack>();
+   private static Stack<SimpleState> stack = new Stack<SimpleState>();
    /*
    private        String            name;
    private        String            kind;
@@ -17,14 +17,15 @@ public class CTypeStack {
    private        int               lowB;
    private        int               upB;
    */
-   private SimpleState state;
-   private        int               beginCase;
+ //  private SimpleState state;
+ //  private        int               beginCase;
    private static int               nextCase = 0;
    
  
    
-   private static HashMap<SimpleState, Integer>   childrenSet = 
-      new HashMap<SimpleState, Integer>();
+   private static HashMap<SimpleState, Integer>   beginCase = new HashMap<SimpleState, Integer>();
+   
+   private static HashMap<SimpleState, Integer>   endCase = new HashMap<SimpleState, Integer>();
    
    /**
     * 
@@ -33,16 +34,18 @@ public class CTypeStack {
     * @param label
     */
    
-   public static void push(SimpleState state,  Integer label)
+   public static void push(SimpleState state)
    {
-	   stack.push(new CTypeStack(state,label)); 
+	   stack.push(state); 
    }
    
+   /*
    private CTypeStack(SimpleState state, int label)
    {
-	   this.beginCase = label;
+	  // this.beginCase = label;
 	   this.state=state;
    }
+   */
 		  
    
    /**
@@ -55,57 +58,15 @@ public class CTypeStack {
    /**
     * @return The name of the top element
     */
-   public static String getName() {
-      return stack.peek().state.getName();
-   }
 
-   /**
-    * @return The type of the top element in the stack
-    */
-   public static String getParentKind() {
-      return stack.peek().state.getKind();
-   }
-   
-   /**
-    * @return The depth in the hierarchy 
-    */
-   public static int getDepth() {
-      return stack.peek().state.getDepth();
-   }
-   
-   /**
-    * @return The switch-label where this element begins 
-    */
-   public static SimpleState getState()
-   {
-	   return stack.peek().state;
-   }
-   
-   public static int getBeginCase() {
-      return stack.peek().beginCase;
-   }
-   
-   /**
-    * Remove the top element from the stack
-    */
    public static void pop() {
       stack.pop();
    }
    
-   /**
-    * @return Lower bound
-    */
-   public static int getLowB() {
-      return stack.peek().state.getLowerBound();
-   }
-   
-   /**
-    * @return Upper bound
-    */
-   public static int getUpB() {
-	    return stack.peek().state.getUpperBound();
-   }
-   
+   public static SimpleState top() {
+	      return stack.peek();
+	   }
+
    /**
     * @return The size of the stack
     */
@@ -124,8 +85,8 @@ public class CTypeStack {
     * @return the path to the current element in Unix path style 
     * adds a trailing / at the end if not empty 
     */
-   public static String getCurrentPath() {
-      String ret = getCurrentParentPath();
+   public static String getCurrentPathSlash() {
+      String ret = getCurrentPath();
       
       return ret == "" ? ret : (ret + "/");
    }
@@ -133,10 +94,10 @@ public class CTypeStack {
    /**
     * @return The path to the current element in Unix path style
     */
-   public static String getCurrentParentPath() {
+   public static String getCurrentPath() {
       String ret = "";
       for (int i = 0; i < stack.size(); i++)
-         ret += "/" + stack.get(i).state.getName();
+         ret += "/" + stack.get(i).getName();
 
       return ret;
    }
@@ -147,20 +108,20 @@ public class CTypeStack {
     * @return
     */
    public static String getStructPath() {
-      String ret = stack.get(0).state.getName() + "->";
+      String ret = stack.get(0).getName() + "->";
       for (int i = 1; i < stack.size(); i++)
       {
          String sep;
-         if (stack.get(i).state.getUpperBound() > 0)
+         if (stack.get(i).getUpperBound() > 0)
             sep = ".";
          else 
             sep = "->";
          
-         if ((stack.get(i).state.getLowerBound() != stack.get(i).state.getUpperBound()) && (stack.get(i).state.getUpperBound() != 1))
-            ret += stack.get(i).state.getName() + 
-                   "[" + stack.get(i).state.getName().split("_")[0] + "_it]";
+         if ((stack.get(i).getLowerBound() != stack.get(i).getUpperBound()) && (stack.get(i).getUpperBound() != 1))
+            ret += stack.get(i).getName() + 
+                   "[" + stack.get(i).getName().split("_")[0] + "_it]";
          else
-            ret += stack.get(i).state.getName();
+            ret += stack.get(i).getName();
          
          //if (i < (stack.size() - 1))
             ret += sep;
@@ -189,6 +150,8 @@ public class CTypeStack {
     */
    public static void resetCase() { 
       nextCase = 0;
+      endCase.clear();
+      beginCase.clear();
    }
    
    /**
@@ -196,8 +159,24 @@ public class CTypeStack {
     * @param name  The name of the complex type
     * @param label The switch label, it is only a number
     */
+   
    public static void setEndCase(SimpleState state, Integer label) {
-      childrenSet.put(state, label);
+	   if(endCase.containsKey(state)&& endCase.get(state)!=label) 
+		   throw new java.lang.ArrayStoreException("child "+state.getName()+"already present!");
+	   System.out.println(getCurrentPath()+":endCase "+state.getName()+"="+label);
+	   endCase.put(state, label);
+   }
+   /**
+    * Sets the label to be able to find where a complex type begins
+    * @param name  The name of the complex type
+    * @param label The switch label, it is only a number
+    */
+   
+   public static void setBeginCase(SimpleState state, Integer label) {
+	   if(beginCase.containsKey(state)&& beginCase.get(state)!=label) 
+		   throw new java.lang.ArrayStoreException("child "+state.getName()+"already present!");
+	   System.out.println(getCurrentPath()+":beginCase "+state.getName()+"="+label);
+	   beginCase.put(state, label);
    }
    
    /**
@@ -205,10 +184,21 @@ public class CTypeStack {
     * @return 
     */
    public static int getEndCase(SimpleState state){
-	   if(childrenSet.containsKey(state))          
-		   return childrenSet.get(state);
+	   if(endCase.containsKey(state))          
+		   return endCase.get(state);
 	   else
-		   throw new NullPointerException("child "+state.getName()+" not found!");
+		   throw new java.util.NoSuchElementException("child "+state.getName()+" not found!");
+		   //return -1;
+   }
+   /**
+    * @param name The name of the complex element
+    * @return 
+    */
+   public static int getBeginCase(SimpleState state){
+	   if(beginCase.containsKey(state))          
+		   return beginCase.get(state);
+	   else
+		   throw new java.util.NoSuchElementException("child "+state.getName()+" not found!");
 		   //return -1;
    }
 }

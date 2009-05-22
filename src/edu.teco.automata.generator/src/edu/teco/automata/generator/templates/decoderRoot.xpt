@@ -2,7 +2,7 @@
 «EXTENSION edu::teco::automata::generator::templates::util»
 
 «DEFINE root FOR StateMachine»
-   «FILE "DecoderAutomata.java"»
+   «FILE states.typeSelect(StartState).first().out.name+"DecoderAutomata.java"»
       package edu.teco.automata.generator.gen;
       
       import java.io.IOException;
@@ -12,9 +12,9 @@
       import edu.teco.automata.generator.types.TypesString;
       import edu.teco.automata.generator.core.BitsIO;
       
-	  public class DecoderAutomata extends edu.teco.automata.generator.core.DecoderAutomata 
+	  public class «states.typeSelect(StartState).first().out.name»DecoderAutomata extends edu.teco.automata.generator.core.DecoderAutomata 
 	  {
-	    public DecoderAutomata(BitsIO io) {
+	    public «states.typeSelect(StartState).first().out.name»DecoderAutomata(BitsIO io) {
 		 	super(io);
 	    }
 	    
@@ -38,7 +38,10 @@
                   else 
                      idx = 1;
                   elemCount = 0;
-                  throw new IOException("Unknown id");
+                  if(!xmlElement.toLowerCase().equals("stop")) «REM» Hack «ENDREM»
+                  	throw new IOException("Unknown id");
+                  else
+                    return null;
                }
             }
          }
@@ -59,7 +62,9 @@
       if (!"«name.toLowerCase()»".equals(xmlElement.toLowerCase()))
       {
          idx++;
+         
          «IF type.metaType.name == complexTypeName()-»
+        
             «IF (upperBound != 1 && upperBound != 0) || 
                 (upperBound == 1 && lowerBound == 0)-»
             «FOREACH out AS tr ITERATOR it»
@@ -74,7 +79,12 @@
                                            "«name»" + " upB " +  "«upperBound»"
                                          + " lowB " + "«lowerBound»");
                   «ENDIF»
-                  stack.push(new IdxMemo(«count», elemCount));
+                   «IF tr.metaType==SimpleState && ((SimpleState)tr).depth>depth»
+                   	 stack.push(new IdxMemo(«count», elemCount));
+                   	«ELSE»
+            		 io.write_false();
+         		  «ENDIF»
+                  
                   elemCount = 0;
                   continue;
                } 
@@ -114,8 +124,8 @@
            «ENDIF»
          «ENDIF»
          
-         «IF out.get(0).metaType.name == "Automata::SimpleState"-»
-            «IF ((SimpleState)out.get(0)).depth < depth»  
+        
+       «IF out.get(0).metaType == SimpleState && ((SimpleState)out.get(0)).depth < depth»  
                if (!stack.isEmpty())
                {
                   IdxMemo memo = stack.pop(); 
@@ -123,19 +133,7 @@
                   elemCount = memo.elemCount;
                   continue;
                }
-               
-            «ENDIF»
-         «ELSE»
-               if (!stack.isEmpty())
-               {
-                  IdxMemo memo = stack.pop(); 
-                  idx       = memo.idx;
-                  elemCount = memo.elemCount;
-                  continue;
-               }
-         «ENDIF»
-            
-
+        «ENDIF»
       } else {
          elemCount++;
          «IF lowerBound != upperBound»

@@ -1,8 +1,11 @@
 package edu.teco.automata.generator.core;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.eclipse.cdt.core.parser.EndOfFileException;
 
 public class BitsIO {
 
@@ -50,15 +53,23 @@ public class BitsIO {
     * ========================================================================
     */
    public int write_bits(byte bits[], int bits_len) throws IOException {
-      int  i;
+     
       int  bytes = bits_len / 8;
       byte rest_len = (byte) (bits_len % 8);
       int  ret = 0;
-
+      
+      System.out.print("w["+bits_len+"]:");
+      
+      for(int i=0;i<bits_len;i+=8)
+      { 
+    	  System.out.print(""+Integer.toBinaryString(bits[i/8]));
+      }
+      System.out.println("");
+      
       if (o_currBit > 0) {
          byte byteA[] = new byte[1];
 
-         for (i = 0; i < bytes; i++) {
+         for (int i = 0; i < bytes; i++) {
             byteA[0] = (byte) ((bits[i] >> o_currBit) | (o_lastByte));
             o_lastByte = low_n_bits_shift(bits[i], o_currBit);
             os.write(byteA);
@@ -147,7 +158,7 @@ public class BitsIO {
 
                res = is.read(b);
                if (res < 0) {
-                  throw new IOException("Error reading. EOF");
+                  throw new EOFException();
                }
                ret += res;
                tmp_byte = low_n_bits_shift(b[0], i_currBit);

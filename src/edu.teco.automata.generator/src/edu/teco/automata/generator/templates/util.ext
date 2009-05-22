@@ -35,56 +35,45 @@ String getTypeMap(String name):
     
 String getTypeName(DataType type):  getTypeMap(type.metaType.name);
         
-Void pushType(SimpleState s, int label):
-    JAVA edu.teco.automata.generator.templates.CTypeStack.push(edu.teco.automata.Automata.SimpleState,
-                                   java.lang.Integer);                                   
+Void stack_push(SimpleState s):
+    JAVA edu.teco.automata.generator.templates.CTypeStack.push(edu.teco.automata.Automata.SimpleState);                                   
                                    
 int getZero(): 0;
 
-Boolean isStackEmpty():
+Boolean stack_isEmpty():
     JAVA edu.teco.automata.generator.templates.CTypeStack.isEmpty();
 
-
-
 //Make stack typed using Model!!!
-SimpleState getParent():
-	JAVA edu.teco.automata.generator.templates.CTypeStack.getState();
+SimpleState stack_top():
+	JAVA edu.teco.automata.generator.templates.CTypeStack.top();
 	
-Void popStack():
+Void stack_pop():
     JAVA edu.teco.automata.generator.templates.CTypeStack.pop(); 
     
-Integer getSize():
+Integer stack_size():
     JAVA edu.teco.automata.generator.templates.CTypeStack.size();
     
-Void clear():
+Void stack_clear():
     JAVA edu.teco.automata.generator.templates.CTypeStack.clear(); 
 
-String getCurrPath():
+String stack_getCurrPath():
     JAVA edu.teco.automata.generator.templates.CTypeStack.getCurrentPath(); 
     
-String getStructPath():
+String stack_getStructPath():
     JAVA edu.teco.automata.generator.templates.CTypeStack.getStructPath(); 
 
-String getCurrParentPath():
-    JAVA edu.teco.automata.generator.templates.CTypeStack.getCurrentParentPath();
-
-
-
+String stack_getCurrPathSlash():
+    JAVA edu.teco.automata.generator.templates.CTypeStack.getCurrentPathSlash();
 
 int getNextCase():
    JAVA edu.teco.automata.generator.templates.CTypeStack.getNextCase();
-
-int getBeginCase():
-   JAVA edu.teco.automata.generator.templates.CTypeStack.getBeginCase();
 
 Void incCase():
    JAVA edu.teco.automata.generator.templates.CTypeStack.incCase();
 
 Void resetCase():
    JAVA edu.teco.automata.generator.templates.CTypeStack.resetCase();
-   
-   
-   
+      
 
 Void setEndCase(SimpleState name, int label):
    JAVA edu.teco.automata.generator.templates.CTypeStack.setEndCase(edu.teco.automata.Automata.SimpleState, java.lang.Integer);
@@ -92,11 +81,14 @@ Void setEndCase(SimpleState name, int label):
 int getEndCase(SimpleState name):
    JAVA edu.teco.automata.generator.templates.CTypeStack.getEndCase(edu.teco.automata.Automata.SimpleState); 
    
-   
+Void setBeginCase(SimpleState name, int label):
+   JAVA edu.teco.automata.generator.templates.CTypeStack.setBeginCase(edu.teco.automata.Automata.SimpleState, java.lang.Integer);
+    
+int getBeginCase(SimpleState name):
+   JAVA edu.teco.automata.generator.templates.CTypeStack.getBeginCase(edu.teco.automata.Automata.SimpleState); 
   
 String complexTypeName():
     JAVA edu.teco.automata.generator.transformer.DataTypes.getComplexTypeName();
-    
     
 Void set_reset():
 	JAVA  edu.teco.automata.generator.templates.Set.reset();
@@ -110,6 +102,3 @@ Void set_add(String name):
 	
 
 String gen_readBit(): "in.read_bit()";
-
-
-

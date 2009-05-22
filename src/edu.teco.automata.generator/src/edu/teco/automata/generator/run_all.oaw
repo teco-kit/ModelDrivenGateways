@@ -44,7 +44,12 @@
  
 <if cond="${doJava}"> 
    
-   <component file="${packagePath}/targets/JavaXML2.oaw" >
+   <component file="${packagePath}/targets/JavaXML.oaw" >
+    <outlet_path value="${outlet_path}/${packagePath}/gen"/>
+    <NSPrefix value="${NSPrefix}"/>
+   </component>
+   
+    <component file="${packagePath}/targets/JavaXML2.oaw" >
     <outlet_path value="${outlet_path}/${packagePath}/gen"/>
     <NSPrefix value="${NSPrefix}"/>
    </component>
