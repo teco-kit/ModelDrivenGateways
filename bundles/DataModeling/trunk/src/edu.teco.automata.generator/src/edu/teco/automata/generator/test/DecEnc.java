@@ -28,6 +28,7 @@ public class DecEnc extends TestCase {
 	String testDir = "src/edu/teco/automata/generator/test/";
 	String xmlPath = testDir + "xsd/prs74.xml";
 	String xsdPath = testDir + "xsd/prs74.xsd";
+	String rootElem ="SensorValues";
 
 	@Before
 	public void setUp() throws Exception {
@@ -47,8 +48,8 @@ public class DecEnc extends TestCase {
 		Runner.main(properties, target);
 		assertTrue(0 == com.sun.tools.javac.Main.compile(new String[] {
 				"-classpath", "bin", "-d", "bin",
-				genDir + "EncoderAutomata.java",
-				genDir + "DecoderAutomata.java" }));
+				genDir + rootElem +"EncoderAutomata.java",
+				genDir + rootElem +"DecoderAutomata.java" }));
 		return;
 	}
 
@@ -61,7 +62,7 @@ public class DecEnc extends TestCase {
 		
 		fos= new FileOutputStream(genDir + "/output.bin");
 		try{
-		SAXSerializer w = new SAXSerializer(fos);
+		SAXSerializer w = new SAXSerializer(fos,"edu.teco.automata.generator.gen.SensorValuesDecoderAutomata");
 		
 		XmlReader xml = new XmlReader(xmlPath, w, w);
 
@@ -77,7 +78,7 @@ public class DecEnc extends TestCase {
 		
 		fis = new FileInputStream(genDir + "/output.bin");try{
 		fos = new FileOutputStream(genDir + "/prs74.xml");try{
-			BinXMLPrinter reader = new BinXMLPrinter();
+			BinXMLPrinter reader = new BinXMLPrinter("edu.teco.automata.generator.gen."+rootElem+"EncoderAutomata");
 			reader.run(fis, fos);
 		}finally {	fos.close();}
 		}finally {	fis.close();}

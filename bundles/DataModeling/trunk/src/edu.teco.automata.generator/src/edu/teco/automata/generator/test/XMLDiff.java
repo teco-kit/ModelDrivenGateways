@@ -95,13 +95,20 @@ public class XMLDiff {
 			switch(node1.getNodeType())
 			{
 			case Node.ELEMENT_NODE:
-				if (! node1.getNodeName().equals(node2.getNodeName()))
+			{
+				String name1=node1.getLocalName();
+				if(name1==null) name1=node1.getNodeName().replaceFirst(".+:",""); 
+				String name2=node2.getLocalName();
+				if(name2==null) name2=node2.getNodeName().replaceFirst(".+:",""); 
+			
+				if (! name1.equals(name2)) //TODO is not very strict -> name space
 					return false;
 				if (!diffNodes(n1.item(i1).getChildNodes(), n2.item(i2).getChildNodes()))
 				 return false;
 				break;
+			}
 			case Node.ATTRIBUTE_NODE:
-				if (! node1.getNodeName().equals(node2.getNodeName()))
+				if (! node1.getLocalName().equals(node2.getLocalName()))//TODO is not very strict -> name space
 					return false;
 			case Node.TEXT_NODE:
 			{

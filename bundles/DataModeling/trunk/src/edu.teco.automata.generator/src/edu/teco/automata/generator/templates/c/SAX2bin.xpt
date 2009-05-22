@@ -9,12 +9,12 @@
 
 «DEFINE root(String nameID) FOR Automata::StateMachine»
    «initQueries()»
-    «clear()»
+    «stack_clear()»
    «resetCase()»
    «FOREACH states AS st»
       «EXPAND encoderRoot::initNeeded FOR st»
    «ENDFOREACH»
-   «clear()»
+   «stack_clear()»
    «resetCase()»
    
    «FILE this.states.typeSelect(StartState).first().out.name+"_sax2bin.c"»
@@ -92,7 +92,7 @@ return 1;
  «IF lowerBound!=upperBound»
  «ERROR name+" not constant"» 
  «ENDIF»
-   /* constLoop «getCurrPath() + name» */
+   /* constLoop «stack_getCurrPath() + name» */
    static int lowB«count»;
    for (lowB«count»=«lowerBound»;lowB«count»>0 && (soap_element_begin_in(soap,"«getNSPrefix()»:«name»")==SOAP_OK) ;lowB«count»--)
     «targetDef.proceed()»
@@ -109,7 +109,7 @@ return 1;
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::loopBegin(Integer count) 
 FOR SimpleState»
-   /* loop «getCurrPath() + name» */
+   /* loop «stack_getCurrPathSlash() + name» */
    while(«EXPAND IsElement -»)
      «targetDef.proceed()»
      write_true(writer);

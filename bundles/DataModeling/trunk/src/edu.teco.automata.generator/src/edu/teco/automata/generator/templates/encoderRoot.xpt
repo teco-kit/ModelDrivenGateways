@@ -9,35 +9,31 @@
 «ENDDEFINE»
 
 
-«DEFINE state(Integer count) FOR SimpleState»
 
-   «IF ! isStackEmpty()»
-      «IF getParent().depth >= depth» «REM»leaving state«ENDREM»
-         «EXPAND stateComplexEnd(getCurrParentPath()) FOR getParent()»
-      «ENDIF»
-   «ENDIF»   
-   
+«DEFINE state(Integer count) FOR SimpleState»
+	«EXPAND closeStates»
+    
    «IF type.metaType == complexType»   
-      «LET getNextCase() AS next»
+ «REM»     «LET getNextCase() AS next» «ENDREM»
       
-      «EXPAND stateComplexBegin(count, next)»      
+      «EXPAND stateComplexBegin(count, getBeginCase()+1)»«REM»TODO use out case«ENDREM»      
        
-      «IF lowerBound == upperBound » «REM»fixed number of elements«ENDREM»
+      «IF lowerBound == upperBound» «REM»fixed number of elements«ENDREM»
          « IF lowerBound == 1 » 
-           «EXPAND complexBegin(next)»
-         « ELSE »
-           «EXPAND complexConstLoopBegin(count, next)»
+           «EXPAND complexBegin»«REM»TODO use out case«ENDREM»
+         «ELSE »
+           «EXPAND complexConstLoopBegin(count, getEndCase()+1)»«REM»TODO use out case«ENDREM»
          « ENDIF »
       « ELSE »
-           « EXPAND complexLoopBegin(count, next) »
+           « EXPAND complexLoopBegin(count, getEndCase()+1) »«REM»TODO use out case«ENDREM»
       « ENDIF »
       
       «EXPAND stateEnd»
       
-      «ENDLET»
+   «REM»   «ENDLET» «ENDREM»
    «ELSE»
    
-      «EXPAND stateBegin(count)»      
+      «EXPAND stateBegin(getBeginCase()+1)»      
       
       « IF lowerBound == upperBound »
          « IF lowerBound != 1 »
@@ -63,9 +59,8 @@
 «ENDDEFINE»
 
 «DEFINE state(Integer count) FOR StopState»
-   «IF ! isStackEmpty()»
-      «EXPAND stackItr(getSize()-1)»
-   «ENDIF»
+   «EXPAND closeStates»
+
    «EXPAND StateBegin»
    «EXPAND StateEnd»
 «ENDDEFINE»
@@ -75,11 +70,19 @@
 «REM»Should not be executed«ENDREM»
 «ENDDEFINE»
 
-«DEFINE stackItr(Integer count) FOR StopState»
-   «EXPAND stateComplexEnd(getCurrParentPath()) FOR getParent()»
-   «IF count > 0»
-      «EXPAND stackItr(count-1)»
-   «ENDIF»
+
+«DEFINE closeStates FOR SimpleState»
+  «IF ! stack_isEmpty() &&  stack_top().depth >= depth» «REM»leaving state«ENDREM»
+         «EXPAND stateComplexEnd(stack_getCurrPathSlash()) FOR stack_top()»
+         «EXPAND closeStates»
+  «ENDIF»
+«ENDDEFINE»
+
+«DEFINE closeStates FOR StopState»
+«IF ! stack_isEmpty()»
+   «EXPAND stateComplexEnd(stack_getCurrPathSlash()) FOR stack_top()»
+   «EXPAND closeStates»
+«ENDIF»
 «ENDDEFINE»
 
 «REM» 
@@ -88,56 +91,48 @@ Stack initializer
 needs to be called at beginning of each template
 «ENDREM»
 
+
+
 «DEFINE initNeeded FOR SimpleState»
-   «incCase()»
-   «IF ! isStackEmpty()»
-      «LET getParent() AS parent»
-      «IF parent.depth >= depth»
-      «EXPAND stIterator(depth)»
-      «REM»
-         «IF isCurrNeeded()»
-            «EXPAND stIterator(depth)»
-         «ELSE»
-            «ERROR "Why not"+ name»
-            «popStack()»
-         «ENDIF»
-        «ENDREM»
-      «ENDIF»
-   «ENDLET»
-   «ENDIF» 
-   
-   «IF type.metaType == complexType»
-      «pushType(lowerBound)»
-   «REM»  «pushType(name, depth, lowerBound, upperBound, kind, lowerBound?????)» «ENDREM»
-   «ELSE»
-      «IF isNeeded(getCurrPath() + name)»
-         «setCurrNeeded(true)»
-         «setNeeded(getCurrPath() + name, true)»
-      «ENDIF»
+    «EXPAND initClose»
+    «LET getNextCase() AS nextCase»
+    «IF type.metaType == complexType»
+      «stack_push()» //push «name»: «nextCase»
+      «setBeginCase(nextCase)»
+     «ELSE»
+     «setBeginCase(nextCase)»
+     «setEndCase(nextCase)»
+     // «name»: «nextCase»
    «ENDIF»
+   «ENDLET»
 «ENDDEFINE»
 
 «DEFINE initNeeded FOR StopState»
-   «IF ! isStackEmpty()»
-      «EXPAND stIterator(-1)»
-   «ENDIF»
+      «EXPAND initClose»
 «ENDDEFINE»
 
 «DEFINE initNeeded FOR State»
 «ENDDEFINE»
 
-«DEFINE stIterator(Integer depth) FOR State»
-   «LET getNextCase() AS label»
-   «setEndCase(getParent(), label)»
-   «setNeeded(getParent().name, isCurrNeeded())»
-   «popStack()»
+«DEFINE initClose FOR SimpleState»
+  «IF !stack_isEmpty() && stack_top().depth >= depth» 
+      «LET getNextCase() AS nextCase»
+        «setEndCase(stack_top(),nextCase)» 
+        //pop «stack_top().name»: «nextCase» 
+        «stack_pop()»
+        «EXPAND initClose»
    «ENDLET»
-   «IF ! isStackEmpty()»
-   «IF getParent().depth >= depth»
-      «EXPAND stIterator(depth)»
-   «ELSE»
-      «setCurrNeeded(false)»
    «ENDIF»
+«ENDDEFINE»
+
+«DEFINE initClose FOR StopState»
+  «IF !stack_isEmpty()» 
+      «LET getNextCase() AS nextCase»
+        «setEndCase(stack_top(),nextCase)» 
+        //pop «stack_top().name»: «nextCase» 
+        «stack_pop()»
+        «EXPAND initClose»
+   «ENDLET»
    «ENDIF»
 «ENDDEFINE»
 
@@ -148,16 +143,16 @@ easy AROUND statements.
 
 «REM»============state============«ENDREM»
 
-«DEFINE stateBegin(Integer count) FOR SimpleState»
-   case «getNextCase()» : //stateBegin(«name»)
+«DEFINE stateBegin(Integer next) FOR SimpleState»
+   case «getBeginCase()» : //stateBegin(«name»)
    {
-      label++; 
+      label=«next»; //assert «next»==label+1
 «ENDDEFINE»
 
 «DEFINE stateBegin FOR StartState»
-   case «getNextCase()» : //stateBegin(«getCurrPath()»)
+   case 0: //stateBegin(«stack_getCurrPath()»)
    {
-      label++; 
+      label=1; 
 «ENDDEFINE»
 
 «DEFINE StateBegin FOR StopState»
@@ -188,14 +183,14 @@ easy AROUND statements.
 
 «REM»============stateComplex============«ENDREM»
 
-«DEFINE stateComplexBegin(Integer count, Integer label) FOR SimpleState»
-   case «label» ://stateComplexBegin(«name»)
+«DEFINE stateComplexBegin(Integer count, Integer next) FOR SimpleState»
+   case «getBeginCase()» ://stateComplexBegin(«name»)
    {
-   label++;
+   label=«next»; //assert «next»==label+1
 «ENDDEFINE»
 
 «DEFINE stateComplexEnd(String path) FOR SimpleState» 
-   case «getNextCase()»:  //stateComplexEnd(«name») : «lowerBound»..«upperBound»
+   case «getEndCase()»:  //stateComplexEnd(«name») : «lowerBound»..«upperBound»
    {
     «IF lowerBound != 1 || upperBound != 1»«REM» TODO: why is this split into 2 ends??? «ENDREM»
       «IF lowerBound == upperBound» 
@@ -204,7 +199,7 @@ easy AROUND statements.
       «EXPAND complexLoopEnd1(path)»
       «ENDIF»
     «ELSE»
-      «EXPAND complexEnd»
+      «EXPAND complexEnd(getEndCase()+1)»«REM»TODO use out case«ENDREM»
    «ENDIF»
    
    «EXPAND stateNameEnd»
@@ -219,7 +214,8 @@ easy AROUND statements.
    break;
    «ENDIF»
    } /* case */
-   «popStack()»
+   //pop «stack_top().name»
+   «stack_pop()»
 «ENDDEFINE»
 
 «REM»==== simpleElement  ====«ENDREM»
@@ -263,20 +259,22 @@ easy AROUND statements.
 
 «REM»==== complexElement  ====«ENDREM»
 
-«DEFINE complexBegin(Integer label) FOR SimpleState»
+«DEFINE complexBegin FOR SimpleState»
             « EXPAND stateNameBegin »
-            « pushType(label) »
+            « stack_push() » //push «name»: next 
+         «REM»   «setBeginCase(label)»«ENDREM»
 «ENDDEFINE»
 
-«DEFINE complexEnd FOR SimpleState»
-     label++; «REM»TODO: is this always correct??«ENDREM»
+«DEFINE complexEnd(Integer next) FOR SimpleState»
+     label=«next»; // Complex End
 «ENDDEFINE»
 
 «REM»==== complexLoop  ====«ENDREM»
 
-«DEFINE complexLoopBegin(Integer count, Integer label) FOR SimpleState»
+«DEFINE complexLoopBegin(Integer count, Integer next) FOR SimpleState»
    « EXPAND stateNameBegin »   
-   « pushType(label) »
+            «stack_push() » //push «name»: next «next»
+           «REM»   «setBeginCase(label)»«ENDREM»
 «ENDDEFINE»
 
 «DEFINE complexLoopEnd1(String endName) FOR SimpleState»
@@ -289,9 +287,10 @@ easy AROUND statements.
 
 «REM»==== complexConstLoop  ====«ENDREM»
 
-«DEFINE complexConstLoopBegin(Integer count, Integer label) FOR SimpleState»
+«DEFINE complexConstLoopBegin(Integer count, Integer next) FOR SimpleState»
    « EXPAND stateNameBegin »
-   « pushType(label) »
+    «stack_push() » //push «name»: next «next»
+            «REM»   «setBeginCase(label)»«ENDREM»
 «ENDDEFINE»
 
 «DEFINE complexConstLoopEnd1(String endName) FOR SimpleState»
