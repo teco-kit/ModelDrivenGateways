@@ -57,7 +57,6 @@
 #include "usbbridge.h"
 #include "concom.h"
 #include "acltypes.h"
-#include "deliver_event.h"
 //#include "error.h"
 //#include "future.h"
 
@@ -589,7 +588,16 @@ read_packet( usbbridge *bridge, char *buf, size_t len )
   return n;
 }
 
-char *GetSensorValues_ret_buf()//XXX
+void send_buf(struct dpws_s *device,int service_id,int op_id, struct soap* soap, char* buf,ssize_t length)
 {
-	return global_packet_buffer;
+	//TODO dispatch by  device,
+	//TODO fill in service, operation and message context
+}
+
+char *rcv_buf(struct dpws_s *device,int service_id,int op_id, struct soap*)
+{
+	//TODO dispatch by  device, service, operation and message context
+	if (op_id==OP_SensorValues_GetSensorValues)
+		return get_global_packet_buf();
+	else return NULL;
 }

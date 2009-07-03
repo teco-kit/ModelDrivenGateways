@@ -21,11 +21,11 @@ int old = 0, index = 0;
 	}//memcpy
 
 	{
-	wsdls[index].name=name;
-	wsdls[index].content =content;
+	wsdls[index].name = name;
+	wsdls[index].content = content;
 	index++;
 
-	wsdls[index].name = NULL; //terminat
+	wsdls[index].name = NULL; //terminate
 	wsdls[index].content = NULL; //terminate
 	}//append on copy
 
