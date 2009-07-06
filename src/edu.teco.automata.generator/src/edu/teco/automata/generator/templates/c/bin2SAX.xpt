@@ -8,14 +8,12 @@
 «EXTENSION edu::teco::automata::generator::templates::AcceptorUtil»
 
 «DEFINE root(String nameID) FOR Automata::StateMachine»
-   «initQueries()»
    «stack_clear()»
    «resetCase()»
    «FOREACH states AS st»
       «EXPAND encoderRoot::initNeeded FOR st»
    «ENDFOREACH»
    «stack_clear()»
-   «resetCase()»
    
    «FILE this.states.typeSelect(StartState).first().out.name+"_bin2sax.c"»
    «EXPAND header(nameID)»
@@ -46,40 +44,36 @@
 
 
 #include <bitsio/read_bits.h>
-#include <enc/read_str_func.h>
+#include <strio/str_func.h>
 
-static struct soap *soap   = NULL;
-static        int   label  = 0;
-static void        *reader = NULL;
 
 #ifndef SOAP_TYPE_string
 #define SOAP_TYPE_string 0
 #endif
 
-void «this.states.typeSelect(StartState).first().out.name»_bin2sax_init(struct soap *_soap, void * _reader)
-{
-   soap   = _soap;
-   reader = _reader;
-   label  = 0;
-   «REM»
-   TODO: return lock state or make reentrant (watch static lowB{count})
-   
-   to make reentrant move soap argument to run and attach label and lowB[{count}] to reader (needs header for maxdepth/count)
-   «ENDREM»
-}
 
-static int gsoap_automata();
+«FILE this.states.typeSelect(StartState).first().out.name+"_bin2sax.h"»
+ #include <bitsio/read_bits.h>
+ #include <bitsio/read_bits_buf.h>
+ int «this.states.typeSelect(StartState).first().out.name»_bin2sax_run(struct READER_STRUCT *reader, struct soap *soap);
+«ENDFILE»
 
-int «this.states.typeSelect(StartState).first().out.name»_bin2sax_run() 
+static int gsoap_automata(struct READER_STRUCT *reader,struct soap *soap,int *label);
+
+
+int «this.states.typeSelect(StartState).first().out.name»_bin2sax_run(struct READER_STRUCT *reader,struct soap *soap) 
 {
 	int ret;
-	while((ret=gsoap_automata())>0);
+	int label=0;
+	while((ret=gsoap_automata(reader,soap,&label))>0);
 	
     return ret;	
 }
+
 // return:  0 if EOF, 0<for fault, and  read bits else (TODO)
-static int gsoap_automata()
+static int gsoap_automata(struct READER_STRUCT *reader,struct soap *soap,int *_label)
 {
+#define label (*_label)
 «ENDDEFINE»
 
 «DEFINE footer(String nameID) FOR StateMachine»
@@ -117,26 +111,26 @@ FOR SimpleState»
 
 
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoopBegin(Integer count, Integer label) FOR SimpleState»
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoopBegin(Integer count, Integer next) FOR SimpleState»
    if(read_bit(reader))
    { /* depth «depth»*/
    «targetDef.proceed()»
    }
    else
    {
-      label = «getEndCase()» ;
+      label = «next» ;
       continue;
    } /* «name» */
 «ENDAROUND»
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoopBegin(Integer count, Integer label) FOR SimpleState» 
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoopBegin(Integer count, Integer next) FOR SimpleState» 
    if(read_bit(reader)) «REM» TODO: Same as complexLoop Can be optimized by counting occurences«ENDREM»
    { /* depth «depth»*/
    «targetDef.proceed()»
    }
    else
    {
-      label = «getEndCase()»;
+      label = «next»;
       continue;
    } /* «name» */
 «ENDAROUND»
@@ -153,7 +147,9 @@ FOR SimpleState»
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd 
 FOR SimpleState»
    «IF kind != "attribute"-»
-   «EXPAND generateSaxEndEvent»
+   «IF type.metaType == complexType»   
+   		«EXPAND generateSaxEndEvent» «REM»Value events generate their own«ENDREM»
+   «ENDIF»
    «ELSE-»
    «ENDIF-»
 «ENDAROUND»
@@ -201,42 +197,7 @@ FOR SimpleState»
 
 
 «DEFINE readFunction FOR SimpleState»
-«LET getTypeMap(type.metaType.name).toLowerCase() AS tName»
-ret = str_read_«getTypeMap(type.metaType.name).toLowerCase()»(&str
-«IF tName == "string"-»
-   , «((Automata::TString)type).length»
-«ELSEIF tName == "int" || tName == "short" || tName == "byte" -»
-   «LET ((Automata::TInt)type) AS type-»
-      «IF type.min != type.max-»
-         , «bitsLen(type.min, type.max)-»
-      «ELSE-»
-         , 0
-      «ENDIF-»
-      «IF ( (type.min == 0)                                && 
-           ((type.max == twoPow(8)-1  && tName == "byte")  || 
-           (type.max == twoPow(16)-1  && tName == "short") || 
-           (type.max == twoPow(32)-1  && tName == "int")))-»
-        , 1
-      «ELSE-»
-        , 0
-      «ENDIF-»
-   «ENDLET-»       
-«ELSEIF tName == "double"-»
-   «LET ((Automata::TDouble)type) AS type-»
-      «IF type.min != type.max-»
-         , «bitsLen(type.min, type.max)-»
-      «ELSE-»
-         , 0
-      «ENDIF-»
-      «IF type.fractionDigits > 0-»
-         , «type.fractionDigits», «fracBitsLen(type.fractionDigits)-»
-      «ELSE-»
-         , 0, 0
-      «ENDIF-»
-   «ENDLET-»
-«ENDIF-»
-, reader);
-«ENDLET»
+ret = «EXPAND read FOR type»;
 
 
  if (ret < 0)
@@ -246,6 +207,23 @@ ret = str_read_«getTypeMap(type.metaType.name).toLowerCase()»(&str
       return -1;
    }
 «ENDDEFINE»
+
+«DEFINE read FOR TInt»
+str_read_«IF (min>=0 && max!=min) -»u«ENDIF-»int32_t(reader,&str,«bitsLen(min, max)-»);
+«ENDDEFINE»
+
+«DEFINE read FOR TByte»
+str_read_«IF (min>=0 && max!=min) -»u«ENDIF-»int8_t(reader,&str,«bitsLen(min, max)-»);
+«ENDDEFINE»
+
+«DEFINE read FOR TShort»
+str_read_«IF (min>=0 && max!=min) -»u«ENDIF-»int16_t(reader,&str,«bitsLen(min, max)-»);
+«ENDDEFINE»
+
+«DEFINE read FOR DataType»
+«ERROR "DataType "+metaType.name+" not supported"»
+«ENDDEFINE»
+
 
 «DEFINE readFunctionCleanUp FOR SimpleState»
  free(str);

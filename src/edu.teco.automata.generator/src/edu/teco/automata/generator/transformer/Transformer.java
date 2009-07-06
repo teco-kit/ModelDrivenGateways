@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
+import org.openarchitectureware.util.stdlib.GlobalVarExtensions;
 import org.openarchitectureware.workflow.WorkflowContext;
 import org.openarchitectureware.workflow.issues.Issues;
 import org.openarchitectureware.workflow.lib.SimpleJavaModificationComponent;
@@ -32,11 +33,15 @@ public class Transformer extends SimpleJavaModificationComponent {
    private static int depth = 0;
    
 	private String rootElement=null;
+	private String rootElementVar=null;
 	
 	public void setRootElement(String rootElement) {
 	      this.rootElement = rootElement;
 	}
 	
+	public void setRootElementVar(String rootElementVar) {
+	      this.rootElementVar = rootElementVar;
+	}
 	
 
    @Override
@@ -48,7 +53,7 @@ public class Transformer extends SimpleJavaModificationComponent {
 
 	@Override
 	public String getLogMessage() {
-		return "generating automata"+(rootElement==null?"":" for "+rootElement) +" into slot "+outputSlot;
+		return "generating automata"+(rootElement==null?(rootElementVar==null?"":" for "+(String)GlobalVarExtensions.getGlobalVar(rootElementVar)):" for "+rootElement) +" into slot "+outputSlot;
 	}
 
 
@@ -72,7 +77,9 @@ public class Transformer extends SimpleJavaModificationComponent {
     	 
          if (obj.eClass().getInstanceClass() == EReference.class) {
             EReference rootRef = (EReference) obj;
-            if(rootElement!=null&& !rootRef.getName().equals(rootElement)) continue; //generate only specific root element
+            if(rootElement==null && rootElementVar!=null)
+            	rootElement=(String) GlobalVarExtensions.getGlobalVar(rootElementVar);
+            if(rootElement!=null&& !rootRef.getName().toLowerCase().equals(rootElement.toLowerCase())) continue; //generate only specific root element
             if(multiple) {issues.addWarning("found multiple root elements"); }
             multiple=true;
             for (EAnnotation ann : rootRef.getEAnnotations()) {

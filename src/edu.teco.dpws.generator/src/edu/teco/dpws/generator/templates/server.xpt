@@ -2,6 +2,7 @@
 
 
 «EXTENSION edu::teco::dpws::generator::templates::wsdl»
+«EXTENSION org::openarchitectureware::util::stdlib::globalvar»
 
 «DEFINE Root FOR TDefinitions»
 «EXPAND service FOREACH service »
@@ -9,11 +10,30 @@
 «ENDDEFINE»
 
 «DEFINE service FOR TService»
+
+«storeGlobalVar("WSDLInMessageTypes",port.getPortType().operation.select(e|e.input!=null).input.getMessage().part.element.localPart.toSet())»
+«storeGlobalVar("WSDLOutMessageTypes",port.getPortType().operation.select(e|e.output!=null).output.getMessage().part.element.localPart.toSet())»
+
+«FILE name+"_operations.h"»
+enum «name»_operations
+ {
+ «FOREACH port.getPortType().operation AS op SEPARATOR ","»OP_«name»_«op.name»«ENDFOREACH»
+ };
+«ENDFILE»
 «FILE name+"Server.c"»
+
+enum operations
+{
+ «FOREACH port.getPortType().operation AS op SEPARATOR ","»
+   OP_«op.name»
+ «ENDFOREACH»
+};
+ 
 #include <soap.h>
 #include <dpws_device.h>
 #include <stdsoap2.h>
-#include <bitsio/read_bits_buf.h>
+
+#include "../src/sendrcv.h"
 
 	«EXPAND call FOREACH port.getPortType().operation.select(e|e.input!=null)-»
 	«EXPAND server-»
@@ -21,7 +41,7 @@
 «ENDDEFINE»
 
 «DEFINE server FOR TService»
-int  «name»_serve_request(struct soap *soap)
+int  «name»_serve_request(struct soap *soap) //TODO: pass device context
 {
 	soap_peek_element(soap);
 	«EXPAND dispatch FOREACH port.getPortType().operation.select(e|e.input!=null)-»
@@ -35,23 +55,45 @@ int  «name»_serve_request(struct soap *soap)
 «ENDDEFINE»
 
 «DEFINE call FOR TOperation»
-static int soap_serve_«name»(struct soap *soap)
-{
-
   «FOREACH this.input.getMessage().part.element AS arg»
-  {
-      extern void «arg.localPart»_gsoap_parser_init(struct soap *, void *);
-      extern void «arg.localPart»_gsoap_parser_run(void );
-      «arg.localPart»_gsoap_parser_init(soap, (void*)&reader);
-      «arg.localPart»_gsoap_parser_run();
-  }
+  #include "«arg.localPart»_sax2bin.h"
   «ENDFOREACH»
-      
+  «FOREACH this.output.getMessage().part.element AS arg»
+  #include "«arg.localPart»_bin2sax.h"
+  «ENDFOREACH»
+  
+static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
+{
+	int op_id=OP_«name»;
+	int service_id=0; //TODO
+	struct dpws_s *device=NULL;
+	
+«IF  !this.input.getMessage().part.element.isEmpty»
+    {  	  
+   	  u_char sendbuf[256];
+      struct WRITER_STRUCT* writer=write_bits_bufwriter_stack_new(sendbuf);
+  «FOREACH this.input.getMessage().part.element AS arg»
+  	  {
+       if («arg.localPart»_sax2bin_run(soap,writer)<0) return soap->error;
+  	  }
+  «ENDFOREACH»
+      send_buf(device,service_id,op_id,soap,sendbuf,write_finish(writer));
+    }
+«ELSE»
+    send_buf(device,service_id,op_id,soap,NULL,0);
+«ENDIF»
+
+«REM»TODO: Error Handling«ENDREM»
+
   /* create response header */
-  dpws_header_gen_response (soap, NULL, wsa_header_get_ReplyTo (soap),
-                            "http://www.teco.edu/SensorValues/GetSensorValuesOut",
+  {
+  char* To=wsa_header_get_ReplyTo (soap);
+  if(!To) To="http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous";
+  dpws_header_gen_response (soap, NULL, To,
+                            "«output.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»",
                             wsa_header_get_MessageId (soap),
                             sizeof (struct SOAP_ENV__Header));
+  }
 
    if ( soap_response(soap, SOAP_OK)
        || soap_envelope_begin_out(soap)
@@ -60,21 +102,17 @@ static int soap_serve_«name»(struct soap *soap)
    {
     	return soap->error;
    }
-   
+   «IF  !this.output.getMessage().part.element.isEmpty»
    {
-   	  struct READER_STRUCT reader;
-   	  extern char *«name»_ret_buf();
-      read_init(&reader, «name»_ret_buf());
+      struct READER_STRUCT* reader=read_bits_bufreader_stack_new((u_char *)rcv_buf(device,service_id,op_id,soap));
       «FOREACH this.output.getMessage().part.element AS arg»
       {
-      extern void «arg.localPart»_gsoap_automata_init(struct soap *, void *);
-      extern void «arg.localPart»_gsoap_automata_run(void );
-      
-      «arg.localPart»_gsoap_automata_init(soap, (void*)&reader);
-      «arg.localPart»_gsoap_automata_run();
+       «arg.localPart»_bin2sax_run(reader,soap);
       }
+      
       «ENDFOREACH»
    }
+   «ENDIF»
 
    if ( soap_body_end_out(soap)
        || soap_envelope_end_out(soap)

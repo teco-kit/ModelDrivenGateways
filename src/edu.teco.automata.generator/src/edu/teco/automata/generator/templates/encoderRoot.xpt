@@ -17,7 +17,7 @@
  «REM»     «LET getNextCase() AS next» «ENDREM»
       
       «EXPAND stateComplexBegin(count, getBeginCase()+1)»«REM»TODO use out case«ENDREM»      
-       
+       /* lowerbound=«lowerBound» upperbound=«upperBound»*/
       «IF lowerBound == upperBound» «REM»fixed number of elements«ENDREM»
          « IF lowerBound == 1 » 
            «EXPAND complexBegin»«REM»TODO use out case«ENDREM»

@@ -9,40 +9,49 @@
  * ========================================================================
  */
 #include <stdio.h>
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
 #include <errno.h>
+#include <stdlib.h>
 
 #include "bits_io.h"
-#include "read_bits_buf.h"
+#include "read_bits.h"
 
+struct READER_STRUCT {
+   u_char * src_buf;
+   u_int pos;
+   u_char lastByte;
+   u_char currBits;
+};
 
+const size_t read_bits_bufreader_size=sizeof(struct READER_STRUCT);
 /* ========================================================================
  *
  *
  * ========================================================================*/
-void read_init(struct READER_STRUCT * reader, u_char *src_buf)
+struct READER_STRUCT * read_bits_bufreader_init(struct READER_STRUCT *reader, u_char *src_buf)
 {
    reader->src_buf  = src_buf;
    reader->pos      = 0;
    reader->lastByte = 0;
    reader->currBits = 0;
+   return reader;
 }
 
 /* ========================================================================
  *
  *
  * ========================================================================*/
-ssize_t read_bits(void * memory, u_char *dst_buf, int bits_len)
+ssize_t read_bits(struct READER_STRUCT *reader, u_char *dst_buf, int bits_len)
 {
    int     bytes;    /* = bits_len / 8;*/
    int     rest_len; /* = bits_len % 8; */
    u_char  a_byte;
-   struct READER_STRUCT *reader = (struct READER_STRUCT *)memory;
-   ssize_t ret, res;
+   ssize_t ret;
 
    bytes    = bits_len >> 3;
    rest_len = bits_len % 8;
@@ -122,15 +131,4 @@ ssize_t read_bits(void * memory, u_char *dst_buf, int bits_len)
 
       return ret;
    }
-}
-
-/* ========================================================================
- *
- *
- * ========================================================================*/
-u_char read_bit( void * reader )
-{
-   u_char val;
-   read_bits(reader, &val, 1);
-   return val;
 }

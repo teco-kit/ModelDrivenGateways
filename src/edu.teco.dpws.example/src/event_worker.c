@@ -30,12 +30,12 @@ static char buffer1[64],buffer2[64];
 static char *global_packet_buffer=buffer1;
 
 
-void send_buf(struct dpws_s *device, int service_id, int op_id, struct soap* soap, char* buf, ssize_t length)
+void send_buf(struct dpws_s *device, int service_id, int op_id, struct soap* soap, u_char* buf, ssize_t length)
 {
 	if (op_id==OP_SensorValues_ConfigureSensors)
 	{
 		struct p_packet *p=p_pkt_alloc();
-		p_acl_add_str(p,"XML",(uint8_t *)buf,length,0);
+		p_acl_add_str(p,"XML",buf,length,0);
 		p_socket_send(s_send,p);
 		p_pkt_free(p);
 	}
@@ -47,7 +47,7 @@ void send_buf(struct dpws_s *device, int service_id, int op_id, struct soap* soa
 char *rcv_buf(struct dpws_s *device, int service_id,int op_id, struct soap* soap)
 {
 	//TODO dispatch by  device, service, operation and message context
-	if (op_id==OP_SensorValues_GetSensorValues)
+	if (op_id==OP_SensorValues_GetSensorValues || op_id==OP_SensorValues_SensorValuesEvent)
 		return  global_packet_buffer;
 	else return NULL;
 }
@@ -76,8 +76,10 @@ event_worker_loop() {
 #else
    {
 	   struct p_packet *p;
+while (!shutdownFlag)
+{
 
-while (NULL != (p = p_socket_recv(s_recv, s_send))) {
+if (p_socket_select(s_recv, 100))  while((p = p_socket_recv(s_recv, s_send))) {
    struct p_acl_tuple *a;
    static int seq=0;
 
@@ -90,14 +92,9 @@ while (NULL != (p = p_socket_recv(s_recv, s_send))) {
          ssize_t len;
          len = p_acl_get_data(a, &buff);
          {
-        	 extern void SensorValuesEvent_event(void *, char *);
-        	 SensorValuesEvent_event(device, (char *)buff);
+        	 extern void  SensorValues_SensorValuesEvent_event(void *, char *);
+        	 SensorValues_SensorValuesEvent_event(device, (char *)buff);
          }
-         /*
-            read_init(&reader, buff);
-            encoder_automata_init(fileno(stdout), &reader);
-            encoder_automata_run();
-            */
 
          {
 
@@ -118,7 +115,7 @@ while (NULL != (p = p_socket_recv(s_recv, s_send))) {
 
    p_pkt_free(p);
    /*sleep(15);*/
-
+}
 }
 }
 #endif
@@ -132,15 +129,6 @@ int event_worker_init(void *_device) {
    device = _device;
 #endif
 
-#ifdef WIN32
-   worker =
-      CreateThread (NULL, 0, (DWORD WINAPI) event_worker_loop, NULL, 0,
-                    &workerid);
-   if (worker == NULL)
-#else
-      if (pthread_create(&worker, NULL, event_worker_loop, NULL))
-#endif
-       return SOAP_ERR;
 
 #if WITH_USBBRIDGE
    if( usbbridge_init(&bridge))
@@ -156,12 +144,23 @@ int event_worker_init(void *_device) {
 		 	 printf("cannot bind libparticle  ...\n");
 		     return SOAP_ERR;
     }
+   p_socket_set_option(s_recv,SOCKET_BLOCKING,0);
    printf("listening for particles on:\n");
    p_describe_socket(s_recv);
    printf("sending to particles on:\n");
    p_describe_socket(s_send);
    fflush(stdout);
 #endif
+
+#ifdef WIN32
+   worker =
+      CreateThread (NULL, 0, (DWORD WINAPI) event_worker_loop, NULL, 0,
+                    &workerid);
+   if (worker == NULL)
+#else
+      if (pthread_create(&worker, NULL, event_worker_loop, NULL))
+#endif
+       return SOAP_ERR;
 
    return SOAP_OK;
 }
