@@ -1,16 +1,13 @@
-.SILENT:
-
-CDIRS = bitsio \
-        dec    \
-        enc    \
-        prs74
-
+LIBDIRS = bitsio
+        
+CDIRS = prs74 dec enc
 ##-------------------------------------------------------------
 default: all
 
 ##----------------------------------------------------------------------
-all: $(CDIRS)
-	for d in $(CDIRS);                  \
+
+all: $(LIBDIRS)
+	for d in $^;                  \
 	do                                  \
 		(cd $$d && pwd && $(MAKE));      \
 		retVal=$$?;                      \
@@ -18,12 +15,22 @@ all: $(CDIRS)
 		then                             \
 			exit $$retVal;                \
 		fi;                              \
-	done;                               
-
+	done;  
+	                             
+tests: $(LIBDIRS) $(CDIRS)
+	for d in $^;                  \
+	do                                  \
+		(cd $$d && pwd && $(MAKE));      \
+		retVal=$$?;                      \
+		if [ ! $$retVal = 0 ];           \
+		then                             \
+			exit $$retVal;                \
+		fi;                              \
+	done;       
 
 ##---- clean up ---------------------------------------------------------------
-clean: $(CDIRS)
-	for d in $(CDIRS);                       \
+clean: $(CDIRS) $(LIBDIRS)
+	for d in $^;                       \
 	do                                       \
 		(cd $$d; make clean);                 \
-	done;                                    
+	done;

@@ -4,35 +4,40 @@
 «DEFINE deliverEvent FOR TService»
 «FILE name+"_deliver_event.c"»
 /* Generated file */   
-#include "«name».nsmap"
+//#include "«name».nsmap"
 #include <dpws_device.h>
 #include <bitsio/read_bits_buf.h>
 #include <soap.h>
+#include "../src/sendrcv.h"
 
 struct dpws_s *_device;
 
-«EXPAND event FOREACH port.getPortType().operation.select(e|e.input==null)-»
+«EXPAND event(name) FOREACH port.getPortType().operation.select(e|e.input==null)-»
 «ENDFILE»
 «ENDDEFINE»
 
-«DEFINE event FOR TOperation»
+«DEFINE event(String service) FOR TOperation»
+  «FOREACH this.output.getMessage().part.element AS arg»
+  #include "«arg.localPart»_bin2sax.h"
+  «ENDFOREACH»
 void
-«name»_event (void *device, char * buf)
+«service»_«name»_event (void *_device, char * buf)
 {
   struct soap soap;
   struct ws4d_subscription *subs, *next;
 
 
-  _device = (struct dpws_s *)device; 
+  struct dpws_s *device = (struct dpws_s *)_device; 
 
   soap_init (&soap);
-  soap_set_namespaces (&soap, namespaces);
+  soap_set_namespaces(&soap, device->hosting_handle->namespaces); //TODO:Check if correct
+  //soap_set_namespaces (&soap, namespaces);
 {
   char soap_action_uri[]="«output.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»";
   dpws_for_each_subs (subs, next, _device,
                       soap_action_uri)
   {
-    char *deliverto = dpws_subsm_get_deliveryPush_address (_device, subs);
+    char *deliverto = dpws_subsm_get_deliveryPush_address (device, subs);
 
     if (!deliverto)
       continue;
@@ -51,18 +56,14 @@ void
        soap_closesock(&soap);
        soap_print_fault (&soap, stderr);
     }
+    
    {
-   	  struct READER_STRUCT reader;
-      read_init(&reader, buf);
+      struct READER_STRUCT* reader=read_bits_bufreader_stack_new((u_char *) buf);
       «FOREACH this.output.getMessage().part.element AS arg»
       {
-      extern void «arg.localPart»_gsoap_automata_init(struct soap *, void *);
-      extern void «arg.localPart»_gsoap_automata_run(void );
-      
-      «arg.localPart»_gsoap_automata_init(&soap, (void*)&reader);
-      «arg.localPart»_gsoap_automata_run();
+       «arg.localPart»_bin2sax_run(reader,&soap);
       }
-      «ENDFOREACH»
+      «ENDFOREACH» 
    }
     if (   soap_body_end_out(&soap)
         || soap_envelope_end_out(&soap)
@@ -75,5 +76,6 @@ void
   }
 }
   soap_done (&soap);
+  return;
 }
 «ENDDEFINE»

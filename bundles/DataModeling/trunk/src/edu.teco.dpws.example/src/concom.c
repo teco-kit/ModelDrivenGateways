@@ -312,7 +312,7 @@ bool
 cc_add_more( cc_pkt *p, cc_type type, uint8_t *buf, size_t n )
 {
   cc_tuple *t = cc_get(p, type, NULL);
-  int offset  = (void*) p - (void*) t;
+  int offset  = (char*) p - (char*) t;
 
   if( !t )
     return false;

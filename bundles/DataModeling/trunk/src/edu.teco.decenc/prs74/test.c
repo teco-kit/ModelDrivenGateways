@@ -22,7 +22,7 @@
 #include "../bitsio/bits_io.h"
 #include "../bitsio/write_bits.h"
 #include "../dec/decoder_send.h"
-#include "decoder_set.h"
+#include <cXML/decoder_set.h>
 
 static void sendSensorValues(void);
 

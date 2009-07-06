@@ -163,7 +163,7 @@ public class CTypeStack {
    public static void setEndCase(SimpleState state, Integer label) {
 	   if(endCase.containsKey(state)&& endCase.get(state)!=label) 
 		   throw new java.lang.ArrayStoreException("child "+state.getName()+"already present!");
-	   System.out.println(getCurrentPath()+":endCase "+state.getName()+"="+label);
+	  // System.out.println(getCurrentPath()+":endCase "+state.getName()+"="+label);
 	   endCase.put(state, label);
    }
    /**
@@ -175,7 +175,7 @@ public class CTypeStack {
    public static void setBeginCase(SimpleState state, Integer label) {
 	   if(beginCase.containsKey(state)&& beginCase.get(state)!=label) 
 		   throw new java.lang.ArrayStoreException("child "+state.getName()+"already present!");
-	   System.out.println(getCurrentPath()+":beginCase "+state.getName()+"="+label);
+	  // System.out.println(getCurrentPath()+":beginCase "+state.getName()+"="+label);
 	   beginCase.put(state, label);
    }
    

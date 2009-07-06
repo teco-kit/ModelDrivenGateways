@@ -15,11 +15,15 @@
 #include <fcntl.h>
 #include <string.h>
 #include <errno.h>
-
-#include "bits_io.h"
 #include "read_bits.h"
+#include "bits_io.h"
 
 
+struct READER_STRUCT {
+   int    fd;
+   u_char lastByte;
+   u_char currBits;
+};
 /* ========================================================================
  *
  *
@@ -35,11 +39,10 @@ void read_init(struct READER_STRUCT * reader, int fd)
  *
  *
  * ========================================================================*/
-ssize_t read_bits(void * memory, u_char *dst_buf, int bits_len)
+ssize_t read_bits(struct READER_STRUCT * reader, u_char *dst_buf, int bits_len)
 {
    int     bytes;    /* = bits_len / 8;*/
    int     rest_len; /* = bits_len % 8; */
-   struct READER_STRUCT *reader = (struct READER_STRUCT *)memory;
    u_char  a_byte;
    ssize_t ret, res;
 
@@ -142,15 +145,4 @@ ssize_t read_bits(void * memory, u_char *dst_buf, int bits_len)
       return ret;
    }
 
-}
-
-/* ========================================================================
- *
- *
- * ========================================================================*/
-u_char read_bit( void * reader )
-{
-   u_char val;
-   read_bits(reader, &val, 1);
-   return val;
 }

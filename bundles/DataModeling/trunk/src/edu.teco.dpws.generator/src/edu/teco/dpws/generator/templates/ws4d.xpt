@@ -10,7 +10,8 @@
   ret = dpws_add_hosting_service (&device, &service, 0,
                                   "«serviceId»",
                                   uuid,
-                                  100);
+                                  100,
+                                  0);
 
   if (ret != WS4D_OK)
     {
@@ -39,8 +40,6 @@
 
   «EXPAND addType("dpws_service","service_") FOREACH types»«REM»ignore syntax error«ENDREM»
 
-
-  dpws_append_wsdl (&device,"«serviceId»",«serviceId.getQuotedWSDL()»);
   
   if (dpws_service_set_wsdl(dpws_service, "«serviceId»"))
   {
@@ -108,18 +107,40 @@
 ws4d_locstring_init_string("«getLang()»","«value»"),
 «ENDDEFINE»
 
+«DEFINE nsmap FOR type::QName»
+{"«this.prefix»","«this.namespaceURI»",NULL,NULL},
+«ENDDEFINE»
+
+«DEFINE nsmap FOR wsdp::HostServiceType»
+static struct Namespace namespaces[]= {
+	{"SOAP-ENV", "http://www.w3.org/2003/05/soap-envelope", "http://www.w3.org/2003/05/soap-envelope", NULL},
+	{"SOAP-ENC", "http://www.w3.org/2003/05/soap-encoding", "http://www.w3.org/2003/05/soap-encoding", NULL},
+	{"xsi", "http://www.w3.org/2001/XMLSchema-instance", "http://www.w3.org/*/XMLSchema-instance", NULL},
+	{"xsd", "http://www.w3.org/2001/XMLSchema", "http://www.w3.org/*/XMLSchema", NULL},
+	{"wsdp", "http://schemas.xmlsoap.org/ws/2006/02/devprof", NULL, NULL},
+	{"wsa", "http://schemas.xmlsoap.org/ws/2004/08/addressing", NULL, NULL},
+«EXPAND nsmap FOREACH types»
+	{NULL, NULL, NULL, NULL}
+}; 
+«ENDDEFINE»
+
+
 «DEFINE Root FOR mex::MetadataType»
 «metaType.toString()»
 «FOREACH metadataSection.getHostRel() AS rel»
 «LET rel.getHostService("host") AS host»
 «LET rel.getHostService("hosted") AS hosted»
-«FILE "device.c"»
-«REM»«FILE host.serviceId+"_host.c"»«ENDREM»
-/* Generated file */  
-#include "«hosted.serviceId».nsmap"
+«FILE host.serviceId+"_device.c"»
+/* Generated file */ 
+
+
+
+//#include "«host.serviceId».nsmap"
 #include <dpws_device.h>
 
 #include <signal.h>
+
+«EXPAND nsmap FOR hosted»
 
 #include <bitsio/read_bits_buf.h>
 #include "event_worker.h"
@@ -232,6 +253,7 @@ main (int argc, char **argv)
   /* Set Metadata */
   «EXPAND set_metadata_ThisDevice FOREACH metadataSection.getThisDevice()»;
   «EXPAND set_metadata_ThisModel FOREACH metadataSection.getThisModel()»;
+   dpws_append_wsdl (&device,"«hosted.serviceId»",«hosted.serviceId.getQuotedWSDL()»);
   
 
   /* Update Metadata */
@@ -281,7 +303,7 @@ main (int argc, char **argv)
 
   for (;;)
     {
-     «EXPAND extern_serve_requests FOREACH hosted.types»
+     «EXPAND extern_serve_requests FOREACH hosted.types»  //TODO: pass device
       struct soap *handle = NULL, *soap_set[] = SOAP_HANDLE_SET (&service);
       int (*serve_requests[]) (struct soap * soap) =
         SOAP_SERVE_SET («EXPAND serve_requests FOREACH hosted.types SEPARATOR "," »);

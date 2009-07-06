@@ -241,7 +241,7 @@ int «name»_it;
 
 «DEFINE state(Integer count, String rootName) FOR StopState»
   «IF ! isStackEmpty()»
-   «EXPAND stackItr(getSize()-1)»
+   «EXPAND stackItr(stack_getSize()-1)»
   «ENDIF»
 «ENDDEFINE»
 
