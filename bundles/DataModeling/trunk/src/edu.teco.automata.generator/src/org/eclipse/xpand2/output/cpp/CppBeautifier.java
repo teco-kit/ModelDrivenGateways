@@ -1,9 +1,10 @@
 /*
  * Contributors: Daniel Weber - Initial implementation
  */
-package org.openarchitectureware.xpand2.output;
+package org.eclipse.xpand2.output.cpp;
 
 import java.io.BufferedInputStream;
+import org.eclipse.xpand2.output.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,9 +28,9 @@ import org.eclipse.cdt.core.parser.ScannerInfo;
 import org.eclipse.cdt.internal.formatter.CodeFormatterVisitor;
 import org.eclipse.cdt.internal.formatter.DefaultCodeFormatterOptions;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.mwe.core.resources.ResourceLoaderFactory;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
-import org.openarchitectureware.workflow.util.ResourceLoaderFactory;
 
 /**
  * An XPand post processor for C/C++ code formatting based on cdt's code

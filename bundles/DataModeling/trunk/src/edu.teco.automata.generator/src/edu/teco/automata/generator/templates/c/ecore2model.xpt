@@ -1,0 +1,46 @@
+«IMPORT ecore»
+
+
+«DEFINE start FOR EPackage»
+«FILE name+".h"»
+
+«EXPAND definition FOREACH eAllContents.typeSelect(EClass).selectFirst(e|e.name=="DocumentRoot").eAllReferences.eType.typeSelect(EClass)»
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE declaration FOR EClass»
+struct «name»;
+struct «name»_list;
+typedef «name» struct «name»;
+«ENDDEFINE»
+
+«DEFINE definition FOR EClass»
+
+«EXPAND definition FOREACH eAllReferences.select(e|e.containment).eType»
+struct  «name»
+{
+ «FOREACH eAllReferences AS m»
+ «IF m.upperBound==m.lowerBound»
+ «m.eType.name» «name»«IF m.upperBound!=1»[«m.upperBound»]«ENDIF»;
+ «ELSEIF m.upperBound!=null»
+ struct{
+   size_t len;
+   «m.eType.name» element[«m.upperBound»];   
+  } «name»;
+ «ELSE»
+ struct «m.eType.name»_list «name»;
+ «ENDIF»
+ «ENDFOREACH»
+};
+
+struct «name»_list
+{
+  struct «name» element;
+  struct «name»_list *next;
+}
+«ENDDEFINE»
+
+
+«DEFINE definition FOR EClassifier»
+«ERROR "not supported"»
+«ENDDEFINE»

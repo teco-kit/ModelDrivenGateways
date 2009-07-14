@@ -94,10 +94,10 @@ Void set_reset():
 	JAVA  edu.teco.automata.generator.templates.Set.reset();
 
 Boolean set_has(String name):
-	JAVA  edu.teco.automata.generator.templates.Set.has(java.lang.String);
+	JAVA  edu.teco.automata.generator.templates.Set.has(java.lang.Object);
 	
 Void set_add(String name):
-	JAVA  edu.teco.automata.generator.templates.Set.add(java.lang.String);
+	JAVA  edu.teco.automata.generator.templates.Set.add(java.lang.Object);
 	
 	
 

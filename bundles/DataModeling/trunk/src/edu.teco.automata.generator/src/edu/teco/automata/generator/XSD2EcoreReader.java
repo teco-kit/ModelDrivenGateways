@@ -5,20 +5,19 @@ package edu.teco.automata.generator;
 
 import java.io.File;
 import java.util.Collection;
-
 import java.util.Iterator;
-
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.mwe.core.WorkflowContext;
+import org.eclipse.emf.mwe.core.issues.Issues;
+import org.eclipse.emf.mwe.core.monitor.ProgressMonitor;
+import org.eclipse.emf.mwe.utils.AbstractEMFWorkflowComponent;
 import org.eclipse.xsd.ecore.XSDEcoreBuilder;
-import org.openarchitectureware.workflow.WorkflowContext;
-import org.openarchitectureware.workflow.issues.Issues;
-import org.openarchitectureware.workflow.lib.AbstractWorkflowComponent;
-import org.openarchitectureware.workflow.monitor.ProgressMonitor;
+
 
 /**
  * @author riedel
@@ -26,7 +25,7 @@ import org.openarchitectureware.workflow.monitor.ProgressMonitor;
  * OAW Workflow component to read XSD (and WSDL Files) as ecore Models
  */
 
-public class XSD2EcoreReader extends AbstractWorkflowComponent {
+public class XSD2EcoreReader extends AbstractEMFWorkflowComponent {
 	private String outputSlot;
 	   public void setOutputSlot(final String outputSlot) {
 		      this.outputSlot = outputSlot;
@@ -65,7 +64,7 @@ public class XSD2EcoreReader extends AbstractWorkflowComponent {
 	 */
 
 	@Override
-	public void invoke(WorkflowContext ctx, ProgressMonitor monitor,
+	protected void invokeInternal(WorkflowContext ctx, ProgressMonitor monitor,
 			Issues issues) {
 	      
 	      File xsdFile = new File(xsdPath);
@@ -90,6 +89,8 @@ public class XSD2EcoreReader extends AbstractWorkflowComponent {
 	      else
 	         ctx.set(outputSlot, r.getContents());
 
+
+		
 	}
 
 }

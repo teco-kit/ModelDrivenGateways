@@ -1,31 +1,43 @@
 package edu.teco.automata.generator.transformer;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
-
-import org.eclipse.emf.ecore.*;
-
+import org.eclipse.emf.ecore.EAnnotation;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.mwe.core.WorkflowContext;
+import org.eclipse.emf.mwe.core.issues.Issues;
+import org.eclipse.emf.mwe.core.lib.WorkflowComponentWithModelSlot;
+import org.eclipse.emf.mwe.core.monitor.ProgressMonitor;
+import org.eclipse.xtend.util.stdlib.GlobalVarExtensions;
 
-import org.openarchitectureware.util.stdlib.GlobalVarExtensions;
-import org.openarchitectureware.workflow.WorkflowContext;
-import org.openarchitectureware.workflow.issues.Issues;
-import org.openarchitectureware.workflow.lib.SimpleJavaModificationComponent;
-import org.openarchitectureware.workflow.monitor.ProgressMonitor;
-
+import edu.teco.automata.Automata.AutomataFactory;
+import edu.teco.automata.Automata.DataType;
+import edu.teco.automata.Automata.SimpleState;
+import edu.teco.automata.Automata.StartState;
+import edu.teco.automata.Automata.State;
+import edu.teco.automata.Automata.StateMachine;
+import edu.teco.automata.Automata.StopState;
+import edu.teco.automata.Automata.TDouble;
+import edu.teco.automata.Automata.TInt;
+import edu.teco.automata.Automata.TString;
 import edu.teco.automata.generator.xml.XmlReader;
 
-import edu.teco.automata.Automata.*;
 
 
-
-public class Transformer extends SimpleJavaModificationComponent {
-   private StateMachine stMachine;
+public class Transformer extends WorkflowComponentWithModelSlot {
+  
    EList<State> states;
    private String outputSlot;
    private boolean firstElementOnly = true;
@@ -33,14 +45,14 @@ public class Transformer extends SimpleJavaModificationComponent {
    private static int depth = 0;
    
 	private String rootElement=null;
-	private String rootElementVar=null;
+	private String rootElementListVar=null;
 	
 	public void setRootElement(String rootElement) {
 	      this.rootElement = rootElement;
 	}
 	
-	public void setRootElementVar(String rootElementVar) {
-	      this.rootElementVar = rootElementVar;
+	public void setRootElementListVar(String rootElementListVar) {
+	      this.rootElementListVar = rootElementListVar;
 	}
 	
 
@@ -51,95 +63,157 @@ public class Transformer extends SimpleJavaModificationComponent {
 
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String getLogMessage() {
-		return "generating automata"+(rootElement==null?(rootElementVar==null?"":" for "+(String)GlobalVarExtensions.getGlobalVar(rootElementVar)):" for "+rootElement) +" into slot "+outputSlot;
+		
+		if(rootElementListVar!=null)
+		{
+	    	String ret=" ";
+			for(String root:(Iterable<String>) GlobalVarExtensions.getGlobalVar(rootElementListVar))
+			 ret+=  "generating automata "+ root+ "\n";
+			return ret;
+		}
+		else if(rootElement!=null)
+		{
+			return "generating automata for "+rootElement+"\n";
+		}
+		else
+		{
+			return "generating automata for all root types\n";
+		}
 	}
+	
 
 
+private Object modelObject;
 
 @Override
-   protected void doModification(WorkflowContext ctx, ProgressMonitor monitor,
+protected void invokeInternal(WorkflowContext ctx, ProgressMonitor monitor,
+		Issues issues) {
+	 modelObject = ctx.get(getModelSlot());
+
+	if (modelObject == null) {
+        issues.addWarning(this, "content of modelSlot " + getModelSlot() + " is null.");
+	}
+	
+    doModification(ctx, monitor, issues, modelObject);
+}
+
+private StateMachine createStateMachine(EReference rootRef, Issues issues)
+{
+	StateMachine stMachine = AutomataFactory.eINSTANCE.createStateMachine();
+    states = stMachine.getStates();
+    
+    
+    StartState start = AutomataFactory.eINSTANCE.createStartState();
+    start.setName("Start");
+    states.add(start);
+    previousState = start;
+    depth         = 0;
+    
+    
+    for (EAnnotation ann : rootRef.getEAnnotations()) {
+        if (ann.getDetails().get("kind").equals("element")) {
+           handleAnnot(rootRef.getName(), 
+                       rootRef.getEAnnotations(),
+                       rootRef.getEReferenceType().getName(), 
+                       rootRef.getEReferenceType().getInstanceClassName(),
+                       rootRef.getLowerBound(), rootRef.getUpperBound());
+           depth++;
+           iterateEContents(rootRef.getEReferenceType());
+
+        }
+}
+
+
+
+StopState stop = AutomataFactory.eINSTANCE.createStopState();
+stop.setName("Stop");
+if(previousState==start)
+{
+	  start.setOut(stop);
+	  issues.addWarning(this,"empty StateMachine");
+}
+else
+((SimpleState) previousState).getOut().add(stop);
+states.add(stop);
+
+    
+    return stMachine;
+}
+
+
+
+@SuppressWarnings("unchecked")
+protected void doModification(WorkflowContext ctx, ProgressMonitor monitor,
          Issues issues, Object model) {
       EPackage ecoreP = (EPackage) model;
-      stMachine = AutomataFactory.eINSTANCE.createStateMachine();
-      states = stMachine.getStates();
-
-      StartState start = AutomataFactory.eINSTANCE.createStartState();
-      start.setName("Start");
-      states.add(start);
-      previousState = start;
-      depth         = 0;
-
       EClassifier docRoot = getElement("DocumentRoot", ecoreP.getEClassifiers());
-      boolean multiple=false;
-      for (EObject obj : docRoot.eContents()) {
-    	 
-         if (obj.eClass().getInstanceClass() == EReference.class) {
-            EReference rootRef = (EReference) obj;
-            if(rootElement==null && rootElementVar!=null)
-            	rootElement=(String) GlobalVarExtensions.getGlobalVar(rootElementVar);
-            if(rootElement!=null&& !rootRef.getName().toLowerCase().equals(rootElement.toLowerCase())) continue; //generate only specific root element
-            if(multiple) {issues.addWarning("found multiple root elements"); }
-            multiple=true;
-            for (EAnnotation ann : rootRef.getEAnnotations()) {
-               if (ann.getDetails().get("kind").equals("element")) {
-                  handleAnnot(rootRef.getName(), 
-                              rootRef.getEAnnotations(),
-                              rootRef.getEReferenceType().getName(), 
-                              rootRef.getEReferenceType().getInstanceClassName(),
-                              rootRef.getLowerBound(), rootRef.getUpperBound());
-                  depth++;
-                  iterateEContents(rootRef.getEReferenceType());
-
-               }
-               else
-               {
-                  //issues.addWarning(this,"found unhandled attribute annotation on root level: "+ rootRef.getName());
-               }
-            }
-         } else if (obj.eClass().getInstanceClass() == EAttribute.class)/*TODO: is this branch needed==rootAttribute???*/ {
-            EAttribute attr = (EAttribute) obj;
-            for (EAnnotation ann : attr.getEAnnotations()) {
-               if (ann.getDetails().get("kind").equals("element")) {
-                  boolean ret = handleAnnot(attr.getName(), 
-                                            attr.getEAnnotations(),
-                                            attr.getEAttributeType().getName(), 
-                                            attr.getEAttributeType().getInstanceClassName(), 
-                                            attr.getLowerBound(), 
-                                            attr.getUpperBound());
-                  if (ret)
-                     handleEDataType(attr.getEAttributeType().getEAnnotations());
-               }
-               else
-               {
-            	   //issues.addWarning("found unhandled attribute annotation on root level:"+ attr.getName());
-               }
-            }
-         }
+      
+      if(rootElement!=null)
+      {
+          for (EObject obj : docRoot.eContents()) {
+         	 
+              if (obj.eClass().getInstanceClass() == EReference.class && ((EReference) obj).getName().equals(rootElement)) {
+            	  Resource r = new ResourceSetImpl().createResource(URI.createURI("uri"));
+                  r.getContents().add(createStateMachine((EReference) obj, issues));
+              
+                 if (firstElementOnly)
+                     ctx.set(outputSlot, r.getContents().get(0));
+                 else
+                     ctx.set(outputSlot, r.getContents());
+              
+              }
+          }
+      }
+          else if (rootElementListVar!=null)
+      {
+        	  if(GlobalVarExtensions.getGlobalVar(rootElementListVar)==null)
+        	  {
+        		  issues.addError("rootElementListVar '"+rootElementListVar+"' is not set");
+        	      return;
+        	  }
+        	  
+        	  ArrayList<Object> slotContents=new ArrayList<Object>();
+        	  
+        	  for(String _rootElement:(Iterable<String>) GlobalVarExtensions.getGlobalVar(rootElementListVar))
+        	  {
+        	   boolean found=false;
+               for (EObject obj : docRoot.eContents()) {
+        		 {
+        	    	 if (obj.eClass().getInstanceClass() == EReference.class && ((EReference) obj).getName().toLowerCase().equals(_rootElement.toLowerCase())) {
+        	    		found=true;
+             			Resource r = new ResourceSetImpl().createResource(URI.createURI("uri"));
+                        r.getContents().add(createStateMachine((EReference) obj, issues)); 
+                        if (firstElementOnly)
+                        	slotContents.add(r.getContents().get(0));
+                        else
+                        	slotContents.add(r.getContents());
+        	    	 }	
+        		}
+        	  }
+               if(!found){issues.addWarning(this.getContainer(),"root element '" +_rootElement + "' not found", this); }
+        	  }
+              
+        	 
+        	    ctx.set(outputSlot,slotContents);
+        	  
+      }
+      else
+      {
+    	  ArrayList<Object> slotContents=new ArrayList<Object>();
+    	  
+    	  for (EObject obj : docRoot.eContents())  if (obj.eClass().getInstanceClass() == EReference.class) {
+         			Resource r = new ResourceSetImpl().createResource(URI.createURI("uri"));
+                    r.getContents().add(createStateMachine((EReference) obj, issues)); 
+                    	slotContents.add(r.getContents());
+    	    	 }
+   
+          if(slotContents.isEmpty()){issues.addWarning(this.getContainer(),"no root element found", this); }
+    	  ctx.set(outputSlot,slotContents); 
       }
       
-      if(multiple=false){issues.addWarning(this.getContainer(),"no root element" + (rootElement==null?"":rootElement) + "found", this); }
-
-      StopState stop = AutomataFactory.eINSTANCE.createStopState();
-      stop.setName("Stop");
-      if(previousState==start)
-      {
-    	  start.setOut(stop);
-    	  issues.addWarning(this,"empty StateMachine");
-      }
-      else
-      ((SimpleState) previousState).getOut().add(stop);
-      states.add(stop);
-     
-
-      Resource r = new ResourceSetImpl().createResource(URI.createURI("uri"));
-      r.getContents().add(stMachine);
-     
-      if (firstElementOnly)
-         ctx.set(outputSlot, r.getContents().get(0));
-      else
-         ctx.set(outputSlot, r.getContents());
    }
 
    // This method is called for simple types
@@ -328,10 +402,13 @@ public class Transformer extends SimpleJavaModificationComponent {
             
          for (EAnnotation ann : annList) {
             String kind = ann.getDetails().get("kind");
+            if(kind!=null)
+            {
             if (kind.equals("attribute"))
                objListAttr.add(obj);
             else if (kind.equals("element"))
                objListElem.add(obj);
+            }
          }
       }
       
@@ -341,5 +418,6 @@ public class Transformer extends SimpleJavaModificationComponent {
       
       return sortedList;
    }
-   
+
+	
 }

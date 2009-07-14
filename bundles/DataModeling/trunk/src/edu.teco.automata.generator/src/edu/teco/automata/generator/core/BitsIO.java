@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.eclipse.cdt.core.parser.EndOfFileException;
-
 public class BitsIO {
 
    private OutputStream os = null;

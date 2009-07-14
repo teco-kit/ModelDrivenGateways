@@ -1,13 +1,16 @@
-package org.openarchitectureware.xpand2.output;
+package org.eclipse.xpand2.output.cpp;
 
 import java.io.File;
+
 import java.net.URL;
 
-import org.openarchitectureware.expression.ast.SyntaxElement;
-import org.openarchitectureware.xpand2.XpandExecutionContext;
-import org.openarchitectureware.xpand2.ast.TextStatement;
+import org.eclipse.emf.mwe.core.resources.ResourceLoaderFactory;
+import org.eclipse.internal.xpand2.ast.TextStatement;
+import org.eclipse.internal.xtend.expression.ast.SyntaxElement;
+import org.eclipse.xpand2.XpandExecutionContext;
+import org.eclipse.xpand2.output.OutputImpl;
 
-import org.openarchitectureware.workflow.util.*;
+
 /*
 import java.util.Stack;
 */
@@ -42,7 +45,7 @@ public class CppOutput extends OutputImpl {
 	    		}
 	    		else
 	    		{
-	    			if (true || bytes.matches("\n")) {
+	    			/*if (bytes.matches("\n"))*/ {
 	    				last_file=cur_file;
 		    			last_line=cur_line;
 		    			last_output=cur_output;

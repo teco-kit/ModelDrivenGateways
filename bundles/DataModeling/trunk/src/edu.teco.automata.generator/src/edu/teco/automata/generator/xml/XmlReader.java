@@ -2,8 +2,9 @@ package edu.teco.automata.generator.xml;
 
 import java.io.IOException;
 import java.io.StringReader;
-import org.xml.sax.ErrorHandler;
+
 import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
