@@ -2,7 +2,8 @@ package edu.teco.automata.generator.templates;
 
 import java.util.HashMap;
 import java.util.Stack;
-import  edu.teco.automata.Automata.SimpleState;
+
+import edu.teco.automata.Automata.SimpleState;
 /**
  * 
  * @author dy

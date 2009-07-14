@@ -14,7 +14,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 import edu.teco.automata.generator.types.TypeStringIntf;
 import edu.teco.automata.generator.xml.XmlReader;
 

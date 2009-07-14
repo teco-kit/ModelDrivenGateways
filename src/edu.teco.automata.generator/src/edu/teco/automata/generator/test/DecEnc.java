@@ -2,7 +2,6 @@ package edu.teco.automata.generator.test;
 
 import java.io.File;
 import java.io.FileInputStream;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,9 +15,8 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import edu.teco.automata.generator.Runner;
-
-import edu.teco.automata.generator.core.SAXSerializer;
 import edu.teco.automata.generator.core.BinXMLPrinter;
+import edu.teco.automata.generator.core.SAXSerializer;
 import edu.teco.automata.generator.xml.XmlReader;
 
 public class DecEnc extends TestCase {

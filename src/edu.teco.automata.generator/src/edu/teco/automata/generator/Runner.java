@@ -10,8 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.emf.ecore.EPackage;
-import org.openarchitectureware.workflow.WorkflowRunner;
-import org.openarchitectureware.workflow.monitor.NullProgressMonitor;
+import org.eclipse.emf.mwe.core.WorkflowRunner;
+import org.eclipse.emf.mwe.core.monitor.NullProgressMonitor;
+import org.eclipse.emf.mwe.core.monitor.ProgressMonitor;
 
 
 /**
@@ -42,7 +43,7 @@ public class Runner {
 		 
 		 properties.put("outputSlot", "model" ); 
 		 
-		 org.openarchitectureware.workflow.monitor.ProgressMonitor ProgressMonitor=new NullProgressMonitor();
+		 ProgressMonitor ProgressMonitor=new NullProgressMonitor();
 	      
 	      Map<String, EPackage> slotContents = new HashMap<String, EPackage>();
 	        

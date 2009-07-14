@@ -1,4 +1,9 @@
 <workflow>    
+  
+   <bean class="org.eclipse.mwe.emf.StandaloneSetup">
+      <platformUri value=".."/>
+   </bean>
+   
   <component id="generatorAcc" class="oaw.xpand2.Generator">
     <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
          <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
