@@ -6,16 +6,6 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>org.openarchitectureware.xsd.plugin.xsdBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>org.openarchitectureware.base.oawBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
 			</arguments>
@@ -30,11 +20,20 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.xtend.typesystem.xsd.ui.xsdBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.xtend.shared.ui.xtendBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
-		<nature>org.openarchitectureware.base.oawNature</nature>
-		<nature>com.eviware.soapui.soapuiNature</nature>
+		<nature>org.eclipse.xtend.shared.ui.xtendXPandNature</nature>
 	</natures>
 </projectDescription>

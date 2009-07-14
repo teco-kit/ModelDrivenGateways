@@ -1,48 +1,43 @@
-
 <workflow>
 <property name="outlet" value="../edu.teco.dpws.example/src-gen"/>
 <property name="src" value="../edu.teco.dpws.example/src"/>
 <property name="NSPrefix" value="sens"/>
 
-  <component class="org.openarchitectureware.xsd.XMLReader">
+  <component class="org.eclipse.xtend.typesystem.xsd.XMLReader">
     <modelSlot value="wsdl" />
     <uri value="${src}/SensorValues.wsdl" />
     
     <metaModel id="wsdl"
-      class="org.openarchitectureware.xsd.XSDMetaModel">
+      class="org.eclipse.xtend.typesystem.xsd.XSDMetaModel">
       <schemaFile value="model/wsdl11.xsd" />
     </metaModel>
   </component>
   
-  <component class="org.openarchitectureware.xsd.XMLReader">
+  <component class="org.eclipse.xtend.typesystem.xsd.XMLReader">
     <modelSlot value="metadata" />
     <uri value="${src}/SSimp.metadata" />
     
     <metaModel id="metadata"
-      class="org.openarchitectureware.xsd.XSDMetaModel">
+      class="org.eclipse.xtend.typesystem.xsd.XSDMetaModel">
       <schemaFile value="model/wsdl11.xsd" />
     </metaModel>
   </component>
   
-   <component class="org.openarchitectureware.xpand2.Generator">
+   <component class="org.eclipse.xpand2.Generator">
    <metaModel idRef="metadata" />
     <expand value="edu::teco::dpws::generator::templates::ws4d::Root FOR metadata" />
     <outlet path="${outlet}" />
     <globalVarDef name="WSDLPath" value="'${src}'"/>
     
-       <!-- output id="cppo" file="edu/teco/automata/generator/cppoutput.oaw" / -->
-    <beautifier id="cppb" file="edu/teco/automata/generator/cppbeautifier.oaw" />
   </component>
   
   
-  <component class="org.openarchitectureware.xpand2.Generator">
+  <component class="org.eclipse.xpand2.Generator">
    <metaModel idRef="wsdl" />
     <expand value="edu::teco::dpws::generator::templates::server::Root FOR wsdl" />
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
     <outlet path="${outlet}" />
-    
-       <!-- output id="cppo" file="edu/teco/automata/generator/cppoutput.oaw" / -->
-    <beautifier id="cpp" file="edu/teco/automata/generator/cppbeautifier.oaw" />
+
   </component>
   
 
@@ -53,77 +48,72 @@
   </component>
   
    <component id="xmiWrite"
-    class="org.openarchitectureware.emf.XmiWriter">
+    class="org.eclipse.xtend.typesystem.emf.XmiWriter">
     <modelFile value="${outlet}/schemaModel.ecore"/>
     <inputSlot value="SchemaModel"/>
   </component>
   
-<component class="org.openarchitectureware.workflow.container.ForeachComponent" listVar="WSDLOutMessageTypes" iterVar="rootElement" >  
-  <component class="edu.teco.automata.generator.transformer.Transformer">
+  
+
+   <component class="edu.teco.automata.generator.transformer.Transformer">
     <modelSlot value="SchemaModel"/>
-    <rootElementVar value="rootElement"/>
-    <outputSlot value="typeAutomata"/>
+    <!-- <rootElement value="status"/> -->
+   <rootElementListVar value="WSDLOutMessageTypes"/>
+   <outputSlot value="OutMessageAutomata"/>
   </component> 
   
-  <component id="xmiWrite"
-    class="org.openarchitectureware.emf.XmiWriter">
-    <modelFile value="${outlet}/sensorValues.automata"/>
-    <inputSlot value="typeAutomata"/>
-  </component>
+  <component class="edu.teco.automata.generator.transformer.Transformer">
+    <modelSlot value="SchemaModel"/>
+    <!-- <rootElement value="status"/> -->
+   <rootElementListVar value="WSDLInMessageTypes"/>
+   <outputSlot value="InMessageAutomata"/>
+  </component> 
+
   
-    <component id="generatorEncGSOAP" class="oaw.xpand2.Generator">             
-    <metaModel id="automata" class="oaw.type.emf.EmfMetaModel">
+   <component id="xmiWrite"
+    class="org.eclipse.xtend.typesystem.emf.XmiWriter">
+    <modelFile value="${outlet}/InMessage.automata"/>
+    <inputSlot value="InMessageAutomata"/>
+   </component> 
+   
+   <component id="xmiWrite"
+    class="org.eclipse.xtend.typesystem.emf.XmiWriter">
+    <modelFile value="${outlet}/OutMessage.automata"/>
+    <inputSlot value="OutMessageAutomata"/>
+   </component>
+  
+  
+  
+    <component id="generatorEncGSOAP" class="org.eclipse.xpand2.Generator">             
+    <metaModel id="automata" class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
          <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
     </metaModel>
     
   
-    <expand value="edu::teco::automata::generator::templates::c::bin2SAX::root('') FOR typeAutomata"/>
+    <expand value="edu::teco::automata::generator::templates::c::bin2SAX::root('') FOREACH OutMessageAutomata"/>
     <outlet path="${outlet}/"/>
+    <output class="org.eclipse.xpand2.output.cpp.OutputImpl"/>
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
-    
-   
-       <!-- output id="cppo" file="edu/teco/automata/generator/cppoutput.oaw" / -->
-    <beautifier file="edu/teco/automata/generator/cppbeautifier.oaw" />
     </component> 
     
-   <component adviceTarget="generatorEncGSOAP"
-      id="generatorGsoapAdv" class="oaw.xpand2.GeneratorAdvice">			 
+   <component adviceTarget="generatorEncGSOAP" id="generatorGsoapAdv" class="org.eclipse.xpand2.GeneratorAdvice">			 
   	  <advices value="edu::teco::automata::generator::templates::c::bin2SAX"/>
    </component>
-</component> 
-  
- <component class="org.openarchitectureware.workflow.container.ForeachComponent" listVar="WSDLInMessageTypes" iterVar="rootElement" >
-  <component class="edu.teco.automata.generator.transformer.Transformer">
-    <modelSlot value="SchemaModel"/>
-    <rootElementVar value="rootElement"/>
-    <outputSlot value="typeAutomata"/>
-  </component> 
-    
- <component id="xmiWrite"
-    class="org.openarchitectureware.emf.XmiWriter">
-    <modelFile value="${outlet}/sensorConfiguration.automata"/>
-    <inputSlot value="typeAutomata"/>
-  </component>
   
    
-   <component id="generatorDecGSOAP" class="oaw.xpand2.Generator">           
-    <metaModel id="automata" class="oaw.type.emf.EmfMetaModel">
+   <component id="generatorDecGSOAP" class="org.eclipse.xpand2.Generator">           
+    <metaModel id="automata" class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
          <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
     </metaModel>
         
-    <expand value="edu::teco::automata::generator::templates::c::SAX2bin::root('') FOR typeAutomata"/>
+    <expand value="edu::teco::automata::generator::templates::c::SAX2bin::root('') FOREACH InMessageAutomata"/>
     <outlet path="${outlet}/"/>
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
-    
-    <!-- output id="cppo" file="edu/teco/automata/generator/cppoutput.oaw" / -->
-    <beautifier file="edu/teco/automata/generator/cppbeautifier.oaw" />
-   
    </component> 
    
    <component adviceTarget="generatorDecGSOAP"
-      id="generatorDevGsoapAdv" class="oaw.xpand2.GeneratorAdvice">			 
+      id="generatorDevGsoapAdv" class="org.eclipse.xpand2.GeneratorAdvice">			 
   	  <advices value="edu::teco::automata::generator::templates::c::SAX2bin"/>
    </component> 
-  </component>
-  
+
 </workflow>
