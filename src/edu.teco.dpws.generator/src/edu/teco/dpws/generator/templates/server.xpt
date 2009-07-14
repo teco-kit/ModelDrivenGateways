@@ -2,7 +2,7 @@
 
 
 «EXTENSION edu::teco::dpws::generator::templates::wsdl»
-«EXTENSION org::openarchitectureware::util::stdlib::globalvar»
+«EXTENSION org::eclipse::xtend::util::stdlib::globalvar»
 
 «DEFINE Root FOR TDefinitions»
 «EXPAND service FOREACH service »
@@ -10,11 +10,11 @@
 «ENDDEFINE»
 
 «DEFINE service FOR TService»
-
 «storeGlobalVar("WSDLInMessageTypes",port.getPortType().operation.select(e|e.input!=null).input.getMessage().part.element.localPart.toSet())»
 «storeGlobalVar("WSDLOutMessageTypes",port.getPortType().operation.select(e|e.output!=null).output.getMessage().part.element.localPart.toSet())»
 
 «FILE name+"_operations.h"»
+
 enum «name»_operations
  {
  «FOREACH port.getPortType().operation AS op SEPARATOR ","»OP_«name»_«op.name»«ENDFOREACH»

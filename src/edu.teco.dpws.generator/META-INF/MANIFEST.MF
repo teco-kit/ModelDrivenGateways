@@ -1,8 +1,24 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: edu.teco.dpws.generator
-Bundle-SymbolicName: edu.teco.dpws.generator; singleton:=true
+Bundle-Name: M2T custom XML to Java via Xpand
+Bundle-SymbolicName: org.eclipse.xpand.examples.xsd.m2t.xml2javawizard
 Bundle-Version: 1.0.0
-Require-Bundle: org.openarchitectureware.dependencies,
- org.openarchitectureware.xsd;bundle-version="4.3.1"
+Export-Package: edu.teco.dpws.generator.templates
+Require-Bundle: org.eclipse.xtend.typesystem.xsd,
+ org.eclipse.emf.mwe.core,
+ org.eclipse.emf.mwe.utils,
+ org.eclipse.xpand,
+ org.eclipse.swt,
+ org.eclipse.xtend.util.stdlib;bundle-version="0.7.0",
+ org.eclipse.xtend.typesystem.emf;bundle-version="0.7.0",
+ org.eclipse.emf;bundle-version="2.5.0",
+ org.eclipse.emf.ecore.xmi;bundle-version="2.5.0",
+ org.eclipse.xtend;bundle-version="0.7.0",
+ org.eclipse.xpand.activities;bundle-version="0.7.0",
+ org.eclipse.xtend.typesystem.xsd;bundle-version="0.7.0",
+ org.eclipse.core.runtime;bundle-version="3.5.0",
+ org.eclipse.xtend.typesystem.xsd.ui;bundle-version="0.7.0",
+ org.eclipse.emf.mapping.xsd2ecore;bundle-version="2.5.0"
+ 
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Demo-Description: This example uses a custom XML format to describe a wizard-like application. Xpand is used to generate fully-working SWT-Java-application from this description.
