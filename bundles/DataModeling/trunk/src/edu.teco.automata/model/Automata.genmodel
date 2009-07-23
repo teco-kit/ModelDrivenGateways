@@ -7,37 +7,68 @@
   <foreignModel>Automata.ecore</foreignModel>
   <genPackages prefix="Automata" basePackage="edu.teco.automata" disposableProviderFactory="true"
       ecorePackage="Automata.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Automata.ecore#//DataTypes">
-      <genEnumLiterals ecoreEnumLiteral="Automata.ecore#//DataTypes/complexType"/>
-      <genEnumLiterals ecoreEnumLiteral="Automata.ecore#//DataTypes/byte"/>
-      <genEnumLiterals ecoreEnumLiteral="Automata.ecore#//DataTypes/char"/>
-      <genEnumLiterals ecoreEnumLiteral="Automata.ecore#//DataTypes/short"/>
-      <genEnumLiterals ecoreEnumLiteral="Automata.ecore#//DataTypes/int"/>
-      <genEnumLiterals ecoreEnumLiteral="Automata.ecore#//DataTypes/long"/>
-      <genEnumLiterals ecoreEnumLiteral="Automata.ecore#//DataTypes/float"/>
-      <genEnumLiterals ecoreEnumLiteral="Automata.ecore#//DataTypes/double"/>
-      <genEnumLiterals ecoreEnumLiteral="Automata.ecore#//DataTypes/String"/>
-    </genEnums>
     <genClasses ecoreClass="Automata.ecore#//StateMachine">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Automata.ecore#//StateMachine/states"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Automata.ecore#//State">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//State/name"/>
     </genClasses>
-    <genClasses ecoreClass="Automata.ecore#//Transition">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Automata.ecore#//Transition/to"/>
-    </genClasses>
     <genClasses ecoreClass="Automata.ecore#//SimpleState">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Automata.ecore#//SimpleState/out"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//SimpleState/lowerBound"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//SimpleState/upperBound"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//SimpleState/depth"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//SimpleState/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Automata.ecore#//SimpleState/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//SimpleState/kind"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Automata.ecore#//SimpleState/ecore"/>
     </genClasses>
     <genClasses ecoreClass="Automata.ecore#//StartState">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Automata.ecore#//StartState/out"/>
     </genClasses>
     <genClasses ecoreClass="Automata.ecore#//StopState"/>
+    <genClasses image="false" ecoreClass="Automata.ecore#//DataType"/>
+    <genClasses ecoreClass="Automata.ecore#//complexType"/>
+    <genClasses ecoreClass="Automata.ecore#//TByte">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TByte/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TByte/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TByte/stepping"/>
+    </genClasses>
+    <genClasses ecoreClass="Automata.ecore#//TChar"/>
+    <genClasses ecoreClass="Automata.ecore#//TShort">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TShort/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TShort/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TShort/stepping"/>
+    </genClasses>
+    <genClasses ecoreClass="Automata.ecore#//TInt">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TInt/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TInt/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TInt/stepping"/>
+    </genClasses>
+    <genClasses ecoreClass="Automata.ecore#//TLong">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TLong/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TLong/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TLong/stepping"/>
+    </genClasses>
+    <genClasses ecoreClass="Automata.ecore#//TFloat">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TFloat/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TFloat/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TFloat/fractionDigits"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TFloat/stepping"/>
+    </genClasses>
+    <genClasses ecoreClass="Automata.ecore#//TDouble">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TDouble/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TDouble/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TDouble/fractionDigits"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TDouble/stepping"/>
+    </genClasses>
+    <genClasses ecoreClass="Automata.ecore#//TString">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Automata.ecore#//TString/length"/>
+    </genClasses>
+    <genClasses ecoreClass="Automata.ecore#//TTimestamp"/>
+    <genClasses image="false" ecoreClass="Automata.ecore#//IntType">
+      <genOperations ecoreOperation="Automata.ecore#//IntType/getMin"/>
+      <genOperations ecoreOperation="Automata.ecore#//IntType/getMax"/>
+      <genOperations ecoreOperation="Automata.ecore#//IntType/getStepping"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -22,6 +22,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//DataType"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ecore" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClassifier"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="StartState" eSuperTypes="#//State">
     <eStructuralFeatures xsi:type="ecore:EReference" name="out" lowerBound="1" eType="#//State"/>
@@ -29,28 +30,32 @@
   <eClassifiers xsi:type="ecore:EClass" name="StopState" eSuperTypes="#//State"/>
   <eClassifiers xsi:type="ecore:EClass" name="DataType" abstract="true"/>
   <eClassifiers xsi:type="ecore:EClass" name="complexType" eSuperTypes="#//DataType"/>
-  <eClassifiers xsi:type="ecore:EClass" name="TByte" eSuperTypes="#//DataType">
+  <eClassifiers xsi:type="ecore:EClass" name="TByte" eSuperTypes="#//DataType #//IntType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="min" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-        defaultValueLiteral="0"/>
+        defaultValueLiteral="-128"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="max" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-        defaultValueLiteral="0"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stepping" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+        defaultValueLiteral="127"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stepping" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="1"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TChar" eSuperTypes="#//DataType"/>
-  <eClassifiers xsi:type="ecore:EClass" name="TShort" eSuperTypes="#//DataType">
+  <eClassifiers xsi:type="ecore:EClass" name="TShort" eSuperTypes="#//DataType #//IntType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="min" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-        defaultValueLiteral="0"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="max" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stepping" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TInt" eSuperTypes="#//DataType">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="min" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-        defaultValueLiteral="0"/>
+        defaultValueLiteral="-32768"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="max" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-        defaultValueLiteral="0"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stepping" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+        defaultValueLiteral="32767"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stepping" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="1"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TLong" eSuperTypes="#//DataType">
+  <eClassifiers xsi:type="ecore:EClass" name="TInt" eSuperTypes="#//DataType #//IntType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="min" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="-2147483648"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="max" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="2147483647"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stepping" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TLong" eSuperTypes="#//DataType #//IntType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="min" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         defaultValueLiteral="0"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="max" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
@@ -76,5 +81,11 @@
   <eClassifiers xsi:type="ecore:EClass" name="TString" eSuperTypes="#//DataType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="length" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         defaultValueLiteral="0"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TTimestamp" eSuperTypes="#//DataType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="IntType" abstract="true" interface="true">
+    <eOperations name="getMin" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eOperations name="getMax" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eOperations name="getStepping" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
 </ecore:EPackage>
