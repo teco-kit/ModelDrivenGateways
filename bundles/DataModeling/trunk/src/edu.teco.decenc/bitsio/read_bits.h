@@ -1,5 +1,6 @@
 #ifndef _READ_BITS_H_
 #define _READ_BITS_H_
+#include <unistd.h>
 
 struct READER_STRUCT ;
 

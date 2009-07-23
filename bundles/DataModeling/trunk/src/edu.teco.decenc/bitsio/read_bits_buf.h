@@ -3,6 +3,7 @@
 #include "read_bits.h"
 #include <stdlib.h>
 #include <alloca.h>
+#include <unistd.h>
 extern const size_t read_bits_bufreader_size;
 
 struct READER_STRUCT *read_bits_bufreader_init(struct READER_STRUCT *,u_char *buf);
