@@ -1,0 +1,195 @@
+«IMPORT Automata»
+«EXTENSION edu::teco::automata::generator::templates::c::binEncoder»
+
+«DEFINE ctype FOR TInt»int32_t«ENDDEFINE»
+«DEFINE ctype FOR TShort»int16_t«ENDDEFINE»
+«DEFINE ctype FOR TByte»int8_t«ENDDEFINE»
+
+«DEFINE scanstr FOR TInt»
+"%«IF signed()»ld«ELSE»lu«ENDIF»"
+«ENDDEFINE»
+
+«DEFINE printstr FOR TInt»
+"%«IF signed()»l«ELSE»lu«ENDIF»"
+«ENDDEFINE»
+
+«DEFINE scanstr FOR TShort»
+"%«IF signed()»hd«ELSE»hu«ENDIF»"
+«ENDDEFINE»
+
+«DEFINE printstr FOR TTimestamp»
+"%Y-%m-%dT%H:%M:%S"
+«ENDDEFINE»
+
+ «DEFINE printstr FOR TShort»
+"%«IF signed()»d«ELSE»u«ENDIF»"
+«ENDDEFINE»
+
+«DEFINE scanstr FOR TByte»
+"%«IF signed()»hhd«ELSE»hhu«ENDIF-»"
+«ENDDEFINE»
+
+«DEFINE printstr FOR TByte»
+"%«IF signed()»d«ELSE»u«ENDIF-»"
+«ENDDEFINE»
+
+
+«DEFINE encodeInt(String c) FOR DataType»
+((«c») - («min»))/«stepping»
+«ENDDEFINE»
+
+«DEFINE encodeTimestamp(String c) FOR DataType»
+(«c».tv_sec)
+«ENDDEFINE»
+
+«DEFINE decodeTimestamp(String c) FOR DataType»
+{«c»,0}
+«ENDDEFINE»
+
+«DEFINE decodeInt(String c) FOR DataType»
+«IF signed()»(«EXPAND ctype»)«ENDIF»((«c»)*«stepping») + «min»
+«ENDDEFINE»
+
+
+«DEFINE strWriteInt(String in) FOR DataType»
+{	
+	«signed()?"":"u"»«EXPAND ctype» c;
+	const char* str=«in»;
+	if (sscanf(str, «EXPAND scanstr-», &c) != 1)
+	{
+		fprintf(stderr, "Error parsing char value\n");
+		fprintf(stderr, "Input string: %s", str);
+		ret=-1;
+	}
+	
+	{
+	 u«EXPAND ctype» d = «EXPAND encodeInt("c") -»;
+	 ret=write_bits(writer,(u_char *)&d, «bitsLen()»);
+	}
+
+}
+«ENDDEFINE»
+
+«DEFINE writeInt(String in) FOR DataType»
+{
+ u«EXPAND ctype» d = «EXPAND encodeInt(in) -»;
+ ret=write_bits(writer,(u_char *)&d, «bitsLen()»);
+}
+«ENDDEFINE»
+
+«DEFINE strReadInt(String out) FOR DataType»
+{
+u«EXPAND ctype» c;
+ret= read_bits(reader, (u_char *)&c, «bitsLen()»);
+if(ret==«bitsLen()»)
+	{
+  		ret=asprintf(«out», «EXPAND printstr», «EXPAND decodeInt("c")»); //TODO: check overflows
+	}
+else
+	{
+ 		ret=-1;
+ 	}
+}
+«ENDDEFINE»
+
+«DEFINE readInt(String out) FOR DataType»
+{
+u«EXPAND ctype» c;
+read_bits(reader,(u_char *)&c,«bitsLen()-»);
+*(«IF !signed()»u«ENDIF-»«EXPAND ctype»*) «out» = «EXPAND decodeInt("c")»;
+}
+«ENDDEFINE»
+
+
+
+«DEFINE strWrite(String in) FOR TTimestamp»
+{	
+  struct timeval t;
+  const char *str=«in»;
+  
+  ret=soap_s2dateTime(soap,str,&(t.tv_sec));
+  if(ret!=0)
+  {
+  	fprintf(stderr, "Error parsing time value\n");
+	fprintf(stderr, "Input string: %s", str);
+    ret=-1;
+  }
+  {
+     uint32_t d= «EXPAND encodeTimestamp("t")»;
+	 ret=write_bits(writer,(u_char *)&d, «bitsLen()»);
+  }
+}
+«ENDDEFINE»
+
+«DEFINE strRead(String out) FOR TTimestamp»
+{
+uint32_t c;
+ret=read_bits(reader, (u_char *)&c, «bitsLen()»);
+if(ret==«bitsLen()»)
+{
+  struct timeval t=«EXPAND decodeTimestamp("c")»;
+  struct tm res;
+  char out[64];
+  ret=strftime(out, sizeof(out), «EXPAND printstr»,localtime_r(&t.tv_sec,&res));
+  
+  if(ret>0)
+  {
+     ret=asprintf(«out», "%s.%06dZ",out,(int) t.tv_usec);
+  }
+  else
+  {
+     ret=-1;
+  }
+}
+}
+«ENDDEFINE»
+
+«DEFINE write(String in) FOR TTimestamp»
+  {
+     uint32_t d= «EXPAND encodeTimestamp(in)»;
+	 ret=write_bits(writer,(u_char *)&d, «bitsLen()»);
+  }
+«ENDDEFINE»
+
+«DEFINE read(String out) FOR TTimestamp»
+{
+uint32_t c;
+read_bits(reader,(u_char *)&c,«bitsLen()-»);
+
+struct timeval t=«EXPAND decodeTimestamp("c")»;
+memcpy(«out»,&t,sizeof(t));
+}
+«ENDDEFINE»
+
+
+«DEFINE strWrite(String in) FOR DataType»
+«IF IntType.isInstance(this)»
+«EXPAND strWriteInt(in)»
+«ELSE»
+«ERROR "DataType "+metaType.name+" not supported"»
+«ENDIF»
+«ENDDEFINE»
+
+«DEFINE strRead(String out) FOR DataType»
+«IF IntType.isInstance(this)»
+«EXPAND strReadInt(out)»
+«ELSE»
+«ERROR "DataType "+metaType.name+" not supported"»
+«ENDIF»
+«ENDDEFINE»
+
+«DEFINE write(String in) FOR DataType»
+«IF IntType.isInstance(this)»
+«EXPAND writeInt(in)»
+«ELSE»
+«ERROR "DataType "+metaType.name+" not supported"»
+«ENDIF»
+«ENDDEFINE»
+
+«DEFINE read(String out) FOR DataType»
+«IF IntType.isInstance(this)»
+«EXPAND readInt(out)»
+«ELSE»
+«ERROR "DataType "+metaType.name+" not supported"»
+«ENDIF»
+«ENDDEFINE»

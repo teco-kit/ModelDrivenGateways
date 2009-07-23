@@ -1,46 +1,242 @@
 «IMPORT ecore»
-
+«EXTENSION edu::teco::automata::generator::templates::config»
+«EXTENSION org::eclipse::xtend::util::stdlib::elementprops»
 
 «DEFINE start FOR EPackage»
-«FILE name+".h"»
+«FILE getNSPrefix()+"_types.h"»
+#ifndef «("___"+getNSPrefix()+"_types_h").toUpperCase()»
+#define «("___"+getNSPrefix()+"_types_h").toUpperCase()» 1
+#include <stdint.h>
+#include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
+#define «getNSPrefix()»_UnsignedInt uint32_t
+#define «getNSPrefix()»_SignedInt int32_t
+#define «getNSPrefix()»_Int int32_t
 
-«EXPAND definition FOREACH eAllContents.typeSelect(EClass).selectFirst(e|e.name=="DocumentRoot").eAllReferences.eType.typeSelect(EClass)»
+#define «getNSPrefix()»_UnsignedShort uint16_t
+#define «getNSPrefix()»_SignedShort int16_t
+#define «getNSPrefix()»_Short int16_t
+
+#define «getNSPrefix()»_UnsignedByte uint8_t
+#define «getNSPrefix()»_SignedByte int8_t
+#define «getNSPrefix()»_Byte int8_t
+
+#define «getNSPrefix()»_DateTime struct timeval
+
+«EXPAND declaration FOREACH eAllContents.typeSelect(EClass)»
+«EXPAND definition FOREACH eAllContents.typeSelect(EClass).selectFirst(e|e.name=="DocumentRoot").eAllReferences.select(r|r.eAnnotations.exists(a|a.source=="http:///org/eclipse/emf/ecore/util/ExtendedMetaData" && a.details.exists(d|d.key=="namespace"&&d.value=="##targetNamespace"))).eType.typeSelect(EClass)»
+#endif
 «ENDFILE»
 «ENDDEFINE»
 
 «DEFINE declaration FOR EClass»
-struct «name»;
-struct «name»_list;
-typedef «name» struct «name»;
+struct «name.p()»;
+typedef struct «name.p()» «name.p()»;
+«EXPAND listDeclarations»
 «ENDDEFINE»
 
 «DEFINE definition FOR EClass»
+«setProperty("did_definition",true)»
 
-«EXPAND definition FOREACH eAllReferences.select(e|e.containment).eType»
-struct  «name»
+«EXPAND definition FOREACH eAllReferences.select(e|e.containment).eType.toSet().select(e|e.getProperty("did_definition")!=true)»
+struct  «name.p()»
 {
- «FOREACH eAllReferences AS m»
+ «FOREACH eAllReferences.typeSelect(EStructuralFeature).addAll(eAllAttributes) AS m»
  «IF m.upperBound==m.lowerBound»
- «m.eType.name» «name»«IF m.upperBound!=1»[«m.upperBound»]«ENDIF»;
- «ELSEIF m.upperBound!=null»
- struct{
-   size_t len;
-   «m.eType.name» element[«m.upperBound»];   
-  } «name»;
+ 	«EXPAND member FOR m»
+ «ELSEIF m.upperBound!=-1»
+ 	«EXPAND boundedList FOR m»
  «ELSE»
- struct «m.eType.name»_list «name»;
+ 	«EXPAND unboundedList FOR m»
  «ENDIF»
  «ENDFOREACH»
 };
 
-struct «name»_list
-{
-  struct «name» element;
-  struct «name»_list *next;
-}
+ «EXPAND listDefinitions»
+ 
+ «FOREACH  eAllReferences.typeSelect(EStructuralFeature).addAll(eAllAttributes) AS m»
+ «IF m.upperBound==m.lowerBound»
+ 	«EXPAND member_f(name.p()) FOR m»
+ «ELSEIF m.upperBound!=-1»
+ 	«EXPAND boundedList_f(name.p()) FOR m»
+ «ELSE»
+ 	«EXPAND unboundedList_f(name.p()) FOR m»
+ «ENDIF»
+ «ENDFOREACH»
+ 
 «ENDDEFINE»
-
 
 «DEFINE definition FOR EClassifier»
 «ERROR "not supported"»
 «ENDDEFINE»
+
+«DEFINE listDeclarations FOR ENamedElement»
+	«EXPAND unboundedListDeclaration »
+	«EXPAND unboundedPtrListDeclaration »
+«ENDDEFINE»
+
+«DEFINE listDefinitions FOR ENamedElement»
+	«EXPAND unboundedListDefinition»
+	«EXPAND unboundedPtrListDefinition»
+«ENDDEFINE»
+
+«DEFINE unboundedListDeclaration  FOR ENamedElement»
+«EXPAND unboundedListDeclaration(false)»
+«ENDDEFINE»
+
+«DEFINE unboundedPtrListDeclaration  FOR ENamedElement»
+«EXPAND unboundedListDeclaration(true)»
+«ENDDEFINE»
+
+«DEFINE unboundedListDeclaration(boolean ptr) FOR ENamedElement»
+«LET name.p()+(ptr?"_ptr":"")+"_list" AS listname»
+struct «listname»;
+«ENDLET»
+«ENDDEFINE»
+
+«DEFINE unboundedListDefinition  FOR ENamedElement»
+«EXPAND unboundedListDefinition(false)»
+«ENDDEFINE»
+
+«DEFINE unboundedPtrListDefinition  FOR ENamedElement»
+«EXPAND unboundedListDefinition(true)»
+«ENDDEFINE»
+
+«DEFINE unboundedListDefinition(boolean ptr) FOR ENamedElement»
+«LET name.p()+(ptr?"_ptr":"")+"_list" AS listname»
+«LET name.p()+(ptr?" *":"") AS elem»
+
+struct «listname»
+{
+  struct «listname» *next;
+  «elem» element;
+};
+
+static «elem»* «listname»_append(struct «listname» ** head) __attribute__((__unused__));
+static «elem»* «listname»_append(struct «listname» ** head)
+{
+  struct «listname» *cur, *new=calloc(sizeof(*new),1);
+  if(*head==NULL) return &((*head=new)->element);
+  for(cur=*head;cur->next;cur=cur->next);
+  return &((cur->next=new)->element);
+}
+«ENDLET»
+«ENDLET»
+«ENDDEFINE»
+
+«DEFINE unboundedList FOR EReference»
+ «EXPAND unboundedList(containment)»
+«ENDDEFINE»
+
+«DEFINE unboundedList FOR EAttribute»
+ «EXPAND unboundedList(true)»
+«ENDDEFINE»
+
+«DEFINE unboundedList FOR EStructuralFeature»
+«ERROR this.metaType.name+" not supported"»
+«ENDDEFINE»
+
+«DEFINE unboundedList(boolean containment) FOR EStructuralFeature»
+ struct {
+  «eType.name.p()»_«IF !containment-»ptr_«ENDIF-»list *first
+ }«name»;
+«ENDDEFINE»
+
+«DEFINE unboundedList_f(String parent) FOR EReference»
+ «EXPAND unboundedList_f(parent,containment)»
+«ENDDEFINE»
+
+«DEFINE unboundedList_f(String parent) FOR EAttribute»
+ «EXPAND unboundedList_f(parent,true)»
+«ENDDEFINE»
+
+«DEFINE unboundedList_f FOR EStructuralFeature»
+«ERROR this.metaType.name+" not supported"»
+«ENDDEFINE»
+
+«DEFINE unboundedList_f(String parent,boolean containment) FOR EStructuralFeature»
+static «eType.name» «!containment?"*":""-» *«container»_add_«name»(«parent» *self) __attribute__((__unused__));
+static «eType.name» «!containment?"*":""-» *«container»_add_«name»(«parent» *self){ return «eType.name.p()»_list_append(&(self->«name».first); }
+«ENDDEFINE»
+
+«DEFINE boundedList FOR EReference»
+ «EXPAND boundedList(containment)»
+«ENDDEFINE»
+
+«DEFINE boundedList FOR EAttribute»
+ «EXPAND boundedList(true)»
+«ENDDEFINE»
+
+«DEFINE boundedList FOR EStructuralFeature»
+«ERROR this.metaType.name+" not supported"»
+«ENDDEFINE»
+
+«DEFINE boundedList(boolean containment) FOR EStructuralFeature»
+ struct{
+   size_t len; «REM» TODO: Make size type smaller«ENDREM»
+   «eType.name.p()» «IF !containment-»*«ENDIF-»element[«upperBound»];   
+  } «name»;
+«ENDDEFINE»
+
+«DEFINE boundedList_f(String parent) FOR EReference»
+ «EXPAND boundedList_f(parent,containment)»
+«ENDDEFINE»
+
+«DEFINE boundedList_f(String parent) FOR EAttribute»
+ «EXPAND boundedList_f(parent,true)»
+«ENDDEFINE»
+
+«DEFINE boundedList_f FOR EStructuralFeature»
+«ERROR this.metaType.name+" not supported"»
+«ENDDEFINE»
+
+«DEFINE boundedList_f(String parent,boolean containment) FOR EStructuralFeature»
+static «eType.name.p()» «IF !containment-»*«ENDIF-» *«parent»_add_«name»(«parent» *self) __attribute__((__unused__));
+static «eType.name.p()» «IF !containment-»*«ENDIF-» *«parent»_add_«name»(«parent» *self){if(self->«name».len<«upperBound») return &(self->«name».element[(self->«name».len++)]);  else return NULL;}
+
+static «eType.name.p()» «IF !containment-»*«ENDIF-» *«parent»_next_«name»(«parent» *self,«eType.name.p()» «IF !containment-»*«ENDIF-» *last)  __attribute__((__unused__));
+static «eType.name.p()» «IF !containment-»*«ENDIF-» *«parent»_next_«name»(«parent» *self,«eType.name.p()» «IF !containment-»*«ENDIF-» *last) {
+if(self->«name».len==0) return NULL;
+if(last==NULL) return self->«name».element;
+if(last!=&(self->«name».element[self->«name».len-1])) return last++; 
+else return NULL;}
+«ENDDEFINE»
+
+«DEFINE member FOR EAttribute»
+«EXPAND member(true)»
+«ENDDEFINE»
+
+«DEFINE member FOR EReference»
+«EXPAND member(containment)»
+«ENDDEFINE»
+
+«DEFINE member FOR EStructuralFeature»
+«ERROR this.metaType.name+" not supported"»
+«ENDDEFINE»
+
+«DEFINE member(boolean containment) FOR EStructuralFeature»
+ «eType.name.p()» «IF !containment-»*«ENDIF-»«name»«IF upperBound!=1»[«upperBound»]«ENDIF»;
+«ENDDEFINE»
+
+«DEFINE member_f(String parent) FOR EReference»
+ «EXPAND member_f(parent,containment)»
+«ENDDEFINE»
+
+«DEFINE member_f(String parent) FOR EAttribute»
+ «EXPAND member_f(parent,true)»
+«ENDDEFINE»
+
+«DEFINE member_f FOR EStructuralFeature»
+«ERROR this.metaType.name+" not supported"»
+«ENDDEFINE»
+
+«DEFINE member_f(String parent, boolean containment) FOR EStructuralFeature»
+«IF upperBound>1»
+static «eType.name.p()» «IF !containment-»*«ENDIF-» *«parent»_next_«name»(«parent» *self,«eType.name.p()» «IF !containment-»*«ENDIF-» *last) {
+if(last==NULL) last=self->«name».element;
+if(last!=&(self->«name».element[«upperBound»-1])) return last++; else return NULL;
+}
+«ENDIF»
+«ENDDEFINE»
+

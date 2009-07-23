@@ -16,7 +16,7 @@
    «ENDFOREACH»
    «stack_clear()»
    
-   «FILE this.states.typeSelect(StartState).first().out.name+"_sax2bin.c"»
+   «FILE this.states.typeSelect(StartState).first().out.name+"_dom2bin.c"»
    «EXPAND header(nameID)»
    for (;;)
    {
@@ -34,46 +34,50 @@
 «ENDDEFINE»
 
 «DEFINE header(String nameID) FOR StateMachine»
-/* Generated file */
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <limits.h>
-#include <errno.h>
-#include <stdsoap2.h>
 
-
-#include <bitsio/read_bits.h>
-#include <strio/str_func.h>
-
-
-#ifndef SOAP_TYPE_string
-#define SOAP_TYPE_string 0
-#endif
-
- 
-«FILE this.states.typeSelect(StartState).first().out.name+"_sax2bin.h"»
+«FILE this.states.typeSelect(StartState).first().out.name+"_dom2bin.h"»
+ #ifndef «("___"+this.states.typeSelect(StartState).first().out.name+"_bin2dom_h").toUpperCase()»
+ #define «("___"+this.states.typeSelect(StartState).first().out.name+"_bin2dom_h").toUpperCase()» 1
  #include <bitsio/write_bits.h>
+ #include <string.h>
  #include <bitsio/write_bits_buf.h>
- int «this.states.typeSelect(StartState).first().out.name»_sax2bin_run(struct soap *soap,struct WRITER_STRUCT *writer);
+ #include "«getNSPrefix()»_types.h"
+  
+int «this.states.typeSelect(StartState).first().out.name»_dom2bin_run(«this.states.typeSelect(StartState).out.typeSelect(SimpleState).first().ecore.name.p()» *dom, struct WRITER_STRUCT *writer );
+ #endif
 «ENDFILE»
 
-static int gsoap_automata();
-int «this.states.typeSelect(StartState).first().out.name»_sax2bin_run(struct soap *soap,struct WRITER_STRUCT *writer) 
+#include "«this.states.typeSelect(StartState).first().out.name»_dom2bin.h"
+
+
+static int dom_automata(struct WRITER_STRUCT *writer,void **stack, int *_label);
+int «this.states.typeSelect(StartState).first().out.name»_dom2bin_run(«this.states.typeSelect(StartState).out.typeSelect(SimpleState).first().ecore.name.p()» *dom, struct WRITER_STRUCT *writer ) 
 {
 	int ret;
 	int label=0;
-	
-	while((ret=gsoap_automata(soap,writer,&label))>0);
+	void * stack[20]={dom};
+	while((ret=dom_automata(writer,stack,&label))>0);
 	
     return ret;	
 }
+   
+static void *stack_pop(void ***stack) {
+	return *(*stack--);
+}
+#define pop() stack_pop(&stack)
+
+static void *stack_push(void ***stack, void * X) {
+	return *(++*stack) = X;
+}
+#define push(X) stack_push(&stack,X)
+
+#define top() *stack
 
 // return:  0 if EOF, 0<for fault, and  read bits else (TODO)
-static int gsoap_automata(struct soap *soap, struct WRITER_STRUCT *writer, int *_label)
+static int dom_automata(struct WRITER_STRUCT *writer,void **stack, int *_label)
 {
 #define label (*_label)
+void *last=NULL;
 «ENDDEFINE»
 
 «DEFINE footer(String nameID) FOR StateMachine»
@@ -86,10 +90,12 @@ return 1;
  «IF lowerBound!=upperBound»
  «ERROR name+" not constant"» 
  «ENDIF»
+ «ERROR "not implemented"»
    /* constLoop «stack_getCurrPath() + name» */
    static int lowB«count»;
    for (lowB«count»=«lowerBound»;lowB«count»>0 && (soap_element_begin_in(soap,"«getNSPrefix()»:«name»")==SOAP_OK) ;lowB«count»--)
     «targetDef.proceed()»
+    next=«stack_top().ecore.name.p()»_next_«name.toFirstLower()»((«stack_top().ecore.name.p()» *)top(),last)
      write_true(writer); //XXX: not necessary, right now symetric to bin2sax...
 «ENDAROUND»
 
@@ -99,41 +105,46 @@ return 1;
 «ENDAROUND»
 
 
-«DEFINE IsElement FOR SimpleState»(soap_element_begin_in(soap,"«getNSPrefix()»:«name»",0,NULL)==SOAP_OK)«ENDDEFINE»
-
 «AROUND edu::teco::automata::generator::templates::encoderRoot::loopBegin(Integer count) 
 FOR SimpleState»
    /* loop «stack_getCurrPathSlash() + name» */
-   while(«EXPAND IsElement -»)
-   {
-      write_true(writer); «REM» Important to be before value «ENDREM»
-     «targetDef.proceed()»
+   «ecore.name.p()» *cur;
+   while(NULL!=(cur=«stack_top().ecore.name.p()»_next_«name.toFirstLower()»((«stack_top().ecore.name.p()» *)top(),(«ecore.name.p()» *)last)))
+   «targetDef.proceed()»
+   write_true(writer);
+   last=cur;
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::loopEnd(String endName) FOR SimpleState»
-«targetDef.proceed()»
-}
+«targetDef.proceed()» 
+    last=NULL;
 	write_false(writer); //XXX: not necessary, right now symetric to bin2sax...
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoopBegin(Integer count, Integer next) FOR SimpleState»
-   if(«EXPAND IsElement -»)
+   «ecore.name.p()» *next;
+   if(NULL!=(next=«stack_top().ecore.name.p()»_next_«name.toFirstLower()»((«stack_top().ecore.name.p()» *)top(),(«ecore.name.p()» *) last)))
    { /* depth «depth»*/
-     write_true(writer);
    	«targetDef.proceed()»
+   	write_true(writer);
    }
    else
    {
       label = «next» ; //TODO: xx
       write_false(writer);
+      last=NULL;
       continue;
    } /* «name» */
 «ENDAROUND»
 
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoopEnd2(String endName) FOR SimpleState» 
+    last=pop();
+   «targetDef.proceed()»
+«ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoopBegin(Integer count, Integer next) FOR SimpleState»
-   
-   if(/*TODO: lowB«count» */«EXPAND IsElement -»)
+   «ecore.name.p()» *next;
+   if(NULL!=(next=«stack_top().ecore.name.p()»_next_«name.toFirstLower()»((«stack_top().ecore.name.p()» *)top(),(«ecore.name.p()» *)last)))
    { /* depth «depth»*/
    	«targetDef.proceed()»
    	write_true(_writer); //XXX: not necessary, right now symetric to bin2sax...
@@ -142,31 +153,39 @@ FOR SimpleState»
    {
       label = «next»;
       write_false(_writer);
+      last=NULL;
       continue;
    } /* «name» */
 «ENDAROUND»
 
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexConstLoopEnd2(String endName) FOR SimpleState» 
+    last=pop();
+   «targetDef.proceed()»
+«ENDAROUND»
+
 «AROUND edu::teco::automata::generator::templates::encoderRoot::complexBegin FOR SimpleState» 
-  
-   if(!«EXPAND IsElement -»)
-   {
-   soap->error=soap_receiver_fault(soap,"tag name or namespace mismatch","< errorcode xmlns='http://tempuri.org' > 123 < /errorcode > < errorinfo xmlns='http://tempuri.org' > &lt;«name»&gt; expected </errorinfo>");
-  //      soap->error=SOAP_TAG_MISMATCH;
-   	return -1;	
-   }
-   
+   «IF !stack_isEmpty()»
+   push(&((«stack_top().ecore.name.p()» *) top())->«name.toFirstLower()»);
+   «ELSE»
+    //assert preinitialized stack 
+   «ENDIF»
+   «targetDef.proceed()»
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexEnd FOR SimpleState» 
+    pop();
    «targetDef.proceed()»
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::simpleBegin(Integer label) FOR SimpleState» 
-   if(!«EXPAND IsElement -»)
-   {
-     soap->error=soap_receiver_fault(soap,"tag name or namespace mismatch","< errorcode xmlns='http://tempuri.org' > 123 < /errorcode > < errorinfo xmlns='http://tempuri.org' > &lt;«name»&gt; expected </errorinfo>");
-    // soap->error=SOAP_TAG_MISMATCH;
-   	return -1;	
-   }
+   push(&((«stack_top().ecore.name.p()» *) top())->«name.toFirstLower()»);
    
    «targetDef.proceed()»
+«ENDAROUND»
+
+«AROUND edu::teco::automata::generator::templates::encoderRoot::simpleEnd FOR SimpleState» 
+   pop();
+  «targetDef.proceed()»
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameBegin 
@@ -175,16 +194,6 @@ FOR SimpleState»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd 
 FOR SimpleState»
-   «IF kind != "attribute"-»
-    if(soap_element_end_in(soap,"«getNSPrefix()»:«name»")!=SOAP_OK)
-    {
-     soap->error=soap_receiver_fault(soap,"tag name or namespace mismatch","< errorcode xmlns='http://tempuri.org' > 123 < /errorcode > < errorinfo xmlns='http://tempuri.org' > &lt;«name»&gt; expected </errorinfo>");
-     //soap->error=SOAP_TAG_MISMATCH;
-     return -1; 
-    }
-    «ELSE-»
-   		«ERROR "attributes not supported yet"»
-   «ENDIF-»
    «targetDef.proceed()»
 «ENDAROUND»
 
@@ -198,7 +207,7 @@ FOR SimpleState»
 FOR SimpleState»
   {
     ssize_t ret=0;
-  	«EXPAND edu::teco::automata::generator::templates::c::binEncoder::strWrite("soap_value(soap)") FOR type»
+  	«EXPAND edu::teco::automata::generator::templates::c::binEncoder::write("(*("+ecore.name.p()+"*)top())") FOR type»
   }
 «ENDAROUND»
 

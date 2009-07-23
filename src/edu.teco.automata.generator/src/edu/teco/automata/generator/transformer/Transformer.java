@@ -119,7 +119,7 @@ private StateMachine createStateMachine(EReference rootRef, Issues issues)
                        rootRef.getEAnnotations(),
                        rootRef.getEReferenceType().getName(), 
                        rootRef.getEReferenceType().getInstanceClassName(),
-                       rootRef.getLowerBound(), rootRef.getUpperBound());
+                       rootRef.getLowerBound(), rootRef.getUpperBound(),rootRef.getEType());
            depth++;
            iterateEContents(rootRef.getEReferenceType());
 
@@ -283,7 +283,8 @@ protected void doModification(WorkflowContext ctx, ProgressMonitor monitor,
                                String type, 
                                String pType, 
                                int lowB, 
-                               int upB                      ) {
+                               int upB,
+                               EClassifier ecore) {
 
       for (Iterator<EAnnotation> annIt = annList.iterator(); annIt.hasNext();)
       {
@@ -312,6 +313,7 @@ protected void doModification(WorkflowContext ctx, ProgressMonitor monitor,
                automataType = DataTypes.getComplexType();
 
             state.setType(automataType);
+            state.setEcore(ecore);
 
             if (previousState != null) {
                if (previousState instanceof SimpleState)
@@ -348,7 +350,7 @@ protected void doModification(WorkflowContext ctx, ProgressMonitor monitor,
                                       attr.getEAnnotations(),
                                       attr.getEAttributeType().getName(), 
                                       attr.getEAttributeType().getInstanceClassName(), 
-                                      attr.getLowerBound(), attr.getUpperBound());
+                                      attr.getLowerBound(), attr.getUpperBound(),attr.getEType());
             if (ret)
                handleEDataType(attr.getEAttributeType().getEAnnotations());
          } else if (obj.eClass().getInstanceClass() == EReference.class) {
@@ -359,7 +361,7 @@ protected void doModification(WorkflowContext ctx, ProgressMonitor monitor,
                         ref.getEReferenceType().getName(), 
                         ref.getEReferenceType().getInstanceClassName(), 
                         ref.getLowerBound(), 
-                        ref.getUpperBound());
+                        ref.getUpperBound(),ref.getEType());
 
             depth++;
             iterateEContents(ref.getEReferenceType());

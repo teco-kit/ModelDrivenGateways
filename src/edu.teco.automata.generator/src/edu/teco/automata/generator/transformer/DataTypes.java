@@ -75,6 +75,8 @@ public class DataTypes {
          return AutomataFactory.eINSTANCE.createTDouble();
       else if (name.equals("java.lang.String"))
          return AutomataFactory.eINSTANCE.createTString();
+      else if (name.equals("DateTime"))
+    	 return AutomataFactory.eINSTANCE.createTTimestamp();
       else
          return null;
    }
