@@ -37,9 +37,8 @@ public class Util {
     * @return Bits needed to represent the number
     */
    public static int bitsLen(Integer min, Integer max) {
-      int result = (int) Math.ceil(Math.log((double) Math.abs(max)
-            - Math.abs(min) + 1)
-            / (Math.log(2.0)));
+      int result = (int) Math.ceil(Math.log((double) Math.abs(max-min+1))
+    		  / (Math.log(2.0)));
       return result;
    }
 
@@ -53,14 +52,11 @@ public class Util {
     */
    public static int bitsLen(Integer min, Integer max, Integer stepping) {
 
-      if (stepping <= 0)
-         return bitsLen(min, max);
+      if (stepping <= 0) return bitsLen(min, max);
 
       // log((max - min) + 1) / stepping round up
-      int result = (int) Math.ceil(Math.log((double) Math.abs(max)
-            - Math.abs(min) + 1)
+      int result = (int) Math.ceil(Math.log((double) Math.abs(max- min) + 1)
             / (Math.log(2.0) * (double) stepping));
-
       return result;
    }
 

@@ -9,7 +9,9 @@ int byteLen(int min, int max, int stepping):
 
 int byteLenDouble(int min, int max, double stepping):
     JAVA edu.teco.automata.generator.templates.Util.byteLenDouble(java.lang.Integer, java.lang.Integer, java.lang.Double);
-    
+
+
+
 int bitsLen(int min, int max):
     JAVA edu.teco.automata.generator.templates.Util.bitsLen(java.lang.Integer, java.lang.Integer);
 

@@ -6,3 +6,5 @@ String getDeviceName(): GLOBALVAR DeviceName;
 String getJavaClassName(): GLOBALVAR JavaClassName;
 String getJavaPackageName(): GLOBALVAR JavaPackageName;
 String getJavaInterfaceName(): GLOBALVAR JavaInterfaceName;
+
+String p(String s): getNSPrefix()+"_"+s; 
