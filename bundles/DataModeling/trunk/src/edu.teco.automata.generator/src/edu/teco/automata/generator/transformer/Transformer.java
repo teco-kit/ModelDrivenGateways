@@ -149,7 +149,7 @@ states.add(stop);
 protected void doModification(WorkflowContext ctx, ProgressMonitor monitor,
          Issues issues, Object model) {
       EPackage ecoreP = (EPackage) model;
-      EClassifier docRoot = getElement("DocumentRoot", ecoreP.getEClassifiers());
+      EClass docRoot = (EClass) getElement("DocumentRoot", ecoreP.getEClassifiers());
       
       if(rootElement!=null)
       {
@@ -202,16 +202,16 @@ protected void doModification(WorkflowContext ctx, ProgressMonitor monitor,
       }
       else
       {
-    	  ArrayList<Object> slotContents=new ArrayList<Object>();
-    	  
-    	  for (EObject obj : docRoot.eContents())  if (obj.eClass().getInstanceClass() == EReference.class) {
-         			Resource r = new ResourceSetImpl().createResource(URI.createURI("uri"));
-                    r.getContents().add(createStateMachine((EReference) obj, issues)); 
-                    	slotContents.add(r.getContents());
+    	  //ArrayList<Object> slotContents=new ArrayList<Object>();
+    	  Resource r = new ResourceSetImpl().createResource(URI.createURI("uri"));
+    	  for (EReference ref : docRoot.getEReferences())  if ( !ref.getName().equals("xSISchemaLocation") && !ref.getName().equals("xMLNSPrefixMap")  ) {
+         		//	Resource r = new ResourceSetImpl().createResource(URI.createURI("uri"));
+                    r.getContents().add(createStateMachine((EReference) ref, issues)); 
+                //    	slotContents.add(r.getContents());
     	    	 }
    
-          if(slotContents.isEmpty()){issues.addWarning(this.getContainer(),"no root element found", this); }
-    	  ctx.set(outputSlot,slotContents); 
+          if(r.getContents().isEmpty()){issues.addWarning(this.getContainer(),"no root element found", this); }
+    	  ctx.set(outputSlot,r.getContents()); 
       }
       
    }
