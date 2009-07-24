@@ -1,38 +1,33 @@
 <workflow>  
 
   
-  <component id="generatorDec" class="oaw.xpand2.Generator">			 
-  	<metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
+  <component id="generatorDec" class="org.eclipse.xpand2.Generator">			 
+  	<metaModel id="mm" class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
   		<metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
   	</metaModel>
-  	<expand value="edu::teco::automata::generator::templates::decoderRoot::root FOR model"/>
-  	<outlet path="${outlet_path}/">
-		<postprocessor class="oaw.xpand2.output.JavaBeautifier"/>
-	</outlet>
-  	<beautifier class="oaw.xpand2.output.JavaBeautifier"/>
+  	<expand value="edu::teco::automata::generator::templates::decoderRoot::root FOREACH model"/>
+    <outlet path="${outlet_path}/"/>
+  	<beautifier class="org.eclipse.xpand2.output.JavaBeautifier"/>
   </component>  
   
-  <component id="generatorEnc" class="oaw.xpand2.Generator">           
-    <metaModel id="mm" class="oaw.type.emf.EmfMetaModel">
- 		<metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>        
-    </metaModel>
+  <component id="generatorEnc" class="org.eclipse.xpand2.Generator">           
+    <metaModel idRef="mm"/>
+    
     <globalVarDef name="JavaInterfaceName" value="'edu.teco.automata.generator.core.BinXMLPrinterAutomata'"/>
     <globalVarDef name="JavaClassName" value="'EncoderAutomata'"/>
     <globalVarDef name="JavaPackageName" value="'edu.teco.automata.generator.gen'"/>
-    <expand value="edu::teco::automata::generator::templates::readBitsIO::root FOR model"/>
-    <outlet path="${outlet_path}/">
-        <postprocessor class="oaw.xpand2.output.JavaBeautifier"/>
-    </outlet>
-    <beautifier class="oaw.xpand2.output.JavaBeautifier"/>
+    <expand value="edu::teco::automata::generator::templates::readBitsIO::root FOREACH model"/>
+    <outlet path="${outlet_path}/"/>
+    <beautifier class="org.eclipse.xpand2.output.JavaBeautifier"/>
   </component>  
   
   <component adviceTarget="generatorEnc"
-  id="generatorEncAdv" class="oaw.xpand2.GeneratorAdvice">			 
+  id="generatorEncAdv" class="org.eclipse.xpand2.GeneratorAdvice">			 
   	<advices value="edu::teco::automata::generator::templates::readBitsIO"/>
   </component> 
   
   <component adviceTarget="generatorEnc"
-  id="generatorEncAdv" class="oaw.xpand2.GeneratorAdvice">			 
+  id="generatorEncAdv" class="org.eclipse.xpand2.GeneratorAdvice">			 
   	<advices value="edu::teco::automata::generator::templates::writeXMLPrintStream"/>
   </component> 
 
