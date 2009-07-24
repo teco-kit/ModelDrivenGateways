@@ -21,7 +21,7 @@ import edu.teco.automata.generator.Runner;
 
 public class XSD2Automata extends TestCase {
    
-   String genDir  = "genFolder";
+   String genDir  = "src-gen/test";
    String testDir = "src/edu/teco/automata/generator/test";
 
    public void testPrs74() {
@@ -61,7 +61,7 @@ public class XSD2Automata extends TestCase {
 	  properties.put("automataFile", automataPath);
       Runner.main(properties,new String[] {});
    }
-   
+   /* tests that automataNew is a superset of automataOrg */
    private void compareAutomata(String automataOrg, 
                                 String automataNew) {
    
@@ -139,7 +139,7 @@ public class XSD2Automata extends TestCase {
                                         "fractionDigits", "stepping"};
                for (String attribute : typeAttrList)
                {
-                  if (typeNodeNew.getAttributes().getNamedItem(attribute) != null)
+                  if (typeNodeNew.getAttributes().getNamedItem(attribute) != null && typeNodeOrg.getAttributes().getNamedItem(attribute)!=null)
                   {  
                      assertEquals(typeNodeNew.getAttributes().
                                      getNamedItem(attribute).getNodeValue(),
@@ -148,7 +148,7 @@ public class XSD2Automata extends TestCase {
                   }
                   else
                      assertTrue(typeNodeOrg.getAttributes().
-                                  getNamedItem(attribute) == null);
+                                  getNamedItem(attribute) == null); //additional node
                }
             }
          }
