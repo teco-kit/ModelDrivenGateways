@@ -12,7 +12,7 @@
       <schemaFile value="model/wsdl11.xsd" />
     </metaModel>
   </component>
-  
+
   <component class="org.eclipse.xtend.typesystem.xsd.XMLReader">
     <modelSlot value="metadata" />
     <uri value="${src}/SSimp.metadata" />
@@ -22,24 +22,29 @@
       <schemaFile value="model/wsdl11.xsd" />
     </metaModel>
   </component>
+ 
   
    <component class="org.eclipse.xpand2.Generator">
    <metaModel idRef="metadata" />
     <expand value="edu::teco::dpws::generator::templates::ws4d::Root FOR metadata" />
     <outlet path="${outlet}" />
     <globalVarDef name="WSDLPath" value="'${src}'"/>
+        
+    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
     
   </component>
-  
+
   
   <component class="org.eclipse.xpand2.Generator">
    <metaModel idRef="wsdl" />
     <expand value="edu::teco::dpws::generator::templates::server::Root FOR wsdl" />
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
     <outlet path="${outlet}" />
+        
+    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
+
 
   </component>
-  
 
     <component id="xsdParser"   class="edu.teco.automata.generator.XSD2EcoreReader">
     <xsdPath value="${src}/SensorValues.wsdl"/>
@@ -83,7 +88,7 @@
    </component>
   
   
-  
+
     <component id="generatorEncGSOAP" class="org.eclipse.xpand2.Generator">             
     <metaModel id="automata" class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
          <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
@@ -92,8 +97,11 @@
   
     <expand value="edu::teco::automata::generator::templates::c::bin2SAX::root('') FOREACH OutMessageAutomata"/>
     <outlet path="${outlet}/"/>
-    <output class="org.eclipse.xpand2.output.cpp.OutputImpl"/>
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
+    
+        
+    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
+       
     </component> 
     
    <component adviceTarget="generatorEncGSOAP" id="generatorGsoapAdv" class="org.eclipse.xpand2.GeneratorAdvice">			 
@@ -109,6 +117,9 @@
     <expand value="edu::teco::automata::generator::templates::c::SAX2bin::root('') FOREACH InMessageAutomata"/>
     <outlet path="${outlet}/"/>
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
+    
+    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
+
    </component> 
    
    <component adviceTarget="generatorDecGSOAP"
@@ -116,4 +127,52 @@
   	  <advices value="edu::teco::automata::generator::templates::c::SAX2bin"/>
    </component> 
 
+  
+  <component id="ecore2model" class="org.eclipse.xpand2.Generator">           
+    <metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel" metaModelPackage="org.eclipse.emf.ecore.EcorePackage"/>
+        
+    <expand value="edu::teco::automata::generator::templates::c::ecore2model::start FOR SchemaModel"/>
+    <outlet path="${outlet}/"/>
+    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
+    
+    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
+
+    
+   </component> 
+
+   
+   <component id="generatorEncDom" class="org.eclipse.xpand2.Generator">           
+    <metaModel id="automata" class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"  metaModelPackage="edu.teco.automata.Automata.AutomataPackage"/>
+    <metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel" metaModelPackage="org.eclipse.emf.ecore.EcorePackage"/>
+       
+    <expand value="edu::teco::automata::generator::templates::c::bin2dom::root('') FOREACH InMessageAutomata.addAll(OutMessageAutomata)"/>
+    <outlet path="${outlet}/"/>
+    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
+    
+    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
+    
+   </component> 
+   
+   <component adviceTarget="generatorEncDom" id="generatorAdvEncDom" class="org.eclipse.xpand2.GeneratorAdvice">			 
+  	  <advices value="edu::teco::automata::generator::templates::c::bin2dom"/>
+   </component> 
+   
+      
+   <component id="generatorDecDom" class="org.eclipse.xpand2.Generator">           
+    <metaModel id="automata" class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"  metaModelPackage="edu.teco.automata.Automata.AutomataPackage"/>
+    <metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel" metaModelPackage="org.eclipse.emf.ecore.EcorePackage"/>
+       
+    <expand value="edu::teco::automata::generator::templates::c::dom2bin::root('') FOREACH OutMessageAutomata"/>
+    <outlet path="${outlet}/"/>
+    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
+    
+    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
+   </component> 
+   
+   <component adviceTarget="generatorDecDom" id="generatorAdvEncDom" class="org.eclipse.xpand2.GeneratorAdvice">			 
+  	  <advices value="edu::teco::automata::generator::templates::c::dom2bin"/>
+   </component> 
+
+   
+   
 </workflow>

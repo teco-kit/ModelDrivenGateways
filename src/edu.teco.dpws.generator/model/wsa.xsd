@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- 
 Copyright © 2002-2004 BEA Systems Inc., International Business Machines Corporation, 
 Microsoft Corporation, Inc, SAP AG, and Sun Microsystems, Inc.. All rights reserved. 
@@ -37,7 +37,6 @@ times remain with the Authors.
 No other rights are granted by implication, estoppel or otherwise.
 
 -->
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xs:schema targetNamespace="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" elementFormDefault="qualified" blockDefault="#all">
   <!-- //////////////////// WS-Addressing //////////////////// -->
   <!-- Endpoint reference -->

@@ -6,6 +6,7 @@
 
 «DEFINE Root FOR TDefinitions»
 «EXPAND service FOREACH service »
+«EXPAND edu::teco::dpws::generator::templates::domdebug::debug FOREACH service»
 «EXPAND deliver_event::deliverEvent FOREACH service»
 «ENDDEFINE»
 
@@ -50,7 +51,19 @@ int  «name»_serve_request(struct soap *soap) //TODO: pass device context
 «ENDDEFINE»
 
 «DEFINE dispatch FOR TOperation»
-	if ((!soap->action && !soap_match_tag(soap, soap->tag, "«getNSPrefix()»:«name»")) || (soap->action && !strcmp(soap->action, "«input.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»")))
+	if (
+	«IF !input.getMessage().part.isEmpty»
+	(«IF !input.anyAttribute.toList().select(e|e.feature.name=="Action").isEmpty»!soap->action && «ENDIF»  !soap_match_tag(soap, soap->tag, "«getNSPrefix()»:«input.getMessage().part.first().element.localPart»"))
+	||
+	«ENDIF»
+	
+	«IF !input.anyAttribute.toList().select(e|e.feature.name=="Action").isEmpty»
+	(soap->action && !strcmp(soap->action, "«input.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»"))
+	«ELSE»
+	0
+	«ENDIF»
+	
+	)
 		return soap_serve_«name»(soap);
 «ENDDEFINE»
 
@@ -71,13 +84,14 @@ static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
 «IF  !this.input.getMessage().part.element.isEmpty»
     {  	  
    	  u_char sendbuf[256];
+   	  memset(sendbuf,0xff,sizeof(sendbuf));
       struct WRITER_STRUCT* writer=write_bits_bufwriter_stack_new(sendbuf);
   «FOREACH this.input.getMessage().part.element AS arg»
   	  {
        if («arg.localPart»_sax2bin_run(soap,writer)<0) return soap->error;
   	  }
   «ENDFOREACH»
-      send_buf(device,service_id,op_id,soap,sendbuf,write_finish(writer));
+      send_buf(device,service_id,op_id,soap,sendbuf,write_buf_finish(writer));
     }
 «ELSE»
     send_buf(device,service_id,op_id,soap,NULL,0);
@@ -104,7 +118,13 @@ static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
    }
    «IF  !this.output.getMessage().part.element.isEmpty»
    {
-      struct READER_STRUCT* reader=read_bits_bufreader_stack_new((u_char *)rcv_buf(device,service_id,op_id,soap));
+      u_char * buf=(u_char *)rcv_buf(device,service_id,op_id,soap);
+      if(buf==NULL)
+      {
+        soap->error=soap_receiver_fault(soap,"No reply from Node",NULL);
+        return soap->error;
+      }
+      struct READER_STRUCT* reader=read_bits_bufreader_stack_new(buf);
       «FOREACH this.output.getMessage().part.element AS arg»
       {
        «arg.localPart»_bin2sax_run(reader,soap);
