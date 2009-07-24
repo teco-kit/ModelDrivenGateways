@@ -45,11 +45,12 @@ public class Runner {
 		 
 		 ProgressMonitor ProgressMonitor=new NullProgressMonitor();
 	      
-	      Map<String, EPackage> slotContents = new HashMap<String, EPackage>();
+	      Map<String, Object> slotContents = new HashMap<String, Object>();
 	        
 	        WorkflowRunner r=new WorkflowRunner();
 	        if(!r.run(wfFileAutomata, ProgressMonitor,
-	                properties, slotContents)) System.exit(1);
+	                properties, null)) System.exit(1);
+	        slotContents.put("model", r.getContext().get("model"));
 	        for(String t:target)
 	        {
 	        	if(!r.run(wfFileTargetPrefix+t+wfFileTargetSuffix, ProgressMonitor,
