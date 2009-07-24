@@ -1,8 +1,8 @@
 CFLAGS += -Wall -pedantic -g -O0
 
-OBJ = read_bits.o write_bits.o decode_func.o 
+OBJ = read_bits.o write_bits.o  
 
-OBJ_BUF = read_bits_buf.o write_bits_buf.o decode_func.o 
+OBJ_BUF = read_bits_buf.o write_bits_buf.o  
 
 LIB = libbitsio.a 
 LIB_BUF = libbitsio_buf.a 
