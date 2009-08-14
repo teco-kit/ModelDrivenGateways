@@ -8,20 +8,15 @@
 #include <dpws_device.h>
 #include <bitsio/read_bits_buf.h>
 #include <soap.h>
-#include "../src/sendrcv.h"
+#include "«name»_operations.h"
+#include <sendrcv.h>
 
+
+«EXPAND include FOREACH port.getPortType().operation.select(e|e.input==null)-»
 struct dpws_s *_device;
 
-«EXPAND event(name) FOREACH port.getPortType().operation.select(e|e.input==null)-»
-«ENDFILE»
-«ENDDEFINE»
-
-«DEFINE event(String service) FOR TOperation»
-  «FOREACH this.output.getMessage().part.element AS arg»
-  #include "«arg.localPart»_bin2sax.h"
-  «ENDFOREACH»
 void
-«service»_«name»_event (void *_device, char * buf)
+«name»_event (enum «name»_operations op , void *_device, char * buf)
 {
   struct soap soap;
   struct ws4d_subscription *subs, *next;
@@ -32,17 +27,33 @@ void
   soap_init (&soap);
   soap_set_namespaces(&soap, device->hosting_handle->namespaces); //TODO:Check if correct
   //soap_set_namespaces (&soap, namespaces);
-{
-  char soap_action_uri[]="«output.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»";
+  {
+  char *soap_action_uri;
+  switch(op)
+  {
+  «EXPAND set_action(name) FOREACH port.getPortType().operation.select(e|e.input==null)-»
+  «FOREACH port.getPortType().operation.select(e|e.input!=null) AS op-»
+  case OP_«name»_«op.name»:
+  «ENDFOREACH»
+  return;
+  }
+  {
+ 
   dpws_for_each_subs (subs, next, _device,
                       soap_action_uri)
   {
+    char uuidstr[WS4D_UUID_SIZE]={0};
+    char msgid[WS4D_UUID_SCHEMA_SIZE];
+    
     char *deliverto = dpws_subsm_get_deliveryPush_address (device, subs);
-
+    
     if (!deliverto)
       continue;
-
-    dpws_header_gen_oneway (&soap, NULL, deliverto,
+      
+    ws4d_uuid_generate_random (uuidstr);
+    ws4d_uuid_generate_schema (msgid, uuidstr);
+    
+    wsa_header_gen_oneway( &soap, NULL, deliverto,
                             soap_action_uri,
                             NULL, sizeof (struct SOAP_ENV__Header));
 
@@ -59,11 +70,14 @@ void
     
    {
       struct READER_STRUCT* reader=read_bits_bufreader_stack_new((u_char *) buf);
-      «FOREACH this.output.getMessage().part.element AS arg»
-      {
-       «arg.localPart»_bin2sax_run(reader,&soap);
-      }
-      «ENDFOREACH» 
+     switch(op)
+     {
+     «FOREACH port.getPortType().operation.select(e|e.input!=null) AS op-» «REM» put in front as  optimization for single event source«ENDREM»
+      case OP_«name»_«op.name»:
+      «ENDFOREACH»
+      //assert(false);
+      «EXPAND event(name) FOREACH port.getPortType().operation.select(e|e.input==null)-»
+     }
    }
     if (   soap_body_end_out(&soap)
         || soap_envelope_end_out(&soap)
@@ -77,5 +91,31 @@ void
 }
   soap_done (&soap);
   return;
-}
+}   
+  }
+
+
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE set_action(String service) FOR TOperation»
+ case OP_«service»_«name»:
+  soap_action_uri="«output.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»";
+  break;
+«ENDDEFINE»»
+
+«DEFINE include FOR TOperation»
+  «FOREACH this.output.getMessage().part.element AS arg»
+  #include "«arg.localPart»_bin2sax.h"
+  «ENDFOREACH»
+«ENDDEFINE»
+
+«DEFINE event(String service) FOR TOperation»
+ case OP_«service»_«name»:
+      «FOREACH this.output.getMessage().part.element AS arg»
+      {
+       «arg.localPart»_bin2sax_run(reader,&soap);
+      }
+      «ENDFOREACH»
+ break;
 «ENDDEFINE»

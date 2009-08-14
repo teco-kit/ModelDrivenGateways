@@ -31,7 +31,7 @@ enum operations
 };
  
 #include <soap.h>
-#include <dpws_device.h>
+#include <ws-addressing.h>
 #include <stdsoap2.h>
 
 #include "../src/sendrcv.h"
@@ -103,7 +103,8 @@ static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
   {
   char* To=wsa_header_get_ReplyTo (soap);
   if(!To) To="http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous";
-  dpws_header_gen_response (soap, NULL, To,
+  
+  wsa_header_gen_response (soap, NULL, To,
                             "«output.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»",
                             wsa_header_get_MessageId (soap),
                             sizeof (struct SOAP_ENV__Header));

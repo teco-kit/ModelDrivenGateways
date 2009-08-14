@@ -1,21 +1,19 @@
 <workflow>
-<property name="outlet" value="../edu.teco.dpws.example/src-gen"/>
-<property name="src" value="../edu.teco.dpws.example/src"/>
-<property name="NSPrefix" value="sens"/>
 
-  <component class="org.eclipse.xtend.typesystem.xsd.XMLReader">
-    <modelSlot value="wsdl" />
-    <uri value="${src}/SensorValues.wsdl" />
-    
-    <metaModel id="wsdl"
-      class="org.eclipse.xtend.typesystem.xsd.XSDMetaModel">
-      <schemaFile value="model/wsdl11.xsd" />
-    </metaModel>
-  </component>
+<property name="baseName" value="SSimp"/>
+<property name="dirName" value="../DPWSExample/src/"/>
+<property name="path" value="${dirName}/${baseName}.metadata"/>
 
+<property name="prjName" value="${baseName}Device"/>
+<property name="outlet" value="../${prjName}/src-gen"/>
+   
+   <bean class="org.eclipse.emf.mwe.utils.StandaloneSetup">
+      <platformUri value=".."/>
+   </bean>
+   
   <component class="org.eclipse.xtend.typesystem.xsd.XMLReader">
     <modelSlot value="metadata" />
-    <uri value="${src}/SSimp.metadata" />
+    <uri value="${path}" />
     
     <metaModel id="metadata"
       class="org.eclipse.xtend.typesystem.xsd.XSDMetaModel">
@@ -23,156 +21,17 @@
     </metaModel>
   </component>
  
+  <component class="edu.teco.dpws.generator.util.CProjectCreator">
+     <prjName value="${prjName}" />
+  </component>
   
    <component class="org.eclipse.xpand2.Generator">
    <metaModel idRef="metadata" />
     <expand value="edu::teco::dpws::generator::templates::ws4d::Root FOR metadata" />
     <outlet path="${outlet}" />
-    <globalVarDef name="WSDLPath" value="'${src}'"/>
+    <globalVarDef name="WSDLPath" value="'${dirName}'"/>
         
     <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
-    
   </component>
 
-  
-  <component class="org.eclipse.xpand2.Generator">
-   <metaModel idRef="wsdl" />
-    <expand value="edu::teco::dpws::generator::templates::server::Root FOR wsdl" />
-    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
-    <outlet path="${outlet}" />
-        
-    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
-
-
-  </component>
-
-    <component id="xsdParser"   class="edu.teco.automata.generator.XSD2EcoreReader">
-    <xsdPath value="${src}/SensorValues.wsdl"/>
-    <outputSlot value="SchemaModel"/>
-    <firstElementOnly value="true"/>
-  </component>
-  
-   <component id="xmiWrite"
-    class="org.eclipse.xtend.typesystem.emf.XmiWriter">
-    <modelFile value="${outlet}/schemaModel.ecore"/>
-    <inputSlot value="SchemaModel"/>
-  </component>
-  
-  
-
-   <component class="edu.teco.automata.generator.transformer.Transformer">
-    <modelSlot value="SchemaModel"/>
-    <!-- <rootElement value="status"/> -->
-   <rootElementListVar value="WSDLOutMessageTypes"/>
-   <outputSlot value="OutMessageAutomata"/>
-  </component> 
-  
-  <component class="edu.teco.automata.generator.transformer.Transformer">
-    <modelSlot value="SchemaModel"/>
-    <!-- <rootElement value="status"/> -->
-   <rootElementListVar value="WSDLInMessageTypes"/>
-   <outputSlot value="InMessageAutomata"/>
-  </component> 
-
-  
-   <component id="xmiWrite"
-    class="org.eclipse.xtend.typesystem.emf.XmiWriter">
-    <modelFile value="${outlet}/InMessage.automata"/>
-    <inputSlot value="InMessageAutomata"/>
-   </component> 
-   
-   <component id="xmiWrite"
-    class="org.eclipse.xtend.typesystem.emf.XmiWriter">
-    <modelFile value="${outlet}/OutMessage.automata"/>
-    <inputSlot value="OutMessageAutomata"/>
-   </component>
-  
-  
-
-    <component id="generatorEncGSOAP" class="org.eclipse.xpand2.Generator">             
-    <metaModel id="automata" class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
-         <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
-    </metaModel>
-    
-  
-    <expand value="edu::teco::automata::generator::templates::c::bin2SAX::root('') FOREACH OutMessageAutomata"/>
-    <outlet path="${outlet}/"/>
-    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
-    
-        
-    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
-       
-    </component> 
-    
-   <component adviceTarget="generatorEncGSOAP" id="generatorGsoapAdv" class="org.eclipse.xpand2.GeneratorAdvice">			 
-  	  <advices value="edu::teco::automata::generator::templates::c::bin2SAX"/>
-   </component>
-  
-   
-   <component id="generatorDecGSOAP" class="org.eclipse.xpand2.Generator">           
-    <metaModel id="automata" class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
-         <metaModelPackage value="edu.teco.automata.Automata.AutomataPackage"/>
-    </metaModel>
-        
-    <expand value="edu::teco::automata::generator::templates::c::SAX2bin::root('') FOREACH InMessageAutomata"/>
-    <outlet path="${outlet}/"/>
-    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
-    
-    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
-
-   </component> 
-   
-   <component adviceTarget="generatorDecGSOAP"
-      id="generatorDevGsoapAdv" class="org.eclipse.xpand2.GeneratorAdvice">			 
-  	  <advices value="edu::teco::automata::generator::templates::c::SAX2bin"/>
-   </component> 
-
-  
-  <component id="ecore2model" class="org.eclipse.xpand2.Generator">           
-    <metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel" metaModelPackage="org.eclipse.emf.ecore.EcorePackage"/>
-        
-    <expand value="edu::teco::automata::generator::templates::c::ecore2model::start FOR SchemaModel"/>
-    <outlet path="${outlet}/"/>
-    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
-    
-    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
-
-    
-   </component> 
-
-   
-   <component id="generatorEncDom" class="org.eclipse.xpand2.Generator">           
-    <metaModel id="automata" class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"  metaModelPackage="edu.teco.automata.Automata.AutomataPackage"/>
-    <metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel" metaModelPackage="org.eclipse.emf.ecore.EcorePackage"/>
-       
-    <expand value="edu::teco::automata::generator::templates::c::bin2dom::root('') FOREACH InMessageAutomata.addAll(OutMessageAutomata)"/>
-    <outlet path="${outlet}/"/>
-    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
-    
-    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
-    
-   </component> 
-   
-   <component adviceTarget="generatorEncDom" id="generatorAdvEncDom" class="org.eclipse.xpand2.GeneratorAdvice">			 
-  	  <advices value="edu::teco::automata::generator::templates::c::bin2dom"/>
-   </component> 
-   
-      
-   <component id="generatorDecDom" class="org.eclipse.xpand2.Generator">           
-    <metaModel id="automata" class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"  metaModelPackage="edu.teco.automata.Automata.AutomataPackage"/>
-    <metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel" metaModelPackage="org.eclipse.emf.ecore.EcorePackage"/>
-       
-    <expand value="edu::teco::automata::generator::templates::c::dom2bin::root('') FOREACH OutMessageAutomata"/>
-    <outlet path="${outlet}/"/>
-    <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
-    
-    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
-   </component> 
-   
-   <component adviceTarget="generatorDecDom" id="generatorAdvEncDom" class="org.eclipse.xpand2.GeneratorAdvice">			 
-  	  <advices value="edu::teco::automata::generator::templates::c::dom2bin"/>
-   </component> 
-
-   
-   
 </workflow>
