@@ -143,8 +143,8 @@ static struct Namespace namespaces[]= {
 «EXPAND nsmap FOR hosted»
 
 #include <bitsio/read_bits_buf.h>
-#include "event_worker.h"
-#include "../src/wsdl.h"
+#include <event_worker.h>
+#include <dpws_append_wsdl.h>
 
 struct soap service;
 struct dpws_s device;
