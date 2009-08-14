@@ -13,12 +13,13 @@
     <outputSlot value="${outputSlot}"/>
   </component> 
 
-<if cond="${writeAutomataFile}"> 
-   <component id="xmiWrite"
-    class="org.openarchitectureware.emf.XmiWriter">
+
+  <if cond="${writeAutomataFile}"> 
+   <component id="xmiWrite"   class="org.eclipse.xtend.typesystem.emf.XmiWriter">
     <modelFile value="${automataFile}"/>
     <inputSlot value="${outputSlot}"/>
   </component>
- </if>
+  </if>
+  
   
   </workflow>

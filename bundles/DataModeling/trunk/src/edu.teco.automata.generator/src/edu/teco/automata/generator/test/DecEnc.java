@@ -33,6 +33,7 @@ public class DecEnc extends TestCase {
 
 		Map<String, String> properties = new HashMap<String, String>();
 		properties.put("schemaFile", xsdPath);
+		properties.put("automataFile", "src-gen/prs74.automata");
 		properties.put("writeAutomataFile", "false");
 
 		properties.put("NSPrefix", "teco");

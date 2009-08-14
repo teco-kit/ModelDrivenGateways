@@ -45,7 +45,7 @@
 
 
 #include <bitsio/read_bits.h>
-#include <strio/str_func.h>
+
 
 
 #ifndef SOAP_TYPE_string

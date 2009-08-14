@@ -68,12 +68,16 @@ int «this.states.typeSelect(StartState).first().out.name»_bin2dom_run(struct REA
 }
    
 static void *stack_pop(void ***stack) {
-	return *(*stack--);
+	void *ret=*(*stack);
+	**stack=0;
+	(*stack)--;
+	return ret;
 }
+
 #define pop() stack_pop(&stack)
 
 static void *stack_push(void ***stack, void * X) {
-	return *(++*stack) = X;
+	return *(++(*stack)) = X;
 }
 #define push(X) stack_push(&stack,X)
 

@@ -151,13 +151,13 @@ static «elem»* «listname»_append(struct «listname» ** head)
  «EXPAND unboundedList_f(parent,true)»
 «ENDDEFINE»
 
-«DEFINE unboundedList_f FOR EStructuralFeature»
+«DEFINE unboundedList_f(String parent) FOR EStructuralFeature»
 «ERROR this.metaType.name+" not supported"»
 «ENDDEFINE»
 
 «DEFINE unboundedList_f(String parent,boolean containment) FOR EStructuralFeature»
-static «eType.name» «!containment?"*":""-» *«container»_add_«name»(«parent» *self) __attribute__((__unused__));
-static «eType.name» «!containment?"*":""-» *«container»_add_«name»(«parent» *self){ return «eType.name.p()»_list_append(&(self->«name».first); }
+static «eType.name» «!containment?"*":""-» *«parent»_add_«name»(«parent» *self) __attribute__((__unused__));
+static «eType.name» «!containment?"*":""-» *«parent»_add_«name»(«parent» *self){ return «eType.name.p()»_list_append(&(self->«name».first); }
 «ENDDEFINE»
 
 «DEFINE boundedList FOR EReference»
@@ -187,7 +187,7 @@ static «eType.name» «!containment?"*":""-» *«container»_add_«name»(«parent» *sel
  «EXPAND boundedList_f(parent,true)»
 «ENDDEFINE»
 
-«DEFINE boundedList_f FOR EStructuralFeature»
+«DEFINE boundedList_f(String parent) FOR EStructuralFeature»
 «ERROR this.metaType.name+" not supported"»
 «ENDDEFINE»
 
@@ -227,7 +227,7 @@ else return NULL;}
  «EXPAND member_f(parent,true)»
 «ENDDEFINE»
 
-«DEFINE member_f FOR EStructuralFeature»
+«DEFINE member_f(String parent) FOR EStructuralFeature»
 «ERROR this.metaType.name+" not supported"»
 «ENDDEFINE»
 

@@ -3,5 +3,7 @@ extension edu::teco::automata::generator::templates::util;
 
 int bitsLen(TTimestamp s): 32;
 
-int bitsLen(IntType s):   bitsLen(s.min,s.max,s.stepping);
-boolean signed(IntType s): (s.min<0);
+int bitsLen(IntType s):   bitsLen(s.getMin(),s.getMax(),s.getStepping());
+boolean signed(IntType s): (s.getMin()<0);
+
+IntType toIntType(DataType d): ((IntType)d);
