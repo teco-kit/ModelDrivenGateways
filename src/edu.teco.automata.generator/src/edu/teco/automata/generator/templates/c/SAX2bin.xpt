@@ -44,15 +44,11 @@
 #include <stdsoap2.h>
 
 
-#include <bitsio/read_bits.h>
-#include <strio/str_func.h>
-
-
 #ifndef SOAP_TYPE_string
 #define SOAP_TYPE_string 0
 #endif
 
- 
+#include "«this.states.typeSelect(StartState).first().out.name+"_sax2bin.h"»"
 «FILE this.states.typeSelect(StartState).first().out.name+"_sax2bin.h"»
  #include <bitsio/write_bits.h>
  #include <bitsio/write_bits_buf.h>
@@ -150,7 +146,7 @@ FOR SimpleState»
   
    if(!«EXPAND IsElement -»)
    {
-   soap->error=soap_receiver_fault(soap,"tag name or namespace mismatch","< errorcode xmlns='http://tempuri.org' > 123 < /errorcode > < errorinfo xmlns='http://tempuri.org' > &lt;«name»&gt; expected </errorinfo>");
+  soap->error=soap_sender_fault(soap,"tag name or namespace mismatch: «name» expected",NULL);
   //      soap->error=SOAP_TAG_MISMATCH;
    	return -1;	
    }
@@ -161,7 +157,7 @@ FOR SimpleState»
 «AROUND edu::teco::automata::generator::templates::encoderRoot::simpleBegin(Integer label) FOR SimpleState» 
    if(!«EXPAND IsElement -»)
    {
-     soap->error=soap_receiver_fault(soap,"tag name or namespace mismatch","< errorcode xmlns='http://tempuri.org' > 123 < /errorcode > < errorinfo xmlns='http://tempuri.org' > &lt;«name»&gt; expected </errorinfo>");
+     soap->error=soap_sender_fault(soap,"tag name or namespace mismatch: «name» expected",NULL);
     // soap->error=SOAP_TAG_MISMATCH;
    	return -1;	
    }
@@ -178,8 +174,7 @@ FOR SimpleState»
    «IF kind != "attribute"-»
     if(soap_element_end_in(soap,"«getNSPrefix()»:«name»")!=SOAP_OK)
     {
-     soap->error=soap_receiver_fault(soap,"tag name or namespace mismatch","< errorcode xmlns='http://tempuri.org' > 123 < /errorcode > < errorinfo xmlns='http://tempuri.org' > &lt;«name»&gt; expected </errorinfo>");
-     //soap->error=SOAP_TAG_MISMATCH;
+     soap->error=soap_sender_fault(soap,"tag name or namespace mismatch: «name» expected",NULL);
      return -1; 
     }
     «ELSE-»

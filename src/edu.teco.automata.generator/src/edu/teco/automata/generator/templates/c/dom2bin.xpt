@@ -62,16 +62,21 @@ int «this.states.typeSelect(StartState).first().out.name»_dom2bin_run(«this.stat
 }
    
 static void *stack_pop(void ***stack) {
-	return *(*stack--);
+	void *ret=*(*stack);
+	**stack=0;
+	(*stack)--;
+	return ret;
 }
+
 #define pop() stack_pop(&stack)
 
 static void *stack_push(void ***stack, void * X) {
-	return *(++*stack) = X;
+	return *(++(*stack)) = X;
 }
 #define push(X) stack_push(&stack,X)
 
 #define top() *stack
+
 
 // return:  0 if EOF, 0<for fault, and  read bits else (TODO)
 static int dom_automata(struct WRITER_STRUCT *writer,void **stack, int *_label)
@@ -110,22 +115,28 @@ FOR SimpleState»
    /* loop «stack_getCurrPathSlash() + name» */
    «ecore.name.p()» *cur;
    while(NULL!=(cur=«stack_top().ecore.name.p()»_next_«name.toFirstLower()»((«stack_top().ecore.name.p()» *)top(),(«ecore.name.p()» *)last)))
-   «targetDef.proceed()»
-   write_true(writer);
-   last=cur;
+   {
+    push(cur);
+    write_true(writer);
+    «targetDef.proceed()»
+  
+    last=cur;
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::loopEnd(String endName) FOR SimpleState»
-«targetDef.proceed()» 
+    «targetDef.proceed()»
+    pop();
+    } 
     last=NULL;
 	write_false(writer); //XXX: not necessary, right now symetric to bin2sax...
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoopBegin(Integer count, Integer next) FOR SimpleState»
-   «ecore.name.p()» *next;
-   if(NULL!=(next=«stack_top().ecore.name.p()»_next_«name.toFirstLower()»((«stack_top().ecore.name.p()» *)top(),(«ecore.name.p()» *) last)))
+   «ecore.name.p()» *cur;
+   if(NULL!=(cur=«stack_top().ecore.name.p()»_next_«name.toFirstLower()»((«stack_top().ecore.name.p()» *)top(),(«ecore.name.p()» *) last)))
    { /* depth «depth»*/
    	«targetDef.proceed()»
+   	push(cur);
    	write_true(writer);
    }
    else

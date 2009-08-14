@@ -1,6 +1,14 @@
 «IMPORT Automata»
 «EXTENSION edu::teco::automata::generator::templates::c::binEncoder»
 
+«DEFINE ctype FOR DataType»«metaType.name»/*unknown*/«ERROR "type"+metaType.name+"unknown"»«ENDDEFINE»
+«DEFINE scanstr FOR DataType»/*unknown type:«metaType.name»*/«ERROR "type"+metaType.name+"unknown"»«ENDDEFINE»
+«DEFINE printstr FOR DataType»/*unknown type:«metaType.name»*/«ERROR "type"+metaType.name+"unknown"»«ENDDEFINE»
+«DEFINE ctype FOR IntType»/*unknown type:«metaType.name»*/«ERROR "type"+metaType.name+"unknown"»«ENDDEFINE»
+«DEFINE scanstr FOR IntType»/*unknown type:«metaType.name»*/«ERROR "type"+metaType.name+"unknown"»«ENDDEFINE»
+«DEFINE printstr FOR IntType»/*unknown type:«metaType.name»*/«ERROR "type"+metaType.name+"unknown"»«ENDDEFINE»
+
+
 «DEFINE ctype FOR TInt»int32_t«ENDDEFINE»
 «DEFINE ctype FOR TShort»int16_t«ENDDEFINE»
 «DEFINE ctype FOR TByte»int8_t«ENDDEFINE»
@@ -34,24 +42,27 @@
 «ENDDEFINE»
 
 
-«DEFINE encodeInt(String c) FOR DataType»
-((«c») - («min»))/«stepping»
+«DEFINE encodeInt(String c) FOR IntType»
+((«c») - («getMin()»))/«getStepping()»
 «ENDDEFINE»
 
-«DEFINE encodeTimestamp(String c) FOR DataType»
+«DEFINE decodeInt(String c) FOR IntType»
+«IF signed()»(«EXPAND ctype»)«ENDIF»(((«c»)*«getStepping()») + («getMin()»))
+«ENDDEFINE»
+
+«DEFINE encodeTimestamp(String c) FOR TTimestamp»
 («c».tv_sec)
 «ENDDEFINE»
 
-«DEFINE decodeTimestamp(String c) FOR DataType»
+«DEFINE decodeTimestamp(String c) FOR TTimestamp»
 {«c»,0}
 «ENDDEFINE»
 
-«DEFINE decodeInt(String c) FOR DataType»
-«IF signed()»(«EXPAND ctype»)«ENDIF»((«c»)*«stepping») + «min»
-«ENDDEFINE»
 
 
-«DEFINE strWriteInt(String in) FOR DataType»
+
+
+«DEFINE strWriteInt(String in) FOR IntType»
 {	
 	«signed()?"":"u"»«EXPAND ctype» c;
 	const char* str=«in»;
@@ -70,18 +81,19 @@
 }
 «ENDDEFINE»
 
-«DEFINE writeInt(String in) FOR DataType»
+
+«DEFINE writeInt(String in) FOR IntType»
 {
  u«EXPAND ctype» d = «EXPAND encodeInt(in) -»;
  ret=write_bits(writer,(u_char *)&d, «bitsLen()»);
 }
 «ENDDEFINE»
 
-«DEFINE strReadInt(String out) FOR DataType»
+«DEFINE strReadInt(String out) FOR IntType»
 {
 u«EXPAND ctype» c;
 ret= read_bits(reader, (u_char *)&c, «bitsLen()»);
-if(ret==«bitsLen()»)
+if(ret>0) //todo check for exact
 	{
   		ret=asprintf(«out», «EXPAND printstr», «EXPAND decodeInt("c")»); //TODO: check overflows
 	}
@@ -92,7 +104,7 @@ else
 }
 «ENDDEFINE»
 
-«DEFINE readInt(String out) FOR DataType»
+«DEFINE readInt(String out) FOR IntType»
 {
 u«EXPAND ctype» c;
 read_bits(reader,(u_char *)&c,«bitsLen()-»);
@@ -125,7 +137,7 @@ read_bits(reader,(u_char *)&c,«bitsLen()-»);
 {
 uint32_t c;
 ret=read_bits(reader, (u_char *)&c, «bitsLen()»);
-if(ret==«bitsLen()»)
+if(ret>0) //todo check for full length
 {
   struct timeval t=«EXPAND decodeTimestamp("c")»;
   struct tm res;
@@ -141,6 +153,11 @@ if(ret==«bitsLen()»)
      ret=-1;
   }
 }
+else
+{
+ ret=-1;
+}
+ 
 }
 «ENDDEFINE»
 
@@ -161,10 +178,9 @@ memcpy(«out»,&t,sizeof(t));
 }
 «ENDDEFINE»
 
-
 «DEFINE strWrite(String in) FOR DataType»
 «IF IntType.isInstance(this)»
-«EXPAND strWriteInt(in)»
+«EXPAND strWriteInt(in) FOR this.toIntType()»
 «ELSE»
 «ERROR "DataType "+metaType.name+" not supported"»
 «ENDIF»
@@ -172,7 +188,7 @@ memcpy(«out»,&t,sizeof(t));
 
 «DEFINE strRead(String out) FOR DataType»
 «IF IntType.isInstance(this)»
-«EXPAND strReadInt(out)»
+«EXPAND strReadInt(out) FOR this.toIntType()»
 «ELSE»
 «ERROR "DataType "+metaType.name+" not supported"»
 «ENDIF»
@@ -180,7 +196,7 @@ memcpy(«out»,&t,sizeof(t));
 
 «DEFINE write(String in) FOR DataType»
 «IF IntType.isInstance(this)»
-«EXPAND writeInt(in)»
+«EXPAND writeInt(in) FOR this.toIntType()»
 «ELSE»
 «ERROR "DataType "+metaType.name+" not supported"»
 «ENDIF»
@@ -188,7 +204,7 @@ memcpy(«out»,&t,sizeof(t));
 
 «DEFINE read(String out) FOR DataType»
 «IF IntType.isInstance(this)»
-«EXPAND readInt(out)»
+«EXPAND readInt(out) FOR this.toIntType()»
 «ELSE»
 «ERROR "DataType "+metaType.name+" not supported"»
 «ENDIF»

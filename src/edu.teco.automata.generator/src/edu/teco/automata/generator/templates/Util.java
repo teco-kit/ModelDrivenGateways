@@ -57,6 +57,8 @@ public class Util {
       // log((max - min) + 1) / stepping round up
       int result = (int) Math.ceil(Math.log((double) Math.abs(max- min) + 1)
             / (Math.log(2.0) * (double) stepping));
+      
+      //System.out.print("XXXXXXXXXXXXXXXXXXXXXX"+min+","+max+","+stepping+"="+result);
       return result;
    }
 
