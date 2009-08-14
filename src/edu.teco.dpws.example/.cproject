@@ -5,12 +5,29 @@
 <storageModule moduleId="org.eclipse.cdt.core.settings">
 <cconfiguration id="cdt.managedbuild.config.gnu.cygwin.exe.debug.463850461.1742493888">
 <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cygwin.exe.debug.463850461.1742493888" moduleId="org.eclipse.cdt.core.settings" name="Debug2">
+<macros>
+<stringMacro name="WS4D_DIR" type="VALUE_TEXT" value="../../DPWS/ws4d-gsoap/"/>
+<stringMacro name="GSOAP_DIR" type="VALUE_TEXT" value="../../DPWS/gsoap-2.7/gsoap"/>
+</macros>
 <externalSettings>
-<externalSetting languages="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin.924843309"/>
+<externalSetting>
+<entry flags="RESOLVED" kind="includePath" name="/home/riedel/include"/>
+<entry flags="RESOLVED" kind="includePath" name="/usr/include"/>
+<entry flags="RESOLVED" kind="includePath" name="C:/Dokumente und Einstellungen/riedel/Personal/Code/DataModel/edu.teco.dpws.example/src"/>
+<entry flags="RESOLVED" kind="includePath" name="C:/Dokumente und Einstellungen/riedel/Personal/Code/DataModel/edu.teco.decenc"/>
+<entry flags="RESOLVED" kind="includePath" name="C:/Programme/cygwin/usr/include"/>
+<entry flags="RESOLVED" kind="includePath" name="C:/Dokumente und Einstellungen/riedel/Personal/Code/DPWS/ws4d-gsoap/include"/>
+<entry flags="RESOLVED" kind="includePath" name="C:/Dokumente und Einstellungen/riedel/Personal/Code/DPWS/gsoap-2.7/gsoap"/>
+<entry flags="RESOLVED" kind="macro" name="WITH_MUTEXES" value=""/>
+<entry flags="RESOLVED" kind="macro" name="_GNU_SOURCE" value=""/>
+<entry flags="RESOLVED" kind="macro" name="DPWS_DEVICE" value=""/>
+<entry flags="RESOLVED" kind="macro" name="WITH_NONAMESPACES" value=""/>
+<entry flags="RESOLVED" kind="macro" name="DEBUG" value=""/>
+<entry flags="RESOLVED" kind="macro" name="ABORT_ON_ASSERT" value=""/>
+</externalSetting>
 </externalSettings>
 <extensions>
 <extension id="org.eclipse.cdt.core.Cygwin_PE" point="org.eclipse.cdt.core.BinaryParser"/>
-<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 <extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 <extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -19,10 +36,11 @@
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
 <configuration artifactName="teco.edu.dpws.example" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.cygwin.exe.debug.463850461.1742493888" name="Debug2" parent="cdt.managedbuild.config.gnu.cygwin.exe.debug">
 <folderInfo id="cdt.managedbuild.config.gnu.cygwin.exe.debug.463850461.1742493888." name="/" resourcePath="">
-<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug.1894350066" name="Cygwin GCC" superClass="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug">
+<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug.1894350066" name="Cygwin GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.cygwin.exe.debug" superClass="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.cygwin.exe.debug.1575424149" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.cygwin.exe.debug"/>
-<builder buildPath="${workspace_loc:/teco.edu.dpws.example/Debug}" id="cdt.managedbuild.target.gnu.builder.cygwin.exe.debug.109423892" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.cygwin.exe.debug"/>
+<builder autoBuildTarget="all" buildPath="${workspace_loc:/SSimpDevice/Debug2}" cleanBuildTarget="clean" enableAutoBuild="true" id="org.eclipse.cdt.build.core.internal.builder.1687811252" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug.663618600" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug">
+<option id="gnu.both.asm.option.include.paths.364446748" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath"/>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1469467035" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.archiver.cygwin.base.670773389" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.base"/>
@@ -34,11 +52,12 @@
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.cygwin.exe.debug.option.optimization.level.664633971" name="Optimization Level" superClass="gnu.c.compiler.cygwin.exe.debug.option.optimization.level" value="gnu.c.optimization.level.none" valueType="enumerated"/>
 <option id="gnu.c.compiler.cygwin.exe.debug.option.debugging.level.340796332" name="Debug Level" superClass="gnu.c.compiler.cygwin.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.include.paths.1167176127" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="../../../DPWS/ws4d-gsoap/include"/>
-<listOptionValue builtIn="false" value="/usr/include"/>
-<listOptionValue builtIn="false" value="../../../DPWS/gsoap-2.7/gsoap"/>
-<listOptionValue builtIn="false" value="../../edu.teco.dpws.example/src"/>
-<listOptionValue builtIn="false" value="../../edu.teco.decenc"/>
+<listOptionValue builtIn="false" value="&quot;../${WS4D_DIR}/include&quot;"/>
+<listOptionValue builtIn="false" value="&quot;../${GSOAP_DIR}/&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${USERPROFILE}/include&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/edu.teco.decenc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DPWSExample/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SensorService/src-gen}&quot;"/>
 </option>
 <option id="gnu.c.compiler.option.preprocessor.def.symbols.728555611" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="WITH_MUTEXES"/>
@@ -52,29 +71,28 @@
 <option id="gnu.c.compiler.option.debugging.prof.29756134" name="Generate prof information (-p)" superClass="gnu.c.compiler.option.debugging.prof" value="false" valueType="boolean"/>
 <option id="gnu.c.compiler.option.debugging.other.1868095231" name="Other debugging flags" superClass="gnu.c.compiler.option.debugging.other" value="" valueType="string"/>
 <option id="gnu.c.compiler.option.warnings.pedantic.393224466" name="Pedantic (-pedantic)" superClass="gnu.c.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
-<option id="gnu.c.compiler.option.misc.other.299868904" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -std=c99" valueType="string"/>
-<option id="gnu.c.compiler.option.preprocessor.undef.symbol.1880299940" superClass="gnu.c.compiler.option.preprocessor.undef.symbol" valueType="undefDefinedSymbols">
-<listOptionValue builtIn="false" value="__STRICT_ANSI__"/>
-</option>
+<option id="gnu.c.compiler.option.misc.other.299868904" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -std=c99 -Wno-overlength-strings" valueType="string"/>
+<option id="gnu.c.compiler.option.preprocessor.undef.symbol.1880299940" name="Undefined symbols (-U)" superClass="gnu.c.compiler.option.preprocessor.undef.symbol" valueType="undefDefinedSymbols"/>
+<option id="gnu.c.compiler.option.warnings.pedantic.error.1803671346" name="Pedantic warnings as errors (-pedantic-errors)" superClass="gnu.c.compiler.option.warnings.pedantic.error" value="true" valueType="boolean"/>
+<option id="gnu.c.compiler.option.warnings.toerrors.2002305190" name="Warnings as errors (-Werror)" superClass="gnu.c.compiler.option.warnings.toerrors" value="true" valueType="boolean"/>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin.172323282" superClass="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.debug.556188127" name="Cygwin C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.exe.debug">
 <option id="gnu.c.link.option.paths.777124896" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths">
-<listOptionValue builtIn="false" value="../../../DPWS/gsoap-2.7/gsoap"/>
-<listOptionValue builtIn="false" value="&quot;../../../DPWS/ws4d-gsoap\lib&quot;"/>
-<listOptionValue builtIn="false" value="../../../DPWS/particle_demo"/>
+<listOptionValue builtIn="false" value="&quot;../${WS4D_DIR}/lib&quot;"/>
+<listOptionValue builtIn="false" value="&quot;../${GSOAP_DIR}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/edu.teco.decenc/bitsio}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SensorValuesService/Build}&quot;"/>
 </option>
 <option id="gnu.c.link.option.libs.993893230" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs">
-<listOptionValue builtIn="false" value="dpwsS"/>
+<listOptionValue builtIn="false" value="SensorValuesService"/>
 <listOptionValue builtIn="false" value="bitsio_buf"/>
+<listOptionValue builtIn="false" value="dpwsS"/>
 <listOptionValue builtIn="false" value="dpwsDmt"/>
 <listOptionValue builtIn="false" value="ws4d_listLmt"/>
-<listOptionValue builtIn="false" value="gsoap_automata"/>
 <listOptionValue builtIn="false" value="gsoap"/>
 <listOptionValue builtIn="false" value="pthread"/>
 <listOptionValue builtIn="false" value="particle"/>
-<listOptionValue builtIn="false" value="gmon"/>
 </option>
 <option id="gnu.c.link.option.debugging.gprof.164619657" name="Generate gprof information (-pg)" superClass="gnu.c.link.option.debugging.gprof" value="false" valueType="boolean"/>
 <inputType id="cdt.managedbuild.tool.gnu.c.linker.input.519344113" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
@@ -86,7 +104,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="src/usbbridge.*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
