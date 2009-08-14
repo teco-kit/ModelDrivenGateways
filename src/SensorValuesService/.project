@@ -3,7 +3,7 @@
 	<name>SensorValuesService</name>
 	<comment></comment>
 	<projects>
-		<project>edu.teco.dpws.example</project>
+		<project>DPWSExample</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
