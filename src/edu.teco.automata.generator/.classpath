@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="src-gen"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="/edu.teco.automata/model"/>
 	<classpathentry exported="true" kind="lib" path="C:/Programme/Java/jdk1.6.0/lib/tools.jar"/>
