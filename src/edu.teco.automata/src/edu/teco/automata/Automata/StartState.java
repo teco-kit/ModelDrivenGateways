@@ -25,29 +25,29 @@ package edu.teco.automata.Automata;
  */
 public interface StartState extends State {
 	/**
-    * Returns the value of the '<em><b>Out</b></em>' reference.
-    * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Out</b></em>' reference.
+	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Out</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-    * @return the value of the '<em>Out</em>' reference.
-    * @see #setOut(State)
-    * @see edu.teco.automata.Automata.AutomataPackage#getStartState_Out()
-    * @model required="true"
-    * @generated
-    */
+	 * @return the value of the '<em>Out</em>' reference.
+	 * @see #setOut(State)
+	 * @see edu.teco.automata.Automata.AutomataPackage#getStartState_Out()
+	 * @model required="true"
+	 * @generated
+	 */
 	State getOut();
 
 	/**
-    * Sets the value of the '{@link edu.teco.automata.Automata.StartState#getOut <em>Out</em>}' reference.
-    * <!-- begin-user-doc -->
+	 * Sets the value of the '{@link edu.teco.automata.Automata.StartState#getOut <em>Out</em>}' reference.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @param value the new value of the '<em>Out</em>' reference.
-    * @see #getOut()
-    * @generated
-    */
+	 * @param value the new value of the '<em>Out</em>' reference.
+	 * @see #getOut()
+	 * @generated
+	 */
 	void setOut(State value);
 
 } // StartState

@@ -39,118 +39,118 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class StateMachineImpl extends EObjectImpl implements StateMachine {
 	/**
-    * The cached value of the '{@link #getStates() <em>States</em>}' containment reference list.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getStates() <em>States</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getStates()
-    * @generated
-    * @ordered
-    */
+	 * @see #getStates()
+	 * @generated
+	 * @ordered
+	 */
 	protected EList<State> states;
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	protected StateMachineImpl() {
-      super();
-   }
+		super();
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-      return AutomataPackage.Literals.STATE_MACHINE;
-   }
+		return AutomataPackage.Literals.STATE_MACHINE;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public EList<State> getStates() {
-      if (states == null) {
-         states = new EObjectContainmentEList<State>(State.class, this, AutomataPackage.STATE_MACHINE__STATES);
-      }
-      return states;
-   }
+		if (states == null) {
+			states = new EObjectContainmentEList<State>(State.class, this, AutomataPackage.STATE_MACHINE__STATES);
+		}
+		return states;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-      switch (featureID) {
-         case AutomataPackage.STATE_MACHINE__STATES:
-            return ((InternalEList<?>)getStates()).basicRemove(otherEnd, msgs);
-      }
-      return super.eInverseRemove(otherEnd, featureID, msgs);
-   }
+		switch (featureID) {
+			case AutomataPackage.STATE_MACHINE__STATES:
+				return ((InternalEList<?>)getStates()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-      switch (featureID) {
-         case AutomataPackage.STATE_MACHINE__STATES:
-            return getStates();
-      }
-      return super.eGet(featureID, resolve, coreType);
-   }
+		switch (featureID) {
+			case AutomataPackage.STATE_MACHINE__STATES:
+				return getStates();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
-      switch (featureID) {
-         case AutomataPackage.STATE_MACHINE__STATES:
-            getStates().clear();
-            getStates().addAll((Collection<? extends State>)newValue);
-            return;
-      }
-      super.eSet(featureID, newValue);
-   }
+		switch (featureID) {
+			case AutomataPackage.STATE_MACHINE__STATES:
+				getStates().clear();
+				getStates().addAll((Collection<? extends State>)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public void eUnset(int featureID) {
-      switch (featureID) {
-         case AutomataPackage.STATE_MACHINE__STATES:
-            getStates().clear();
-            return;
-      }
-      super.eUnset(featureID);
-   }
+		switch (featureID) {
+			case AutomataPackage.STATE_MACHINE__STATES:
+				getStates().clear();
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public boolean eIsSet(int featureID) {
-      switch (featureID) {
-         case AutomataPackage.STATE_MACHINE__STATES:
-            return states != null && !states.isEmpty();
-      }
-      return super.eIsSet(featureID);
-   }
+		switch (featureID) {
+			case AutomataPackage.STATE_MACHINE__STATES:
+				return states != null && !states.isEmpty();
+		}
+		return super.eIsSet(featureID);
+	}
 
 } //StateMachineImpl
