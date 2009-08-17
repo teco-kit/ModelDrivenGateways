@@ -57,10 +57,13 @@ public class DecEncSAX extends TestCase {
 
 		String[] target = new String[] { "JavaXML2" };
 		Runner.main(properties, target);
-		assertTrue(0 == com.sun.tools.javac.Main.compile(new String[] {
+		assertTrue(org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(new String[] {
+				"-source","1.5",
 				"-classpath", "bin", "-d", "bin",
 				genDir + rootElem +"EncoderSAXAutomata.java",
-				genDir + rootElem +"DecoderAutomata.java" })); //re-compilation of DecoderAutomata will have no effect if class is already loaded
+				genDir + rootElem +"DecoderAutomata.java" },
+				new java.io.PrintWriter(System.out),new java.io.PrintWriter(System.err), null
+		)); //re-compilation of DecoderAutomata will have no effect if class is already loaded
 		return;
 	}
 
