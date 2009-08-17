@@ -22,22 +22,22 @@ import org.eclipse.emf.ecore.EClass;
  */
 public class TCharImpl extends DataTypeImpl implements TChar {
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	protected TCharImpl() {
-      super();
-   }
+		super();
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-      return AutomataPackage.Literals.TCHAR;
-   }
+		return AutomataPackage.Literals.TCHAR;
+	}
 
 } //TCharImpl

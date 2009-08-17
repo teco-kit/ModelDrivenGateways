@@ -22,22 +22,22 @@ import org.eclipse.emf.ecore.EClass;
  */
 public class StopStateImpl extends StateImpl implements StopState {
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	protected StopStateImpl() {
-      super();
-   }
+		super();
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-      return AutomataPackage.Literals.STOP_STATE;
-   }
+		return AutomataPackage.Literals.STOP_STATE;
+	}
 
 } //StopStateImpl

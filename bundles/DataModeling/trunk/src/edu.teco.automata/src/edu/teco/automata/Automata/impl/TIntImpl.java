@@ -32,243 +32,243 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  */
 public class TIntImpl extends DataTypeImpl implements TInt {
 	/**
-    * The default value of the '{@link #getMin() <em>Min</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getMin() <em>Min</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMin()
-    * @generated
-    * @ordered
-    */
-	protected static final int MIN_EDEFAULT = 0;
+	 * @see #getMin()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int MIN_EDEFAULT = -2147483648;
 
 	/**
-    * The cached value of the '{@link #getMin() <em>Min</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getMin() <em>Min</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMin()
-    * @generated
-    * @ordered
-    */
+	 * @see #getMin()
+	 * @generated
+	 * @ordered
+	 */
 	protected int min = MIN_EDEFAULT;
 
 	/**
-    * The default value of the '{@link #getMax() <em>Max</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getMax() <em>Max</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMax()
-    * @generated
-    * @ordered
-    */
-	protected static final int MAX_EDEFAULT = 0;
+	 * @see #getMax()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int MAX_EDEFAULT = 2147483647;
 
 	/**
-    * The cached value of the '{@link #getMax() <em>Max</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getMax() <em>Max</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMax()
-    * @generated
-    * @ordered
-    */
+	 * @see #getMax()
+	 * @generated
+	 * @ordered
+	 */
 	protected int max = MAX_EDEFAULT;
 
 	/**
-    * The default value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @see #getStepping()
-    * @generated
-    * @ordered
-    */
-   protected static final int STEPPING_EDEFAULT = 0;
+	 * @see #getStepping()
+	 * @generated
+	 * @ordered
+	 */
+   protected static final int STEPPING_EDEFAULT = 1;
 
    /**
-    * The cached value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @see #getStepping()
-    * @generated
-    * @ordered
-    */
+	 * @see #getStepping()
+	 * @generated
+	 * @ordered
+	 */
    protected int stepping = STEPPING_EDEFAULT;
 
    /**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	protected TIntImpl() {
-      super();
-   }
+		super();
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-      return AutomataPackage.Literals.TINT;
-   }
+		return AutomataPackage.Literals.TINT;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public int getMin() {
-      return min;
-   }
+		return min;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public void setMin(int newMin) {
-      int oldMin = min;
-      min = newMin;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TINT__MIN, oldMin, min));
-   }
+		int oldMin = min;
+		min = newMin;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TINT__MIN, oldMin, min));
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public int getMax() {
-      return max;
-   }
+		return max;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public void setMax(int newMax) {
-      int oldMax = max;
-      max = newMax;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TINT__MAX, oldMax, max));
-   }
+		int oldMax = max;
+		max = newMax;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TINT__MAX, oldMax, max));
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
    public int getStepping() {
-      return stepping;
-   }
+		return stepping;
+	}
 
    /**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
    public void setStepping(int newStepping) {
-      int oldStepping = stepping;
-      stepping = newStepping;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TINT__STEPPING, oldStepping, stepping));
-   }
+		int oldStepping = stepping;
+		stepping = newStepping;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TINT__STEPPING, oldStepping, stepping));
+	}
 
    /**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-      switch (featureID) {
-         case AutomataPackage.TINT__MIN:
-            return new Integer(getMin());
-         case AutomataPackage.TINT__MAX:
-            return new Integer(getMax());
-         case AutomataPackage.TINT__STEPPING:
-            return new Integer(getStepping());
-      }
-      return super.eGet(featureID, resolve, coreType);
-   }
+		switch (featureID) {
+			case AutomataPackage.TINT__MIN:
+				return getMin();
+			case AutomataPackage.TINT__MAX:
+				return getMax();
+			case AutomataPackage.TINT__STEPPING:
+				return getStepping();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public void eSet(int featureID, Object newValue) {
-      switch (featureID) {
-         case AutomataPackage.TINT__MIN:
-            setMin(((Integer)newValue).intValue());
-            return;
-         case AutomataPackage.TINT__MAX:
-            setMax(((Integer)newValue).intValue());
-            return;
-         case AutomataPackage.TINT__STEPPING:
-            setStepping(((Integer)newValue).intValue());
-            return;
-      }
-      super.eSet(featureID, newValue);
-   }
+		switch (featureID) {
+			case AutomataPackage.TINT__MIN:
+				setMin((Integer)newValue);
+				return;
+			case AutomataPackage.TINT__MAX:
+				setMax((Integer)newValue);
+				return;
+			case AutomataPackage.TINT__STEPPING:
+				setStepping((Integer)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public void eUnset(int featureID) {
-      switch (featureID) {
-         case AutomataPackage.TINT__MIN:
-            setMin(MIN_EDEFAULT);
-            return;
-         case AutomataPackage.TINT__MAX:
-            setMax(MAX_EDEFAULT);
-            return;
-         case AutomataPackage.TINT__STEPPING:
-            setStepping(STEPPING_EDEFAULT);
-            return;
-      }
-      super.eUnset(featureID);
-   }
+		switch (featureID) {
+			case AutomataPackage.TINT__MIN:
+				setMin(MIN_EDEFAULT);
+				return;
+			case AutomataPackage.TINT__MAX:
+				setMax(MAX_EDEFAULT);
+				return;
+			case AutomataPackage.TINT__STEPPING:
+				setStepping(STEPPING_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public boolean eIsSet(int featureID) {
-      switch (featureID) {
-         case AutomataPackage.TINT__MIN:
-            return min != MIN_EDEFAULT;
-         case AutomataPackage.TINT__MAX:
-            return max != MAX_EDEFAULT;
-         case AutomataPackage.TINT__STEPPING:
-            return stepping != STEPPING_EDEFAULT;
-      }
-      return super.eIsSet(featureID);
-   }
+		switch (featureID) {
+			case AutomataPackage.TINT__MIN:
+				return min != MIN_EDEFAULT;
+			case AutomataPackage.TINT__MAX:
+				return max != MAX_EDEFAULT;
+			case AutomataPackage.TINT__STEPPING:
+				return stepping != STEPPING_EDEFAULT;
+		}
+		return super.eIsSet(featureID);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public String toString() {
-      if (eIsProxy()) return super.toString();
+		if (eIsProxy()) return super.toString();
 
-      StringBuffer result = new StringBuffer(super.toString());
-      result.append(" (min: ");
-      result.append(min);
-      result.append(", max: ");
-      result.append(max);
-      result.append(", stepping: ");
-      result.append(stepping);
-      result.append(')');
-      return result.toString();
-   }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (min: ");
+		result.append(min);
+		result.append(", max: ");
+		result.append(max);
+		result.append(", stepping: ");
+		result.append(stepping);
+		result.append(')');
+		return result.toString();
+	}
 
 } //TIntImpl

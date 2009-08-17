@@ -32,129 +32,129 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  */
 public class StartStateImpl extends StateImpl implements StartState {
 	/**
-    * The cached value of the '{@link #getOut() <em>Out</em>}' reference.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getOut() <em>Out</em>}' reference.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getOut()
-    * @generated
-    * @ordered
-    */
+	 * @see #getOut()
+	 * @generated
+	 * @ordered
+	 */
 	protected State out;
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	protected StartStateImpl() {
-      super();
-   }
+		super();
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-      return AutomataPackage.Literals.START_STATE;
-   }
+		return AutomataPackage.Literals.START_STATE;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public State getOut() {
-      if (out != null && out.eIsProxy()) {
-         InternalEObject oldOut = (InternalEObject)out;
-         out = (State)eResolveProxy(oldOut);
-         if (out != oldOut) {
-            if (eNotificationRequired())
-               eNotify(new ENotificationImpl(this, Notification.RESOLVE, AutomataPackage.START_STATE__OUT, oldOut, out));
-         }
-      }
-      return out;
-   }
+		if (out != null && out.eIsProxy()) {
+			InternalEObject oldOut = (InternalEObject)out;
+			out = (State)eResolveProxy(oldOut);
+			if (out != oldOut) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AutomataPackage.START_STATE__OUT, oldOut, out));
+			}
+		}
+		return out;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public State basicGetOut() {
-      return out;
-   }
+		return out;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public void setOut(State newOut) {
-      State oldOut = out;
-      out = newOut;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.START_STATE__OUT, oldOut, out));
-   }
+		State oldOut = out;
+		out = newOut;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.START_STATE__OUT, oldOut, out));
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-      switch (featureID) {
-         case AutomataPackage.START_STATE__OUT:
-            if (resolve) return getOut();
-            return basicGetOut();
-      }
-      return super.eGet(featureID, resolve, coreType);
-   }
+		switch (featureID) {
+			case AutomataPackage.START_STATE__OUT:
+				if (resolve) return getOut();
+				return basicGetOut();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public void eSet(int featureID, Object newValue) {
-      switch (featureID) {
-         case AutomataPackage.START_STATE__OUT:
-            setOut((State)newValue);
-            return;
-      }
-      super.eSet(featureID, newValue);
-   }
+		switch (featureID) {
+			case AutomataPackage.START_STATE__OUT:
+				setOut((State)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public void eUnset(int featureID) {
-      switch (featureID) {
-         case AutomataPackage.START_STATE__OUT:
-            setOut((State)null);
-            return;
-      }
-      super.eUnset(featureID);
-   }
+		switch (featureID) {
+			case AutomataPackage.START_STATE__OUT:
+				setOut((State)null);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public boolean eIsSet(int featureID) {
-      switch (featureID) {
-         case AutomataPackage.START_STATE__OUT:
-            return out != null;
-      }
-      return super.eIsSet(featureID);
-   }
+		switch (featureID) {
+			case AutomataPackage.START_STATE__OUT:
+				return out != null;
+		}
+		return super.eIsSet(featureID);
+	}
 
 } //StartStateImpl

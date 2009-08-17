@@ -25,30 +25,30 @@ package edu.teco.automata.Automata;
  */
 public interface TString extends DataType {
 	/**
-    * Returns the value of the '<em><b>Length</b></em>' attribute.
-    * The default value is <code>"0"</code>.
-    * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Length</b></em>' attribute.
+	 * The default value is <code>"0"</code>.
+	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Length</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-    * @return the value of the '<em>Length</em>' attribute.
-    * @see #setLength(int)
-    * @see edu.teco.automata.Automata.AutomataPackage#getTString_Length()
-    * @model default="0"
-    * @generated
-    */
+	 * @return the value of the '<em>Length</em>' attribute.
+	 * @see #setLength(int)
+	 * @see edu.teco.automata.Automata.AutomataPackage#getTString_Length()
+	 * @model default="0"
+	 * @generated
+	 */
 	int getLength();
 
 	/**
-    * Sets the value of the '{@link edu.teco.automata.Automata.TString#getLength <em>Length</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * Sets the value of the '{@link edu.teco.automata.Automata.TString#getLength <em>Length</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @param value the new value of the '<em>Length</em>' attribute.
-    * @see #getLength()
-    * @generated
-    */
+	 * @param value the new value of the '<em>Length</em>' attribute.
+	 * @see #getLength()
+	 * @generated
+	 */
 	void setLength(int value);
 
 } // TString

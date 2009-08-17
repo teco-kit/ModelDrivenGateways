@@ -33,296 +33,296 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  */
 public class TDoubleImpl extends DataTypeImpl implements TDouble {
 	/**
-    * The default value of the '{@link #getMin() <em>Min</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getMin() <em>Min</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMin()
-    * @generated
-    * @ordered
-    */
+	 * @see #getMin()
+	 * @generated
+	 * @ordered
+	 */
 	protected static final int MIN_EDEFAULT = 0;
 
 	/**
-    * The cached value of the '{@link #getMin() <em>Min</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getMin() <em>Min</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMin()
-    * @generated
-    * @ordered
-    */
+	 * @see #getMin()
+	 * @generated
+	 * @ordered
+	 */
 	protected int min = MIN_EDEFAULT;
 
 	/**
-    * The default value of the '{@link #getMax() <em>Max</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getMax() <em>Max</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMax()
-    * @generated
-    * @ordered
-    */
+	 * @see #getMax()
+	 * @generated
+	 * @ordered
+	 */
 	protected static final int MAX_EDEFAULT = 0;
 
 	/**
-    * The cached value of the '{@link #getMax() <em>Max</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getMax() <em>Max</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMax()
-    * @generated
-    * @ordered
-    */
+	 * @see #getMax()
+	 * @generated
+	 * @ordered
+	 */
 	protected int max = MAX_EDEFAULT;
 
 	/**
-    * The default value of the '{@link #getFractionDigits() <em>Fraction Digits</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getFractionDigits() <em>Fraction Digits</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getFractionDigits()
-    * @generated
-    * @ordered
-    */
+	 * @see #getFractionDigits()
+	 * @generated
+	 * @ordered
+	 */
 	protected static final int FRACTION_DIGITS_EDEFAULT = 0;
 
 	/**
-    * The cached value of the '{@link #getFractionDigits() <em>Fraction Digits</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getFractionDigits() <em>Fraction Digits</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getFractionDigits()
-    * @generated
-    * @ordered
-    */
+	 * @see #getFractionDigits()
+	 * @generated
+	 * @ordered
+	 */
 	protected int fractionDigits = FRACTION_DIGITS_EDEFAULT;
 
 	/**
-    * The default value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @see #getStepping()
-    * @generated
-    * @ordered
-    */
+	 * @see #getStepping()
+	 * @generated
+	 * @ordered
+	 */
    protected static final double STEPPING_EDEFAULT = 0.0;
 
    /**
-    * The cached value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @see #getStepping()
-    * @generated
-    * @ordered
-    */
+	 * @see #getStepping()
+	 * @generated
+	 * @ordered
+	 */
    protected double stepping = STEPPING_EDEFAULT;
 
    /**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	protected TDoubleImpl() {
-      super();
-   }
+		super();
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-      return AutomataPackage.Literals.TDOUBLE;
-   }
+		return AutomataPackage.Literals.TDOUBLE;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public int getMin() {
-      return min;
-   }
+		return min;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public void setMin(int newMin) {
-      int oldMin = min;
-      min = newMin;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TDOUBLE__MIN, oldMin, min));
-   }
+		int oldMin = min;
+		min = newMin;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TDOUBLE__MIN, oldMin, min));
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public int getMax() {
-      return max;
-   }
+		return max;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public void setMax(int newMax) {
-      int oldMax = max;
-      max = newMax;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TDOUBLE__MAX, oldMax, max));
-   }
+		int oldMax = max;
+		max = newMax;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TDOUBLE__MAX, oldMax, max));
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public int getFractionDigits() {
-      return fractionDigits;
-   }
+		return fractionDigits;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public void setFractionDigits(int newFractionDigits) {
-      int oldFractionDigits = fractionDigits;
-      fractionDigits = newFractionDigits;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TDOUBLE__FRACTION_DIGITS, oldFractionDigits, fractionDigits));
-   }
+		int oldFractionDigits = fractionDigits;
+		fractionDigits = newFractionDigits;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TDOUBLE__FRACTION_DIGITS, oldFractionDigits, fractionDigits));
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
    public double getStepping() {
-      return stepping;
-   }
+		return stepping;
+	}
 
    /**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
    public void setStepping(double newStepping) {
-      double oldStepping = stepping;
-      stepping = newStepping;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TDOUBLE__STEPPING, oldStepping, stepping));
-   }
+		double oldStepping = stepping;
+		stepping = newStepping;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TDOUBLE__STEPPING, oldStepping, stepping));
+	}
 
    /**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-      switch (featureID) {
-         case AutomataPackage.TDOUBLE__MIN:
-            return new Integer(getMin());
-         case AutomataPackage.TDOUBLE__MAX:
-            return new Integer(getMax());
-         case AutomataPackage.TDOUBLE__FRACTION_DIGITS:
-            return new Integer(getFractionDigits());
-         case AutomataPackage.TDOUBLE__STEPPING:
-            return new Double(getStepping());
-      }
-      return super.eGet(featureID, resolve, coreType);
-   }
+		switch (featureID) {
+			case AutomataPackage.TDOUBLE__MIN:
+				return getMin();
+			case AutomataPackage.TDOUBLE__MAX:
+				return getMax();
+			case AutomataPackage.TDOUBLE__FRACTION_DIGITS:
+				return getFractionDigits();
+			case AutomataPackage.TDOUBLE__STEPPING:
+				return getStepping();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public void eSet(int featureID, Object newValue) {
-      switch (featureID) {
-         case AutomataPackage.TDOUBLE__MIN:
-            setMin(((Integer)newValue).intValue());
-            return;
-         case AutomataPackage.TDOUBLE__MAX:
-            setMax(((Integer)newValue).intValue());
-            return;
-         case AutomataPackage.TDOUBLE__FRACTION_DIGITS:
-            setFractionDigits(((Integer)newValue).intValue());
-            return;
-         case AutomataPackage.TDOUBLE__STEPPING:
-            setStepping(((Double)newValue).doubleValue());
-            return;
-      }
-      super.eSet(featureID, newValue);
-   }
+		switch (featureID) {
+			case AutomataPackage.TDOUBLE__MIN:
+				setMin((Integer)newValue);
+				return;
+			case AutomataPackage.TDOUBLE__MAX:
+				setMax((Integer)newValue);
+				return;
+			case AutomataPackage.TDOUBLE__FRACTION_DIGITS:
+				setFractionDigits((Integer)newValue);
+				return;
+			case AutomataPackage.TDOUBLE__STEPPING:
+				setStepping((Double)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public void eUnset(int featureID) {
-      switch (featureID) {
-         case AutomataPackage.TDOUBLE__MIN:
-            setMin(MIN_EDEFAULT);
-            return;
-         case AutomataPackage.TDOUBLE__MAX:
-            setMax(MAX_EDEFAULT);
-            return;
-         case AutomataPackage.TDOUBLE__FRACTION_DIGITS:
-            setFractionDigits(FRACTION_DIGITS_EDEFAULT);
-            return;
-         case AutomataPackage.TDOUBLE__STEPPING:
-            setStepping(STEPPING_EDEFAULT);
-            return;
-      }
-      super.eUnset(featureID);
-   }
+		switch (featureID) {
+			case AutomataPackage.TDOUBLE__MIN:
+				setMin(MIN_EDEFAULT);
+				return;
+			case AutomataPackage.TDOUBLE__MAX:
+				setMax(MAX_EDEFAULT);
+				return;
+			case AutomataPackage.TDOUBLE__FRACTION_DIGITS:
+				setFractionDigits(FRACTION_DIGITS_EDEFAULT);
+				return;
+			case AutomataPackage.TDOUBLE__STEPPING:
+				setStepping(STEPPING_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public boolean eIsSet(int featureID) {
-      switch (featureID) {
-         case AutomataPackage.TDOUBLE__MIN:
-            return min != MIN_EDEFAULT;
-         case AutomataPackage.TDOUBLE__MAX:
-            return max != MAX_EDEFAULT;
-         case AutomataPackage.TDOUBLE__FRACTION_DIGITS:
-            return fractionDigits != FRACTION_DIGITS_EDEFAULT;
-         case AutomataPackage.TDOUBLE__STEPPING:
-            return stepping != STEPPING_EDEFAULT;
-      }
-      return super.eIsSet(featureID);
-   }
+		switch (featureID) {
+			case AutomataPackage.TDOUBLE__MIN:
+				return min != MIN_EDEFAULT;
+			case AutomataPackage.TDOUBLE__MAX:
+				return max != MAX_EDEFAULT;
+			case AutomataPackage.TDOUBLE__FRACTION_DIGITS:
+				return fractionDigits != FRACTION_DIGITS_EDEFAULT;
+			case AutomataPackage.TDOUBLE__STEPPING:
+				return stepping != STEPPING_EDEFAULT;
+		}
+		return super.eIsSet(featureID);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public String toString() {
-      if (eIsProxy()) return super.toString();
+		if (eIsProxy()) return super.toString();
 
-      StringBuffer result = new StringBuffer(super.toString());
-      result.append(" (min: ");
-      result.append(min);
-      result.append(", max: ");
-      result.append(max);
-      result.append(", fractionDigits: ");
-      result.append(fractionDigits);
-      result.append(", stepping: ");
-      result.append(stepping);
-      result.append(')');
-      return result.toString();
-   }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (min: ");
+		result.append(min);
+		result.append(", max: ");
+		result.append(max);
+		result.append(", fractionDigits: ");
+		result.append(fractionDigits);
+		result.append(", stepping: ");
+		result.append(stepping);
+		result.append(')');
+		return result.toString();
+	}
 
 } //TDoubleImpl

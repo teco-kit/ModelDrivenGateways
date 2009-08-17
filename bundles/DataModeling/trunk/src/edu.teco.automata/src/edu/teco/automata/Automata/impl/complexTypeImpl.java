@@ -22,22 +22,22 @@ import org.eclipse.emf.ecore.EClass;
  */
 public class complexTypeImpl extends DataTypeImpl implements complexType {
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	protected complexTypeImpl() {
-      super();
-   }
+		super();
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-      return AutomataPackage.Literals.COMPLEX_TYPE;
-   }
+		return AutomataPackage.Literals.COMPLEX_TYPE;
+	}
 
 } //complexTypeImpl

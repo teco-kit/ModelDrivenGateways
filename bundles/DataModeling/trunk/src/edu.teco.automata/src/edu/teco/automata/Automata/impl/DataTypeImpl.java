@@ -24,22 +24,22 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  */
 public abstract class DataTypeImpl extends EObjectImpl implements DataType {
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	protected DataTypeImpl() {
-      super();
-   }
+		super();
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-      return AutomataPackage.Literals.DATA_TYPE;
-   }
+		return AutomataPackage.Literals.DATA_TYPE;
+	}
 
 } //DataTypeImpl

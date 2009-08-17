@@ -32,243 +32,243 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  */
 public class TByteImpl extends DataTypeImpl implements TByte {
 	/**
-    * The default value of the '{@link #getMin() <em>Min</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getMin() <em>Min</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMin()
-    * @generated
-    * @ordered
-    */
-	protected static final int MIN_EDEFAULT = 0;
+	 * @see #getMin()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int MIN_EDEFAULT = -128;
 
 	/**
-    * The cached value of the '{@link #getMin() <em>Min</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getMin() <em>Min</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMin()
-    * @generated
-    * @ordered
-    */
+	 * @see #getMin()
+	 * @generated
+	 * @ordered
+	 */
 	protected int min = MIN_EDEFAULT;
 
 	/**
-    * The default value of the '{@link #getMax() <em>Max</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getMax() <em>Max</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMax()
-    * @generated
-    * @ordered
-    */
-	protected static final int MAX_EDEFAULT = 0;
+	 * @see #getMax()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int MAX_EDEFAULT = 127;
 
 	/**
-    * The cached value of the '{@link #getMax() <em>Max</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getMax() <em>Max</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @see #getMax()
-    * @generated
-    * @ordered
-    */
+	 * @see #getMax()
+	 * @generated
+	 * @ordered
+	 */
 	protected int max = MAX_EDEFAULT;
 
 	/**
-    * The default value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @see #getStepping()
-    * @generated
-    * @ordered
-    */
-   protected static final int STEPPING_EDEFAULT = 0;
+	 * @see #getStepping()
+	 * @generated
+	 * @ordered
+	 */
+   protected static final int STEPPING_EDEFAULT = 1;
 
    /**
-    * The cached value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
-    * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getStepping() <em>Stepping</em>}' attribute.
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @see #getStepping()
-    * @generated
-    * @ordered
-    */
+	 * @see #getStepping()
+	 * @generated
+	 * @ordered
+	 */
    protected int stepping = STEPPING_EDEFAULT;
 
    /**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	protected TByteImpl() {
-      super();
-   }
+		super();
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-      return AutomataPackage.Literals.TBYTE;
-   }
+		return AutomataPackage.Literals.TBYTE;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public int getMin() {
-      return min;
-   }
+		return min;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public void setMin(int newMin) {
-      int oldMin = min;
-      min = newMin;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TBYTE__MIN, oldMin, min));
-   }
+		int oldMin = min;
+		min = newMin;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TBYTE__MIN, oldMin, min));
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public int getMax() {
-      return max;
-   }
+		return max;
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	public void setMax(int newMax) {
-      int oldMax = max;
-      max = newMax;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TBYTE__MAX, oldMax, max));
-   }
+		int oldMax = max;
+		max = newMax;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TBYTE__MAX, oldMax, max));
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
    public int getStepping() {
-      return stepping;
-   }
+		return stepping;
+	}
 
    /**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
    public void setStepping(int newStepping) {
-      int oldStepping = stepping;
-      stepping = newStepping;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TBYTE__STEPPING, oldStepping, stepping));
-   }
+		int oldStepping = stepping;
+		stepping = newStepping;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AutomataPackage.TBYTE__STEPPING, oldStepping, stepping));
+	}
 
    /**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-      switch (featureID) {
-         case AutomataPackage.TBYTE__MIN:
-            return new Integer(getMin());
-         case AutomataPackage.TBYTE__MAX:
-            return new Integer(getMax());
-         case AutomataPackage.TBYTE__STEPPING:
-            return new Integer(getStepping());
-      }
-      return super.eGet(featureID, resolve, coreType);
-   }
+		switch (featureID) {
+			case AutomataPackage.TBYTE__MIN:
+				return getMin();
+			case AutomataPackage.TBYTE__MAX:
+				return getMax();
+			case AutomataPackage.TBYTE__STEPPING:
+				return getStepping();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public void eSet(int featureID, Object newValue) {
-      switch (featureID) {
-         case AutomataPackage.TBYTE__MIN:
-            setMin(((Integer)newValue).intValue());
-            return;
-         case AutomataPackage.TBYTE__MAX:
-            setMax(((Integer)newValue).intValue());
-            return;
-         case AutomataPackage.TBYTE__STEPPING:
-            setStepping(((Integer)newValue).intValue());
-            return;
-      }
-      super.eSet(featureID, newValue);
-   }
+		switch (featureID) {
+			case AutomataPackage.TBYTE__MIN:
+				setMin((Integer)newValue);
+				return;
+			case AutomataPackage.TBYTE__MAX:
+				setMax((Integer)newValue);
+				return;
+			case AutomataPackage.TBYTE__STEPPING:
+				setStepping((Integer)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public void eUnset(int featureID) {
-      switch (featureID) {
-         case AutomataPackage.TBYTE__MIN:
-            setMin(MIN_EDEFAULT);
-            return;
-         case AutomataPackage.TBYTE__MAX:
-            setMax(MAX_EDEFAULT);
-            return;
-         case AutomataPackage.TBYTE__STEPPING:
-            setStepping(STEPPING_EDEFAULT);
-            return;
-      }
-      super.eUnset(featureID);
-   }
+		switch (featureID) {
+			case AutomataPackage.TBYTE__MIN:
+				setMin(MIN_EDEFAULT);
+				return;
+			case AutomataPackage.TBYTE__MAX:
+				setMax(MAX_EDEFAULT);
+				return;
+			case AutomataPackage.TBYTE__STEPPING:
+				setStepping(STEPPING_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public boolean eIsSet(int featureID) {
-      switch (featureID) {
-         case AutomataPackage.TBYTE__MIN:
-            return min != MIN_EDEFAULT;
-         case AutomataPackage.TBYTE__MAX:
-            return max != MAX_EDEFAULT;
-         case AutomataPackage.TBYTE__STEPPING:
-            return stepping != STEPPING_EDEFAULT;
-      }
-      return super.eIsSet(featureID);
-   }
+		switch (featureID) {
+			case AutomataPackage.TBYTE__MIN:
+				return min != MIN_EDEFAULT;
+			case AutomataPackage.TBYTE__MAX:
+				return max != MAX_EDEFAULT;
+			case AutomataPackage.TBYTE__STEPPING:
+				return stepping != STEPPING_EDEFAULT;
+		}
+		return super.eIsSet(featureID);
+	}
 
 	/**
-    * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-    * @generated
-    */
+	 * @generated
+	 */
 	@Override
 	public String toString() {
-      if (eIsProxy()) return super.toString();
+		if (eIsProxy()) return super.toString();
 
-      StringBuffer result = new StringBuffer(super.toString());
-      result.append(" (min: ");
-      result.append(min);
-      result.append(", max: ");
-      result.append(max);
-      result.append(", stepping: ");
-      result.append(stepping);
-      result.append(')');
-      return result.toString();
-   }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (min: ");
+		result.append(min);
+		result.append(", max: ");
+		result.append(max);
+		result.append(", stepping: ");
+		result.append(stepping);
+		result.append(')');
+		return result.toString();
+	}
 
 } //TByteImpl
