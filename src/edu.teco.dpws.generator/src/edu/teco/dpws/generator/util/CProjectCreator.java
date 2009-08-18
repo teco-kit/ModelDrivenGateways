@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.eclipse.cdt.core.*;
 import org.eclipse.cdt.managedbuilder.core.*;
+import org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.mwe.utils.StandaloneSetup;
@@ -53,7 +54,7 @@ public class CProjectCreator extends
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		proj = root.getProject(name);
 
-		if (proj.exists()) {
+		if (proj.exists() && null!=ManagedBuildManager.getBuildInfo(proj)) {
 			mproj = ManagedBuildManager.getBuildInfo(proj).getManagedProject();
 		} else {
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -89,17 +90,25 @@ public class CProjectCreator extends
 				; // Call this function just to avoid init problems in
 					// getProjectType();
 			IProjectType projType = ManagedBuildManager
-					.getProjectType("cdt.managedbuild.target.testenv.exe"); //$NON-NLS-1$
+					.getProjectType("cdt.managedbuild.target.gnu.lib"); //$NON-NLS-1$
 			if (projType == null) {
-				// TODO
+				return; //TODO throw
 			}
 
 			try {
 				mproj = ManagedBuildManager
 						.createManagedProject(proj, projType);
+				
 				IConfiguration activeConfig = ManagedBuildManager.getBuildInfo(
 						proj).getDefaultConfiguration();
-				activeConfig.setManagedBuildOn(true);
+				if(activeConfig!=null)
+				{
+				  activeConfig.setManagedBuildOn(true);
+				}
+				else
+				{
+					//TODO
+				}
 				ManagedBuildManager.saveBuildInfo(proj, true);
 			} catch (BuildException e) {
 			}
