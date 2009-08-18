@@ -3,14 +3,11 @@
  */
 package org.eclipse.xpand2.output.cpp;
 
-import java.io.BufferedInputStream;
 import org.eclipse.xpand2.output.*;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -144,7 +141,8 @@ public class CppBeautifier implements PostProcessor
    {
       DefaultCodeFormatterOptions defaultSettings = DefaultCodeFormatterOptions
             .getDefaultSettings();
-      defaultSettings.set(options);
+      if(options!=null)
+    	  defaultSettings.set(options);
       defaultSettings.line_separator = "\n";
       return defaultSettings;
    }
@@ -183,7 +181,9 @@ public class CppBeautifier implements PostProcessor
    @SuppressWarnings("unchecked")
    private ILanguage getLanguage(Map options)
    {
-      ILanguage language = (ILanguage)options
+      ILanguage language = null;
+      
+      if(options!=null) language=  	  (ILanguage)options
             .get(DefaultCodeFormatterConstants.FORMATTER_LANGUAGE);
       if(language == null)
       {
@@ -191,7 +191,26 @@ public class CppBeautifier implements PostProcessor
       }
       return language;
    }
+   
+	 /**
+	  * Searches for the given filename as a ressource and returns a stream on it. Throws an IOException, if the file
+	  * cannot be found.
+	  * 
+	  * @param filename
+	  *				   The name of the file to be searched in the ressources.
+	  * @return InputStream for subsequent reading
+	  * @throws IOException
+	  */
+	 protected InputStream openStream(String filename) throws IOException {
+		 InputStream is = ResourceLoaderFactory.createResourceLoader().getResourceAsStream(filename);
+		 if (is == null) {
+			 throw new IOException("Config file [" + filename + "] does not exist.");
+		 }
+		 return is;
+	 }
 
+	 
+   
    /**
     * Return a Java Properties file representing the options that are in the
     * specified configuration file. In order to use this, simply export a
@@ -207,18 +226,25 @@ public class CppBeautifier implements PostProcessor
     */
    private Properties readConfig(final String filename)
    {
-      BufferedInputStream stream = null;
-      BufferedReader reader = null;
+      InputStream stream=null;
+      BufferedReader reader=null;
 
-      try
+
+	try
       {
-         File file = loadFile(filename);
+         stream=openStream(filename);
+         
          final Properties formatterOptions = new Properties();
+         
+        
+         
          if(filename.endsWith(".xml"))
          {
+        	
             Pattern pattern = Pattern
                   .compile("<setting id=\"([^\"]*)\" value=\"([^\"]*)\"\\/>");
-            reader = new BufferedReader(new FileReader(file));
+            
+            reader = new BufferedReader(new InputStreamReader(stream));
             for(String line = reader.readLine(); line != null; line = reader.readLine())
             {
                Matcher matcher = pattern.matcher(line);
@@ -230,7 +256,6 @@ public class CppBeautifier implements PostProcessor
          }
          else
          {
-            stream = new BufferedInputStream(new FileInputStream(file));
             formatterOptions.load(stream);
          }
          return formatterOptions;
@@ -265,31 +290,6 @@ public class CppBeautifier implements PostProcessor
          }
       }
       return null;
-   }
-
-   /**
-    * This is also stolen from {@link JavaBeautifier}, as it is required by
-    * readConfig.
-    *
-    * @todo replace this copy'n'pasted code
-    *
-    * @param filename Path to a formatter configuration file
-    * @return a corresponding File instance if the file can be located
-    * @throws IOException If the file could not be found
-    */
-   private File loadFile(final String filename) throws IOException
-   {
-      final URL url = ResourceLoaderFactory.createResourceLoader().getResource(filename);
-      if((url == null) || (url.getFile() == null))
-      {
-         throw new IOException("Could not find config file [" + filename + "]");
-      }
-      final File file = new File(url.getFile());
-      if(!file.exists())
-      {
-         throw new IOException("Config file [" + filename + "] does not exist.");
-      }
-      return file;
    }
 
 }
