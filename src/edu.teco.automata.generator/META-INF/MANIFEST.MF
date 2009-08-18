@@ -34,8 +34,9 @@ Export-Package: edu.teco.automata.generator.core;uses:="edu.teco.automata.genera
    org.eclipse.core.resources,
    org.eclipse.jface.viewers,
    org.eclipse.swt.widgets",
- edu.teco.automata.generator.templates;uses:="edu.teco.automata.Automata",
- edu.teco.automata.generator.transformer;
+   edu.teco.automata.generator.templates;uses:="edu.teco.automata.Automata",
+   edu.teco.automata.generator.templates.c;uses:="edu.teco.automata.Automata",
+   edu.teco.automata.generator.transformer;
   uses:="org.eclipse.emf.mwe.core.issues,
    org.eclipse.emf.mwe.core,
    org.eclipse.emf.common.util,
