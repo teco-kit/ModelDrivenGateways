@@ -6,7 +6,7 @@
 
 «DEFINE Root FOR TDefinitions»
 «EXPAND service FOREACH service »
-«EXPAND edu::teco::dpws::generator::templates::domdebug::debug FOREACH service»
+«REM» «EXPAND edu::teco::dpws::generator::templates::domdebug::debug FOREACH service»«ENDREM»
 «EXPAND deliver_event::deliverEvent FOREACH service»
 «ENDDEFINE»
 
@@ -31,10 +31,10 @@ enum operations
 };
  
 #include <soap.h>
-#include <ws-addressing.h>
+#include <ws4d-gSOAP/ws-addressing.h>
 #include <stdsoap2.h>
 
-#include "../src/sendrcv.h"
+#include <sendrcv.h>
 
 	«EXPAND call FOREACH port.getPortType().operation.select(e|e.input!=null)-»
 	«EXPAND server-»

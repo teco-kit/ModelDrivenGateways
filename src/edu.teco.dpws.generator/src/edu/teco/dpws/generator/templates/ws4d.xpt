@@ -136,13 +136,12 @@ static struct Namespace namespaces[]= {
 
 
 //#include "«host.serviceId».nsmap"
-#include <dpws_device.h>
+#include <ws4d-gSOAP/dpws_device.h>
 
 #include <signal.h>
 
 «EXPAND nsmap FOR hosted»
 
-#include <bitsio/read_bits_buf.h>
 #include <event_worker.h>
 #include <dpws_append_wsdl.h>
 
@@ -307,6 +306,15 @@ main (int argc, char **argv)
       struct soap *handle = NULL, *soap_set[] = SOAP_HANDLE_SET (&service);
       int (*serve_requests[]) (struct soap * soap) =
         SOAP_SERVE_SET («EXPAND serve_requests FOREACH hosted.types SEPARATOR "," »);
+        
+     «FILE "event-switch.inc"»
+     switch(*svc)
+     {
+       «FOREACH hosted.types AS t ITERATOR i»
+       «EXPAND serve_event(i.counter0) FOR t»
+       «ENDFOREACH»
+     }
+     «ENDFILE»
 
 #ifdef DEBUG
       printf ("\nSensor Monitor: waiting for request\n");
@@ -351,5 +359,15 @@ main (int argc, char **argv)
 
 «DEFINE extern_serve_requests FOR type::QName»
 extern int «localPart»_serve_request(struct soap * soap);
+«ENDDEFINE»
+
+«DEFINE serve_event(Integer casenum) FOR type::QName»
+case «casenum»:
+{
+		extern void
+		«localPart»_event(int, void *, char *);
+		«localPart»_event(*op, device, (char *) buf);
+	    break;
+}
 «ENDDEFINE»
 

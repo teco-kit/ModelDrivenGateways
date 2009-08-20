@@ -1,5 +1,8 @@
 package edu.teco.dpws.generator.ui;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,19 +13,24 @@ import org.eclipse.core.commands.ExecutionException;
 
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import org.eclipse.emf.mwe.core.WorkflowRunner;
 import org.eclipse.emf.mwe.core.monitor.ProgressMonitorAdapter;
+import org.eclipse.emf.mwe.core.resources.ResourceLoaderFactory;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
@@ -33,14 +41,13 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class WRunner extends AbstractHandler implements IActionDelegate {
 
-	private Shell shell;
 	IFile selectedFile = null;
 	IWorkbenchPart part;
 	String baseName;
 	String dirName;
 	String workspaceURL;
 	
-	final String wfFile = "wsdl.oaw";
+	String wfFile = "wsdl.oaw";
 	
 	/**
 	 * Constructor for Action1.
@@ -53,7 +60,7 @@ public class WRunner extends AbstractHandler implements IActionDelegate {
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		shell = targetPart.getSite().getShell();
+		targetPart.getSite().getShell();
 		this.part = targetPart;
 	}
 
@@ -64,10 +71,11 @@ public class WRunner extends AbstractHandler implements IActionDelegate {
 		run();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void run(){
 
 		
-		final Map<String, String> propertiesSchema = new HashMap<String, String>();
+		final Map propertiesSchema = new HashMap();
 		
 		propertiesSchema.put("dirName", dirName);
 		propertiesSchema.put("baseName", baseName);
@@ -100,8 +108,33 @@ public class WRunner extends AbstractHandler implements IActionDelegate {
 	{
 		IFile f = (IFile) selection.getFirstElement();
 		baseName=f.getLocation().removeFileExtension().lastSegment();
-		dirName=f.getLocation().removeLastSegments(1).toOSString();
-		workspaceURL=ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
+		wfFile=f.getLocation().getFileExtension()+".oaw";
+		dirName=f.getLocation().removeLastSegments(1).toPortableString();
+		workspaceURL=ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();	
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IPathVariableManager pathMan = workspace.getPathVariableManager();
+		
+		URL url=ResourceLoaderFactory.createResourceLoader().getResource("shared");
+		try
+		{
+		try{
+			URL newURL=FileLocator.toFileURL(url);
+			url=newURL;
+		}
+		catch(NullPointerException e)
+		{
+		}
+		
+		String pathStr=new File(url.getPath()).getCanonicalPath();
+		IPath value = new Path(pathStr);
+		
+		String name=Plugin.PLUGIN_ID.replace("\\.","_").toUpperCase()+"SHARED";
+		
+		if (pathMan.validateName(name).isOK() && pathMan.validateValue(value).isOK()) {
+		      pathMan.setValue(name, value);
+		}
+		}catch(IOException e){} catch (CoreException e) {}
+
 		
 	}
 	public void selectionChanged(IAction action, ISelection selection) {

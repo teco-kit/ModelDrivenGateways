@@ -5,7 +5,7 @@
 «FILE name+"_deliver_event.c"»
 /* Generated file */   
 //#include "«name».nsmap"
-#include <dpws_device.h>
+#include <ws4d-gSOAP/dpws_device.h>
 #include <bitsio/read_bits_buf.h>
 #include <soap.h>
 #include "«name»_operations.h"

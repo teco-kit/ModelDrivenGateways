@@ -1,4 +1,4 @@
-#include "stdsoap2.h"
+#include <stdsoap2.h>
 //#include <SensorValues_operations.h>
 #include "sendrcv.h"
 
@@ -31,9 +31,6 @@ static char *global_packet_buffer = buffer1;
 void send_buf(struct dpws_s *device, uint16_t service_id, uint8_t op_id,
 		struct soap* soap, u_char* buf, ssize_t length) {
 
-	extern void debug_print_SensorValues_input(int, u_char *);
-
-	debug_print_SensorValues_input(op_id, buf);
 
 	struct p_packet *p = p_pkt_alloc();
 
@@ -111,28 +108,17 @@ event_worker_loop() {
 								p_acl_get_data(a, &op);
 
 								if (p_acl_findfirst_str(p, "xml", &a) >= 0) {
-									uint8_t *buff;
-									ssize_t len = p_acl_get_data(a, &buff);
-
-									switch(*svc)
-									{
-									case 0:
-									{
-										extern void
-										SensorValues_event(int, void *, char *);
-										SensorValues_event(*op, device,
-												(char *) buff);
-									 break;
-									}
-									}
+									uint8_t *buf;
+									ssize_t len = p_acl_get_data(a, &buf);
+#include <event-switch.inc>
 
 									{
 
 										if (global_packet_buffer == buffer1) {
-											memcpy(buffer2, buff, len);
+											memcpy(buffer2, buf, len);
 											global_packet_buffer = buffer2;
 										} else {
-											memcpy(buffer1, buff, len);
+											memcpy(buffer1, buf, len);
 											global_packet_buffer = buffer1;
 										}
 									}

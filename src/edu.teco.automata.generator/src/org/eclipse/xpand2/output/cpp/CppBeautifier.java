@@ -50,8 +50,8 @@ import org.eclipse.jface.text.IDocument;
 @SuppressWarnings("restriction")
 public class CppBeautifier implements PostProcessor
 {
-   private static final String DEFAULT_CDT_OPTIONS = "org/openarchitectureware/xpand2/output/cdtformat-kandr.xml";
-   private String    configFile = DEFAULT_CDT_OPTIONS;
+   //private static final String DEFAULT_CDT_OPTIONS = "org/openarchitectureware/xpand2/output/cdtformat-kandr.xml";
+   private String    configFile = null;
 
    /** Logger instance. */
    private final Log log = LogFactory.getLog(getClass());
@@ -154,7 +154,10 @@ public class CppBeautifier implements PostProcessor
    @SuppressWarnings("unchecked")
    private Map createFormatterOptions()
    {
-      return readConfig(getConfigFile());
+	  if(getConfigFile()!=null)
+		  return readConfig(getConfigFile());
+	  else 
+		  return null;
    }
 
    /**
