@@ -19,7 +19,7 @@
     
     <metaModel id="metadata"
       class="org.eclipse.xtend.typesystem.xsd.XSDMetaModel">
-      <schemaFile value="model/wsdl11.xsd" />
+      <schemaFile value="wsdl11.xsd" />
     </metaModel>
   </component>
  

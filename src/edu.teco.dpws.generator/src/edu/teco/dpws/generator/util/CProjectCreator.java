@@ -1,33 +1,36 @@
 package edu.teco.dpws.generator.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.cdt.core.*;
-import org.eclipse.cdt.managedbuilder.core.*;
-import org.eclipse.core.resources.*;
+import org.eclipse.cdt.core.CCorePlugin;
+import org.eclipse.cdt.core.ICDescriptor;
+import org.eclipse.cdt.managedbuilder.core.BuildException;
+import org.eclipse.cdt.managedbuilder.core.IConfiguration;
+import org.eclipse.cdt.managedbuilder.core.IManagedBuildInfo;
+import org.eclipse.cdt.managedbuilder.core.IManagedProject;
+import org.eclipse.cdt.managedbuilder.core.IOption;
+import org.eclipse.cdt.managedbuilder.core.IProjectType;
+import org.eclipse.cdt.managedbuilder.core.ITool;
+import org.eclipse.cdt.managedbuilder.core.ManagedBuildManager;
+import org.eclipse.cdt.managedbuilder.core.ManagedBuilderCorePlugin;
+import org.eclipse.cdt.managedbuilder.core.ManagedCProjectNature;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.mwe.core.WorkflowContext;
-import org.eclipse.emf.mwe.core.issues.Issues;
-import org.eclipse.emf.mwe.core.monitor.ProgressMonitor;
 import org.eclipse.emf.mwe.core.resources.ResourceLoaderFactory;
-
 import org.eclipse.emf.mwe.utils.StandaloneSetup;
 
 public class CProjectCreator extends
@@ -176,6 +179,7 @@ public class CProjectCreator extends
 	IProject proj = null;
 	IManagedProject mproj = null;
 
+	@SuppressWarnings("deprecation")
 	void createManagedProject(String name) throws BuildException {
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -212,25 +216,23 @@ public class CProjectCreator extends
 				  
 					if (workspace.validateLinkLocation(link,target).isOK()) {
 					      link.createLink(target, IResource.NONE, null);
-					   } else {
-						 throw new Exception("");
-					      //invalid location, throw an exception or warn user??
+					} else {
+				      throw new BuildException(workspace.validateLinkLocation(link,target).getMessage());			      
 					   }
-				   }catch (Exception e) {
-						// TODO: handle exception
+				   }catch (BuildException e) {
 					   e.printStackTrace();
+					   	//invalid location, throw an exception or warn user??
 				}
 				}
 
-				/*
-				 * ICDescriptor desc =
-				 * CCorePlugin.getDefault().getCProjectDescription(proj, true);
-				 * desc.remove(CCorePlugin.BUILD_SCANNER_INFO_UNIQ_ID);
-				 * desc.create(CCorePlugin.BUILD_SCANNER_INFO_UNIQ_ID,
-				 * ManagedBuildManager.INTERFACE_IDENTITY);
-				 * desc.saveProjectData();
-				 */
 				
+			 ICDescriptor desc =
+				  CCorePlugin.getDefault().getCProjectDescription(proj, true);
+				  desc.remove(CCorePlugin.BUILD_SCANNER_INFO_UNIQ_ID);
+				  desc.create(CCorePlugin.BUILD_SCANNER_INFO_UNIQ_ID,
+				  ManagedBuildManager.INTERFACE_IDENTITY);
+		     desc.saveProjectData();
+				 				
 					
 			} catch (CoreException e) {
 				throw new BuildException(e.getMessage());
