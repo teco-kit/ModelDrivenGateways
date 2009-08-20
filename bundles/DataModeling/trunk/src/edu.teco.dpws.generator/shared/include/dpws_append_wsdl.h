@@ -1,4 +1,4 @@
-#include <stddpws.h>
+#include <ws4d-gSOAP/stddpws.h>
 #include <stdio.h>
 
 static int dpws_append_wsdl(struct dpws_s *device, char *name, char *content)

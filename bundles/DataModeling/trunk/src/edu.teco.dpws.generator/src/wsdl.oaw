@@ -8,6 +8,7 @@
 <property name="platformURI" value=".."/>
 <property name="outlet" value="${platformURI}/${prjName}/src-gen"/>
 
+<property name="debug" value="false"/>
 
 
 <property name="NSPrefix" value="sens"/>
@@ -22,12 +23,19 @@
     
     <metaModel id="wsdl"
       class="org.eclipse.xtend.typesystem.xsd.XSDMetaModel">
-      <schemaFile value="model/wsdl11.xsd" />
+      <schemaFile value="wsdl11.xsd" />
     </metaModel>
   </component>
 
   <component class="edu.teco.dpws.generator.util.CProjectCreator">
      <prjName value="${prjName}" />
+     <includeDir value="shared/include/" />
+     
+     <define value="WITH_MUTEXES" />
+     <define value="DPWS_DEVICE" />
+     <define value="WITH_NONAMESPACES" />
+     <define value="DEBUG" />
+     <define value="ABORT_ON_ASSERT" />
   </component>
   
   <component class="org.eclipse.xpand2.Generator">
@@ -36,7 +44,7 @@
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
     <outlet path="${outlet}" />
         
-    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="edu/teco/automata/generator/cformat.xml"/>
+    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"/>
 
 
   </component>
@@ -46,14 +54,6 @@
     <outputSlot value="SchemaModel"/>
     <firstElementOnly value="true"/>
   </component>
-  
-   <component id="xmiWrite"
-    class="org.eclipse.xtend.typesystem.emf.XmiWriter">
-    <modelFile value="${outlet}/schemaModel.ecore"/>
-    <inputSlot value="SchemaModel"/>
-  </component>
-  
-  
 
    <component class="edu.teco.automata.generator.transformer.Transformer">
     <modelSlot value="SchemaModel"/>
@@ -69,19 +69,26 @@
    <outputSlot value="InMessageAutomata"/>
   </component> 
 
-  
+  <if cond="${debug}">
+   <component id="xmiWrite"
+    class="org.eclipse.xtend.typesystem.emf.XmiWriter">
+    <modelFile value="${outlet}/schemaModel.ecore"/>
+    <inputSlot value="SchemaModel"/>
+   </component>
+   
    <component id="xmiWrite"
     class="org.eclipse.xtend.typesystem.emf.XmiWriter">
     <modelFile value="${outlet}/InMessage.automata"/>
     <inputSlot value="InMessageAutomata"/>
-   </component> 
+   </component>
+ 
    
    <component id="xmiWrite"
     class="org.eclipse.xtend.typesystem.emf.XmiWriter">
     <modelFile value="${outlet}/OutMessage.automata"/>
     <inputSlot value="OutMessageAutomata"/>
-   </component>
-  
+   </component> 
+  </if>
   
 
     <component id="generatorEncGSOAP" class="org.eclipse.xpand2.Generator">             
@@ -95,7 +102,7 @@
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
     
         
-     <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="edu/teco/automata/generator/cformat.xml"/>
+     <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier" />
     
     </component> 
     
@@ -113,7 +120,7 @@
     <outlet path="${outlet}/"/>
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
    
-     <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="edu/teco/automata/generator/cformat.xml"/>
+     <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier" />
 
    </component> 
    
@@ -130,7 +137,7 @@
     <outlet path="${outlet}/"/>
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
     
-     <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="edu/teco/automata/generator/cformat.xml"/>
+     <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier" />
     
    </component> 
 
@@ -143,7 +150,7 @@
     <outlet path="${outlet}/"/>
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
     
-     <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="edu/teco/automata/generator/cformat.xml"/>
+     <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"/>
       
    </component> 
    
@@ -160,7 +167,7 @@
     <outlet path="${outlet}/"/>
     <globalVarDef name="NSPrefix" value="'${NSPrefix}'"/>
     
-   <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="edu/teco/automata/generator/cformat.xml"/>
+   <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"/>
    
   </component> 
    

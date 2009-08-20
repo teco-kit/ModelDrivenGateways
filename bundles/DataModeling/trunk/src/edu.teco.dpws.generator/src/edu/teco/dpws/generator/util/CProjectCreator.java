@@ -1,12 +1,33 @@
 package edu.teco.dpws.generator.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.cdt.core.*;
 import org.eclipse.cdt.managedbuilder.core.*;
-import org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.mwe.core.WorkflowContext;
+import org.eclipse.emf.mwe.core.issues.Issues;
+import org.eclipse.emf.mwe.core.monitor.ProgressMonitor;
+import org.eclipse.emf.mwe.core.resources.ResourceLoaderFactory;
+
 import org.eclipse.emf.mwe.utils.StandaloneSetup;
 
 public class CProjectCreator extends
@@ -29,7 +50,11 @@ public class CProjectCreator extends
 			final org.eclipse.emf.mwe.core.monitor.ProgressMonitor monitor,
 			final org.eclipse.emf.mwe.core.issues.Issues issues) {
 		if (ResourcesPlugin.getPlugin() != null)
-			createManagedProject(prjName);
+			try {
+				createManagedProject(prjName);
+			} catch (BuildException e) {
+				issues.addError(this, e.getMessage(), this, e, null);
+			}
 	}
 
 	@Override
@@ -44,12 +69,114 @@ public class CProjectCreator extends
 			if (!(new File( StandaloneSetup.getPlatformRootPath() +File.separator+ prjName + File.separator+ ".cproject").exists()))
 				issues.addError(this, "CDT project "+ StandaloneSetup.getPlatformRootPath() +File.separator+ prjName + " not found");
 		}
+		
+		for(IOException e: pathErrors)
+		{
+			issues.addWarning(this, e.toString(),null, e, null);
+		}
+	}
+	
+	public static String getFilePath(String path) throws  IOException
+	{
+		URL url=ResourceLoaderFactory.createResourceLoader().getResource(path);
+		if(url==null) return path;
+		try{
+			URL newURL=FileLocator.toFileURL(url);
+			url=newURL;
+		}
+		catch(NullPointerException e)
+		{
+		}
+		String pathStr=new File(url.getPath()).getCanonicalPath();
+		pathStr=new Path(pathStr).toOSString();
+		if(!pathStr.startsWith("\"") && pathStr.contains(" "))
+			pathStr="\""+pathStr+"\"";		
+//		pathStr=new Path(pathStr).toPortableString().replaceAll(" ", "\\\\ "); //This effectively replaces backspaces on windows (works with gcc) and protects spaces
+		return pathStr;
+	}
+	
+	Set<IOException> pathErrors=new LinkedHashSet<IOException> ();
+	
+	private String projTypeStr="cdt.managedbuild.target.gnu.lib";
+	
+	public void setProjType(String projType) {
+		this.projTypeStr = projType;
 	}
 
+	private Set<String> includeDirs=new LinkedHashSet<String>();
+	public void addIncludeDir(String path)
+	{    
+		try {
+			includeDirs.add(getFilePath(path));
+		} catch (IOException e) {
+			pathErrors.add(e);
+		}
+	}
+    
+	private Set<String> libDirs=new LinkedHashSet<String>();
+	public void addLibDir(String path)
+	{
+		try {
+			libDirs.add(getFilePath(path));
+		} catch (IOException e) {
+			pathErrors.add(e);
+		}
+	}
+	
+	private Set<String> libs=new LinkedHashSet<String>();
+	
+	public void addLib(String path)
+	{
+		libs.add(path);
+	}
+	
+	private Set<String> defines=new LinkedHashSet<String>();
+	
+	public void addDefine(String symbol)
+	{
+		defines.add(symbol);
+	}
+	
+	private Set<String> undefs=new LinkedHashSet<String>();
+	
+	public void addUndef(String symbol)
+	{
+		undefs.add(symbol);
+	}
+	
+	public static class Link 
+	{
+		
+		private String name=null;
+		private String target=null;
+	
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getTarget() {
+			return target;
+		}
+		public void setTarget(String target){
+			this.target = target;
+		}
+		
+
+	}
+
+	private Set<Link> links=new HashSet<Link>();
+	
+	public void addLink(Link link) 
+	{
+		links.add(link);
+	}
+	
 	IProject proj = null;
 	IManagedProject mproj = null;
 
-	void createManagedProject(String name) {
+	void createManagedProject(String name) throws BuildException {
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		proj = root.getProject(name);
@@ -71,8 +198,29 @@ public class CProjectCreator extends
 				IManagedBuildInfo info = ManagedBuildManager
 						.createBuildInfo(proj);
 				info.setValid(true);
+				
+				
 				ManagedCProjectNature.addManagedNature(proj, null);
 				ManagedCProjectNature.addManagedBuilder(proj, null);
+
+				for(Link l:links)
+				{
+				   IPath target = new Path(l.getTarget());
+				   IFolder link = proj.getFolder(l.getName());
+				   
+				   try{
+				  
+					if (workspace.validateLinkLocation(link,target).isOK()) {
+					      link.createLink(target, IResource.NONE, null);
+					   } else {
+						 throw new Exception("");
+					      //invalid location, throw an exception or warn user??
+					   }
+				   }catch (Exception e) {
+						// TODO: handle exception
+					   e.printStackTrace();
+				}
+				}
 
 				/*
 				 * ICDescriptor desc =
@@ -82,37 +230,37 @@ public class CProjectCreator extends
 				 * ManagedBuildManager.INTERFACE_IDENTITY);
 				 * desc.saveProjectData();
 				 */
+				
+					
 			} catch (CoreException e) {
-				// TODO
-			}
+				throw new BuildException(e.getMessage());
+			} 
 
 			if (ManagedBuildManager.getDefinedProjectTypes() == null)
 				; // Call this function just to avoid init problems in
 					// getProjectType();
 			IProjectType projType = ManagedBuildManager
-					.getProjectType("cdt.managedbuild.target.gnu.lib"); //$NON-NLS-1$
-			if (projType == null) {
-				return; //TODO throw
-			}
+					.getProjectType(projTypeStr); //$NON-NLS-1$
+			
+			if (projType != null) {		
 
-			try {
+			 {
 				mproj = ManagedBuildManager
 						.createManagedProject(proj, projType);
 				
 				IConfiguration activeConfig = ManagedBuildManager.getBuildInfo(
 						proj).getDefaultConfiguration();
+				
 				if(activeConfig!=null)
 				{
 				  activeConfig.setManagedBuildOn(true);
 				}
-				else
-				{
-					//TODO
-				}
-				ManagedBuildManager.saveBuildInfo(proj, true);
-			} catch (BuildException e) {
+				
+				ManagedBuildManager.saveBuildInfo(proj, true); //TODO: unable to apply the invalid Project description;
+			} 
+			
 			}
-
+			
 			ManagedBuildManager.setNewProjectVersion(proj);
 
 			IConfiguration[] cfgs = projType.getConfigurations();
@@ -122,6 +270,16 @@ public class CProjectCreator extends
 			for (int i = 1; i < cfgs.length; ++i) { // sic ! from 1
 				mproj.createConfiguration(cfgs[i], projType.getId() + "." + i); //$NON-NLS-1$
 			}
+		
+			
+			addOptionValues(defcfg, defcfg.getToolFromInputExtension("c"), "gnu.c.compiler.option.include.paths", includeDirs);
+			addOptionValues(defcfg, defcfg.getToolFromInputExtension("c"), "gnu.c.compiler.option.preprocessor.def.symbols", defines);
+			addOptionValues(defcfg, defcfg.getToolFromInputExtension("c"), "gnu.c.compiler.option.preprocessor.undef.symbols", undefs);
+			
+			addOptionValues(defcfg, defcfg.getToolFromInputExtension("o"), "gnu.c.link.option.paths", libDirs);
+			addOptionValues(defcfg, defcfg.getToolFromInputExtension("o"), "gnu.c.link.option.libs", libs);
+			
+			
 			ManagedBuildManager.setDefaultConfiguration(proj, defcfg);
 		}
 		// open project w/o progress monitor; no action performed if it's opened
@@ -130,5 +288,22 @@ public class CProjectCreator extends
 		} catch (CoreException e) {
 		}
 	}
+	
+	
+	void addOptionValues(IConfiguration cf, ITool cfTool, String optID,  Set<String> values)
+	{
+		if(values==null || values.size()==0) return;
+		
+		IOption option = cfTool.getOptionById(optID); 
+		String[] oldVals=option.getApplicableValues();
+		String[] newVals=new String[oldVals.length+values.size()];
+		
+		System.arraycopy(oldVals, 0, newVals, 0, oldVals.length);
+		System.arraycopy(values.toArray(), 0, newVals, oldVals.length, values.size());
+		
+		ManagedBuildManager.setOption(cf, cfTool, option, newVals);
+	}
 
+	
+	
 }

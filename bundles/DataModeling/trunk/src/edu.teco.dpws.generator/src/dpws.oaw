@@ -2,14 +2,16 @@
 
 <property name="baseName" value="SSimp"/>
 <property name="dirName" value="../DPWSExample/src/"/>
-<property name="path" value="${dirName}/${baseName}.metadata"/>
+<property name="path" value="${dirName}/${baseName}.dpws"/>
 
 <property name="prjName" value="${baseName}Device"/>
-<property name="outlet" value="../${prjName}/src-gen"/>
+<property name="platformURI" value=".."/>
+<property name="outlet" value="${platformURI}/${prjName}/src-gen"/>
    
    <bean class="org.eclipse.emf.mwe.utils.StandaloneSetup">
-      <platformUri value=".."/>
+      <platformUri value="${platformURI}"/>
    </bean>
+   
    
   <component class="org.eclipse.xtend.typesystem.xsd.XMLReader">
     <modelSlot value="metadata" />
@@ -23,6 +25,30 @@
  
   <component class="edu.teco.dpws.generator.util.CProjectCreator">
      <prjName value="${prjName}" />
+     
+     <link name="src" target="EDU_TECO_DPWS_GENERATOR_SHARED/src/"/>
+     
+     <define value="WITH_MUTEXES" />
+     <define value="DPWS_DEVICE" />
+     <define value="WITH_NONAMESPACES" />
+     <define value="DEBUG" />
+     <define value="ABORT_ON_ASSERT" />
+    
+     <includeDir value="shared/include/" />
+     <includeDir value="../src-gen" />
+     
+     <libDir value="/usr/local/lib" />
+     <libDir value="/usr/local/lib/ws4d-gSOAP/" />
+     
+     <lib value="dpwsS"/>
+     <lib value="dpwsDmt" />
+     <lib value="ws4d_listLmt" />
+     <lib value="gsoap" />
+     <lib value="pthread" />
+     <lib value="particle" />
+     
+     
+     <projType value="cdt.managedbuild.target.gnu.exe" />
   </component>
   
    <component class="org.eclipse.xpand2.Generator">
@@ -31,7 +57,7 @@
     <outlet path="${outlet}" />
     <globalVarDef name="WSDLPath" value="'${dirName}'"/>
         
-    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"   configFile="../edu.teco.automata.generator/src/edu/teco/automata/generator/cformat.xml"/>
+    <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"/>
   </component>
 
 </workflow>

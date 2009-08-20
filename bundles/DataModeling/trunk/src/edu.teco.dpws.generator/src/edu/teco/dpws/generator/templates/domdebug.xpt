@@ -13,7 +13,7 @@
 #include <GDB.h>
 #include "«getNSPrefix()»_types.h"
 
-#include "../src/sendrcv.h"
+#include <sendrcv.h>
 «FOREACH port.getPortType().operation AS op»
 «EXPAND include FOREACH op.input.getMessage().part.element»
 «EXPAND include FOREACH op.output.getMessage().part.element»
