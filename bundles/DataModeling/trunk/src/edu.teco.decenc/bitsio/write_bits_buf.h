@@ -6,11 +6,11 @@
 
 extern const size_t write_bits_bufwriter_size;
 
-struct WRITER_STRUCT *write_bits_bufwriter_init(struct WRITER_STRUCT *,u_char *buf);
+struct WRITER_STRUCT *write_bits_bufwriter_init(struct WRITER_STRUCT *, char *buf, ssize_t size);
 
-#define write_bits_bufwriter_stack_new(buf)  write_bits_bufwriter_init(alloca(write_bits_bufwriter_size),buf)
+#define write_bits_bufwriter_stack_new(buf,size)  write_bits_bufwriter_init((struct WRITER_STRUCT *)alloca(write_bits_bufwriter_size),buf,size)
 
-#define write_bits_bufwriter_new(w,buf) write_bits_bufwriter_init(malloc(write_bits_bufwriter_size),buf)
+#define write_bits_bufwriter_new(w,buf,size) write_bits_bufwriter_init(malloc(write_bits_bufwriter_size),buf)
 #define write_bits_bufwriter_delete(w) free(w)
 
 ssize_t write_buf_finish(struct WRITER_STRUCT* writer);

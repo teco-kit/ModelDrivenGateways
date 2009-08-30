@@ -15,11 +15,14 @@
       «EXPAND encoderRoot::initNeeded FOR st»
    «ENDFOREACH»
    «stack_clear()»
-   
+   #include <ptr_stack.h>
    «FILE this.states.typeSelect(StartState).first().out.name+"_dom2bin.c"»
    «EXPAND header(nameID)»
    for (;;)
    {
+#ifdef debug_dom
+   debug_dom(label,top(),stack);
+#endif
    switch (label)
    {
 
@@ -42,44 +45,31 @@
  #include <string.h>
  #include <bitsio/write_bits_buf.h>
  #include "«getNSPrefix()»_types.h"
+ #include <ptr_stack.h>
   
-int «this.states.typeSelect(StartState).first().out.name»_dom2bin_run(«this.states.typeSelect(StartState).out.typeSelect(SimpleState).first().ecore.name.p()» *dom, struct WRITER_STRUCT *writer );
+int «this.states.typeSelect(StartState).first().out.name»_dom2bin_run(struct «this.states.typeSelect(StartState).out.typeSelect(SimpleState).first().ecore.name.p()» *, struct WRITER_STRUCT * );
  #endif
 «ENDFILE»
 
 #include "«this.states.typeSelect(StartState).first().out.name»_dom2bin.h"
 
 
-static int dom_automata(struct WRITER_STRUCT *writer,void **stack, int *_label);
-int «this.states.typeSelect(StartState).first().out.name»_dom2bin_run(«this.states.typeSelect(StartState).out.typeSelect(SimpleState).first().ecore.name.p()» *dom, struct WRITER_STRUCT *writer ) 
+static int dom_automata(struct WRITER_STRUCT *writer,ptr_stack stack, int *_label);
+
+int «this.states.typeSelect(StartState).first().out.name»_dom2bin_run(struct «this.states.typeSelect(StartState).out.typeSelect(SimpleState).first().ecore.name.p()» *dom, struct WRITER_STRUCT *writer ) 
 {
 	int ret;
 	int label=0;
-	void * stack[20]={dom};
+	
+	new_ptr_stack(stack,dom);
+	
 	while((ret=dom_automata(writer,stack,&label))>0);
 	
     return ret;	
 }
-   
-static void *stack_pop(void ***stack) {
-	void *ret=*(*stack);
-	**stack=0;
-	(*stack)--;
-	return ret;
-}
-
-#define pop() stack_pop(&stack)
-
-static void *stack_push(void ***stack, void * X) {
-	return *(++(*stack)) = X;
-}
-#define push(X) stack_push(&stack,X)
-
-#define top() *stack
-
 
 // return:  0 if EOF, 0<for fault, and  read bits else (TODO)
-static int dom_automata(struct WRITER_STRUCT *writer,void **stack, int *_label)
+static int dom_automata(struct WRITER_STRUCT *writer,ptr_stack stack, int *_label)
 {
 #define label (*_label)
 void *last=NULL;
@@ -112,6 +102,7 @@ return 1;
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::loopBegin(Integer count) 
 FOR SimpleState»
+   {
    /* loop «stack_getCurrPathSlash() + name» */
    «ecore.name.p()» *cur;
    while(NULL!=(cur=«stack_top().ecore.name.p()»_next_«name.toFirstLower()»((«stack_top().ecore.name.p()» *)top(),(«ecore.name.p()» *)last)))
@@ -126,12 +117,15 @@ FOR SimpleState»
 «AROUND edu::teco::automata::generator::templates::encoderRoot::loopEnd(String endName) FOR SimpleState»
     «targetDef.proceed()»
     pop();
-    } 
+    }
+     
     last=NULL;
 	write_false(writer); //XXX: not necessary, right now symetric to bin2sax...
+	}
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoopBegin(Integer count, Integer next) FOR SimpleState»
+   {
    «ecore.name.p()» *cur;
    if(NULL!=(cur=«stack_top().ecore.name.p()»_next_«name.toFirstLower()»((«stack_top().ecore.name.p()» *)top(),(«ecore.name.p()» *) last)))
    { /* depth «depth»*/
@@ -146,6 +140,7 @@ FOR SimpleState»
       last=NULL;
       continue;
    } /* «name» */
+   }
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::complexLoopEnd2(String endName) FOR SimpleState» 
@@ -176,7 +171,13 @@ FOR SimpleState»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::complexBegin FOR SimpleState» 
    «IF !stack_isEmpty()»
-   push(&((«stack_top().ecore.name.p()» *) top())->«name.toFirstLower()»);
+   {
+   «stack_top().ecore.name.p()» *parent;
+   «ecore.name.p()» *cur;
+   parent=(«stack_top().ecore.name.p()»*) top();
+   cur=&(parent->«name.toFirstLower()»);
+   push(cur);
+   }
    «ELSE»
     //assert preinitialized stack 
    «ENDIF»
@@ -188,8 +189,14 @@ FOR SimpleState»
    «targetDef.proceed()»
 «ENDAROUND»
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::simpleBegin(Integer label) FOR SimpleState» 
-   push(&((«stack_top().ecore.name.p()» *) top())->«name.toFirstLower()»);
+«AROUND edu::teco::automata::generator::templates::encoderRoot::simpleBegin(Integer label) FOR SimpleState»
+   {
+   «stack_top().ecore.name.p()» *parent;
+   «ecore.name.p()» *cur;
+   parent=(«stack_top().ecore.name.p()»*) top();
+   cur=&(parent->«name.toFirstLower()»);
+   push(cur);
+   } 
    
    «targetDef.proceed()»
 «ENDAROUND»
@@ -218,7 +225,10 @@ FOR SimpleState»
 FOR SimpleState»
   {
     ssize_t ret=0;
-  	«EXPAND edu::teco::automata::generator::templates::c::binEncoder::write("(*("+ecore.name.p()+"*)top())") FOR type»
+    «ecore.name.p()»* val;
+    val= («ecore.name.p()»*) top();
+    
+  	«EXPAND edu::teco::automata::generator::templates::c::binEncoder::write("(*val)") FOR type»
   }
 «ENDAROUND»
 

@@ -3,9 +3,17 @@
 #include <SensorValues_operations.h>
 #include <bitsio/write_bits_buf.h>
 #include <Sample_dom2bin.h>
+#define size_t uint8_t
 #include <sens_types.h>
 
+sens_SSimpSample s;
+#include "../../pPart/XMLPRS/prs74.h"
+#include "../../pPart/XMLPRS/prs74_set.c"
+
 static int s_recv, s_send;
+
+
+int include[]={1,1,1,0,1};
 
 int main() {
 	if (0 > (s_recv = p_socket_open(0, 0, 5556)) || 0 > (s_send
@@ -24,42 +32,32 @@ int main() {
 		struct p_packet *p = p_pkt_alloc();
 		uint16_t svc = 0;
 		uint8_t op = OP_SensorValues_SensorValuesEvent;
+                size_t data_len;
+                uint8_t buf[64];
+
 		p_acl_add_str(p, "svc", (uint8_t *) &svc, sizeof(svc), 0);
 		p_acl_add_str(p, "op", (uint8_t *) &op, sizeof(op), 0);
 		{
+                  int i;
 
-			sens_SSimpSample s = { };
+                  memset(&s,0,sizeof(s));
 
-			{
-				sens_ADXL210Sample *accl = sens_SSimpSample_add_accelleration(
-						&s);
-				accl->x = 42;
-				accl->y = -21;
-				accl->z = 10;
-			}
+                  for(i=0; i<8 && i<sizeof(include);i++)
+                    if(include[i]) PRSAddSensorValueToSend(i);
+                }
 
-			{
-				sens_DateTime *t = sens_SSimpSample_add_timeStamp(&s);
-				t->tv_sec = time(NULL);
-			}
-
-			u_char sendbuf[256];
-			struct WRITER_STRUCT* writer =
-					write_bits_bufwriter_stack_new(sendbuf);
-
-			Sample_dom2bin_run(&s, writer);
-			{
-				ssize_t len = write_buf_finish(writer);
-				p_acl_add_str(p, "xml", (uint8_t *) &sendbuf, len, 0);
-			}
-
-		}
+                {
+                  struct WRITER_STRUCT *writer=write_bits_bufwriter_stack_new(buf,sizeof(buf));
+                  Sample_dom2bin_run(&s, writer);
+                  data_len=write_buf_finish(writer);
+                }
+		p_acl_add_str(p, "xml", buf, data_len, 0);
 
 		p_describe_pkt(p);
 		p_socket_send(s_send, p);
 
 		p_pkt_free(p);
-		sleep(5);
+		sleep(1);
 	}
 
 }

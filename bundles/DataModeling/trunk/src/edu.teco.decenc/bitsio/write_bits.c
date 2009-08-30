@@ -43,7 +43,7 @@ struct WRITER_STRUCT *write_fdwriter_alloc(int fd)
  *
  *
  * ========================================================================*/
-ssize_t write_bits(struct WRITER_STRUCT *writer, const u_char *bits, int bits_len)
+ssize_t write_bits(struct WRITER_STRUCT *writer, const char *bits, ssize_t bits_len)
 {
    int      i;
    int      bytes;    /* = bits_len / 8; */

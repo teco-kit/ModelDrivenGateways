@@ -18,7 +18,7 @@
 <folderInfo id="cdt.managedbuild.config.gnu.cygwin.exe.debug.1532546165." name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug.1954713687" name="Cygwin GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.cygwin.exe.debug" superClass="cdt.managedbuild.toolchain.gnu.cygwin.exe.debug">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.cygwin.exe.debug.984127104" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.cygwin.exe.debug"/>
-<builder autoBuildTarget="all" buildPath="${workspace_loc:/SSimpNode/Debug}" cleanBuildTarget="clean" enableAutoBuild="true" id="org.eclipse.cdt.build.core.internal.builder.1630043086" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
+<builder autoBuildTarget="all" buildPath="${workspace_loc:/SSimpNode/Debug}" cleanBuildTarget="clean" enableAutoBuild="false" id="org.eclipse.cdt.build.core.internal.builder.1630043086" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug.478058870" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.exe.debug">
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.238257966" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
@@ -43,8 +43,8 @@
 <listOptionValue builtIn="false" value="bitsio_buf"/>
 </option>
 <option id="gnu.c.link.option.paths.2140662676" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SensorValuesService/Build}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/edu.teco.decenc/bitsio}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SensorValuesService/Debug}&quot;"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.c.linker.input.846228380" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
