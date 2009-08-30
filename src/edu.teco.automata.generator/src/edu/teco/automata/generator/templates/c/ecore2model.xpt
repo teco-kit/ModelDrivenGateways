@@ -7,9 +7,8 @@
 #ifndef «("___"+getNSPrefix()+"_types_h").toUpperCase()»
 #define «("___"+getNSPrefix()+"_types_h").toUpperCase()» 1
 #include <stdint.h>
-#include <stdlib.h>
-#include <time.h>
 #include <sys/time.h>
+
 #define «getNSPrefix()»_UnsignedInt uint32_t
 #define «getNSPrefix()»_SignedInt int32_t
 #define «getNSPrefix()»_Int int32_t
@@ -24,16 +23,21 @@
 
 #define «getNSPrefix()»_DateTime struct timeval
 
-«EXPAND declaration FOREACH eAllContents.typeSelect(EClass)»
+«REM» «EXPAND declaration FOREACH eAllContents.typeSelect(EClass)»«ENDREM»
 «EXPAND definition FOREACH eAllContents.typeSelect(EClass).selectFirst(e|e.name=="DocumentRoot").eAllReferences.select(r|r.eAnnotations.exists(a|a.source=="http:///org/eclipse/emf/ecore/util/ExtendedMetaData" && a.details.exists(d|d.key=="namespace"&&d.value=="##targetNamespace"))).eType.typeSelect(EClass)»
+«EXPAND typedef FOREACH eAllContents.typeSelect(EClass).select(e|e.getProperty("did_definition")==true)»
+
 #endif
 «ENDFILE»
 «ENDDEFINE»
 
 «DEFINE declaration FOR EClass»
 struct «name.p()»;
-typedef struct «name.p()» «name.p()»;
 «EXPAND listDeclarations»
+«ENDDEFINE»
+
+«DEFINE typedef FOR EClass»
+typedef struct «name.p()» «name.p()»;
 «ENDDEFINE»
 
 «DEFINE definition FOR EClass»
@@ -49,6 +53,7 @@ struct  «name.p()»
  	«EXPAND boundedList FOR m»
  «ELSE»
  	«EXPAND unboundedList FOR m»
+ 	«ERROR "Please uncomment"»
  «ENDIF»
  «ENDFOREACH»
 };
@@ -57,11 +62,13 @@ struct  «name.p()»
  
  «FOREACH  eAllReferences.typeSelect(EStructuralFeature).addAll(eAllAttributes) AS m»
  «IF m.upperBound==m.lowerBound»
- 	«EXPAND member_f(name.p()) FOR m»
+ 	«EXPAND member_f("struct "+name.p(),name.p()) FOR m»
  «ELSEIF m.upperBound!=-1»
- 	«EXPAND boundedList_f(name.p()) FOR m»
+ 	«EXPAND boundedList_f("struct "+name.p(),name.p()) FOR m»
  «ELSE»
- 	«EXPAND unboundedList_f(name.p()) FOR m»
+ «REM»
+ 	«EXPAND unboundedList_f("struct "+name.p(),name.p()) FOR m»
+«ENDREM»
  «ENDIF»
  «ENDFOREACH»
  
@@ -72,13 +79,17 @@ struct  «name.p()»
 «ENDDEFINE»
 
 «DEFINE listDeclarations FOR ENamedElement»
+«REM»
 	«EXPAND unboundedListDeclaration »
 	«EXPAND unboundedPtrListDeclaration »
+«ENDREM»
 «ENDDEFINE»
 
 «DEFINE listDefinitions FOR ENamedElement»
+«REM»	
 	«EXPAND unboundedListDefinition»
 	«EXPAND unboundedPtrListDefinition»
+«ENDREM»
 «ENDDEFINE»
 
 «DEFINE unboundedListDeclaration  FOR ENamedElement»
@@ -175,28 +186,28 @@ static «eType.name» «!containment?"*":""-» *«parent»_add_«name»(«parent» *self){
 «DEFINE boundedList(boolean containment) FOR EStructuralFeature»
  struct{
    size_t len; «REM» TODO: Make size type smaller«ENDREM»
-   «eType.name.p()» «IF !containment-»*«ENDIF-»element[«upperBound»];   
+   «IF EClass.isInstance(eType)»struct«ENDIF» «eType.name.p()» «IF !containment-»*«ENDIF-»element[«upperBound»];   
   } «name»;
 «ENDDEFINE»
 
-«DEFINE boundedList_f(String parent) FOR EReference»
- «EXPAND boundedList_f(parent,containment)»
+«DEFINE boundedList_f(String parent,String prefix) FOR EReference»
+ «EXPAND boundedList_f(parent,prefix,containment)»
 «ENDDEFINE»
 
-«DEFINE boundedList_f(String parent) FOR EAttribute»
- «EXPAND boundedList_f(parent,true)»
+«DEFINE boundedList_f(String parent, String prefix) FOR EAttribute»
+ «EXPAND boundedList_f(parent, prefix, true)»
 «ENDDEFINE»
 
-«DEFINE boundedList_f(String parent) FOR EStructuralFeature»
+«DEFINE boundedList_f(String parent, String prefix) FOR EStructuralFeature»
 «ERROR this.metaType.name+" not supported"»
 «ENDDEFINE»
 
-«DEFINE boundedList_f(String parent,boolean containment) FOR EStructuralFeature»
-static «eType.name.p()» «IF !containment-»*«ENDIF-» *«parent»_add_«name»(«parent» *self) __attribute__((__unused__));
-static «eType.name.p()» «IF !containment-»*«ENDIF-» *«parent»_add_«name»(«parent» *self){if(self->«name».len<«upperBound») return &(self->«name».element[(self->«name».len++)]);  else return NULL;}
+«DEFINE boundedList_f(String parent, String prefix, boolean containment) FOR EStructuralFeature»
+static «IF EClass.isInstance(eType)»struct«ENDIF» «eType.name.p()» «IF !containment-»*«ENDIF-» *«prefix»_add_«name»(«parent» *self) __attribute__((__unused__));
+static «IF EClass.isInstance(eType)»struct«ENDIF» «eType.name.p()» «IF !containment-»*«ENDIF-» *«prefix»_add_«name»(«parent» *self){if(self->«name».len<«upperBound») return &(self->«name».element[(self->«name».len++)]);  else return NULL;}
 
-static «eType.name.p()» «IF !containment-»*«ENDIF-» *«parent»_next_«name»(«parent» *self,«eType.name.p()» «IF !containment-»*«ENDIF-» *last)  __attribute__((__unused__));
-static «eType.name.p()» «IF !containment-»*«ENDIF-» *«parent»_next_«name»(«parent» *self,«eType.name.p()» «IF !containment-»*«ENDIF-» *last) {
+static «IF EClass.isInstance(eType)»struct«ENDIF» «eType.name.p()» «IF !containment-»*«ENDIF-» *«prefix»_next_«name»(«parent» *self,«IF EClass.isInstance(eType)»struct«ENDIF» «eType.name.p()» «IF !containment-»*«ENDIF-» *last)  __attribute__((__unused__));
+static «IF EClass.isInstance(eType)»struct«ENDIF» «eType.name.p()» «IF !containment-»*«ENDIF-» *«prefix»_next_«name»(«parent» *self,«IF EClass.isInstance(eType)»struct«ENDIF» «eType.name.p()» «IF !containment-»*«ENDIF-» *last) {
 if(self->«name».len==0) return NULL;
 if(last==NULL) return self->«name».element;
 if(last!=&(self->«name».element[self->«name».len-1])) return last++; 
@@ -216,24 +227,24 @@ else return NULL;}
 «ENDDEFINE»
 
 «DEFINE member(boolean containment) FOR EStructuralFeature»
- «eType.name.p()» «IF !containment-»*«ENDIF-»«name»«IF upperBound!=1»[«upperBound»]«ENDIF»;
+ «IF EClass.isInstance(eType)»struct«ENDIF» «eType.name.p()» «IF !containment-»*«ENDIF-»«name»«IF upperBound!=1»[«upperBound»]«ENDIF»;
 «ENDDEFINE»
 
-«DEFINE member_f(String parent) FOR EReference»
- «EXPAND member_f(parent,containment)»
+«DEFINE member_f(String parent,String prefix) FOR EReference»
+ «EXPAND member_f(parent,prefix,containment)»
 «ENDDEFINE»
 
-«DEFINE member_f(String parent) FOR EAttribute»
- «EXPAND member_f(parent,true)»
+«DEFINE member_f(String parent,String prefix) FOR EAttribute»
+ «EXPAND member_f(parent,prefix,true)»
 «ENDDEFINE»
 
 «DEFINE member_f(String parent) FOR EStructuralFeature»
 «ERROR this.metaType.name+" not supported"»
 «ENDDEFINE»
 
-«DEFINE member_f(String parent, boolean containment) FOR EStructuralFeature»
+«DEFINE member_f(String parent, String prefix, boolean containment) FOR EStructuralFeature»
 «IF upperBound>1»
-static «eType.name.p()» «IF !containment-»*«ENDIF-» *«parent»_next_«name»(«parent» *self,«eType.name.p()» «IF !containment-»*«ENDIF-» *last) {
+static «IF EClass.isInstance(eType)»struct«ENDIF» «eType.name.p()» «IF !containment-»*«ENDIF-» *«prefix»_next_«name»(«parent» *self,«IF EClass.isInstance(eType)»struct«ENDIF»  «eType.name.p()» «IF !containment-»*«ENDIF-» *last) {
 if(last==NULL) last=self->«name».element;
 if(last!=&(self->«name».element[«upperBound»-1])) return last++; else return NULL;
 }

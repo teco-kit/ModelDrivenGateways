@@ -1,4 +1,4 @@
-CFLAGS += -Wall -pedantic -g -O0
+CFLAGS += -Wall -pedantic -g3 -O0
 
 OBJ = read_bits.o write_bits.o  
 
@@ -10,11 +10,11 @@ LIB_BUF = libbitsio_buf.a
 all: ${LIB} ${LIB_BUF}
 
 ${LIB}: ${OBJ}
-	ar rvu $@ ${OBJ}
+	ar r $@ $?
 	ranlib $@
 
 ${LIB_BUF}: ${OBJ_BUF}
-	ar rvu $@ ${OBJ_BUF}
+	ar r $@ $?
 	ranlib $@
 	
 clean:

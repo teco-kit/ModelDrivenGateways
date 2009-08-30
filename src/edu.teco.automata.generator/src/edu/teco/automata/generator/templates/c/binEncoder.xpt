@@ -84,7 +84,8 @@
 
 «DEFINE writeInt(String in) FOR IntType»
 {
- u«EXPAND ctype» d = «EXPAND encodeInt(in) -»;
+ u«EXPAND ctype» d;
+ d = «EXPAND encodeInt(in) -»;
  ret=write_bits(writer,(u_char *)&d, «bitsLen()»);
 }
 «ENDDEFINE»
@@ -163,7 +164,8 @@ else
 
 «DEFINE write(String in) FOR TTimestamp»
   {
-     uint32_t d= «EXPAND encodeTimestamp(in)»;
+     uint32_t d;
+     d = «EXPAND encodeTimestamp(in)»;
 	 ret=write_bits(writer,(u_char *)&d, «bitsLen()»);
   }
 «ENDDEFINE»
