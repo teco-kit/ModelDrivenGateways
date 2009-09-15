@@ -27,9 +27,10 @@ static void *device;
 static int s_recv, s_send;
 static char buffer1[64], buffer2[64];
 static char *global_packet_buffer = buffer1;
+ssize_t global_packet_buffer_len=0;
 
 void send_buf(struct dpws_s *device, uint16_t service_id, uint8_t op_id,
-		struct soap* soap, u_char* buf, ssize_t length) {
+		struct soap* soap, char* buf, ssize_t length) {
 
 
 	struct p_packet *p = p_pkt_alloc();
@@ -48,14 +49,15 @@ void send_buf(struct dpws_s *device, uint16_t service_id, uint8_t op_id,
 	//TODO: save context for true calls
 }
 
-char *rcv_buf(struct dpws_s *device, uint16_t service_id, uint8_t op_id,
-		struct soap* soap) {
+ssize_t rcv_buf(struct dpws_s *device, uint16_t service_id, uint8_t op_id,
+		struct soap* soap, char **buf) {
 	//TODO dispatch by  device, service, operation and message context
 	/*
 	 if (op_id == OP_SensorValues_GetSensorValues || op_id
 	 == OP_SensorValues_SensorValuesEvent)
 	 */
-	return global_packet_buffer;
+	*buf=global_packet_buffer;
+	return global_packet_buffer_len;
 	/*
 	 else
 	 return NULL;
@@ -109,18 +111,19 @@ event_worker_loop() {
 
 								if (p_acl_findfirst_str(p, "xml", &a) >= 0) {
 									uint8_t *buf;
-									ssize_t len = p_acl_get_data(a, &buf);
+									ssize_t buf_len = p_acl_get_data(a, &buf);
 #include <event-switch.inc>
 
 									{
 
 										if (global_packet_buffer == buffer1) {
-											memcpy(buffer2, buf, len);
+											memcpy(buffer2, buf, buf_len);
 											global_packet_buffer = buffer2;
 										} else {
-											memcpy(buffer1, buf, len);
+											memcpy(buffer1, buf, buf_len);
 											global_packet_buffer = buffer1;
 										}
+										global_packet_buffer_len = buf_len;
 									}
 								}
 

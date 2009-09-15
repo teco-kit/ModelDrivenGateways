@@ -113,11 +113,17 @@ ws4d_locstring_init_string("«getLang()»","«value»"),
 
 «DEFINE nsmap FOR wsdp::HostServiceType»
 static struct Namespace namespaces[]= {
-	{"SOAP-ENV", "http://www.w3.org/2003/05/soap-envelope", "http://www.w3.org/2003/05/soap-envelope", NULL},
-	{"SOAP-ENC", "http://www.w3.org/2003/05/soap-encoding", "http://www.w3.org/2003/05/soap-encoding", NULL},
+
+    {"SOAP-ENV", "http://schemas.xmlsoap.org/soap/envelope/", "http://www.w3.org/2002/06/soap-envelope"},
+    
+    {"SOAP-ENC", "http://schemas.xmlsoap.org/soap/encoding/", "http://www.w3.org/2002/06/soap-encoding"},
+    
 	{"xsi", "http://www.w3.org/2001/XMLSchema-instance", "http://www.w3.org/*/XMLSchema-instance", NULL},
+	
 	{"xsd", "http://www.w3.org/2001/XMLSchema", "http://www.w3.org/*/XMLSchema", NULL},
+	
 	{"wsdp", "http://schemas.xmlsoap.org/ws/2006/02/devprof", NULL, NULL},
+	
 	{"wsa", "http://schemas.xmlsoap.org/ws/2004/08/addressing", NULL, NULL},
 «EXPAND nsmap FOREACH types»
 	{NULL, NULL, NULL, NULL}
@@ -365,8 +371,8 @@ extern int «localPart»_serve_request(struct soap * soap);
 case «casenum»:
 {
 		extern void
-		«localPart»_event(int, void *, char *);
-		«localPart»_event(*op, device, (char *) buf);
+		«localPart»_event(int, void *, char *, size_t);
+		«localPart»_event(*op, device, (char *) buf, buf_len);
 	    break;
 }
 «ENDDEFINE»

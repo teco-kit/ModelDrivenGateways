@@ -83,9 +83,9 @@ static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
 	
 «IF  !this.input.getMessage().part.element.isEmpty»
     {  	  
-   	  u_char sendbuf[256];
+   	  char sendbuf[256];
    	  memset(sendbuf,0xff,sizeof(sendbuf));
-      struct WRITER_STRUCT* writer=write_bits_bufwriter_stack_new(sendbuf);
+      struct WRITER_STRUCT* writer=write_bits_bufwriter_stack_new(sendbuf,sizeof(sendbuf));
   «FOREACH this.input.getMessage().part.element AS arg»
   	  {
        if («arg.localPart»_sax2bin_run(soap,writer)<0) return soap->error;
@@ -109,7 +109,9 @@ static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
                             wsa_header_get_MessageId (soap),
                             sizeof (struct SOAP_ENV__Header));
   }
-
+   
+   soap->omode|=SOAP_IO_CHUNK;
+   
    if ( soap_response(soap, SOAP_OK)
        || soap_envelope_begin_out(soap)
        || soap_putheader(soap)
@@ -119,13 +121,15 @@ static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
    }
    «IF  !this.output.getMessage().part.element.isEmpty»
    {
-      u_char * buf=(u_char *)rcv_buf(device,service_id,op_id,soap);
-      if(buf==NULL)
+      char * buf;
+      ssize_t len=rcv_buf(device,service_id,op_id,soap,&buf);
+      
+      if(len<0)
       {
         soap->error=soap_receiver_fault(soap,"No reply from Node",NULL);
         return soap->error;
       }
-      struct READER_STRUCT* reader=read_bits_bufreader_stack_new(buf);
+      struct READER_STRUCT* reader=read_bits_bufreader_stack_new(buf,len);
       «FOREACH this.output.getMessage().part.element AS arg»
       {
        «arg.localPart»_bin2sax_run(reader,soap);

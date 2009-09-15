@@ -16,7 +16,7 @@
 struct dpws_s *_device;
 
 void
-«name»_event (enum «name»_operations op , void *_device, char * buf)
+«name»_event (enum «name»_operations op , void *_device, char * buf, size_t buf_len)
 {
   struct soap soap;
   struct ws4d_subscription *subs, *next;
@@ -58,7 +58,8 @@ void
                             NULL, sizeof (struct SOAP_ENV__Header));
 
     printf ("Sending Event to %s\n", deliverto);
-
+       
+    soap.omode|=SOAP_IO_CHUNK;
     if (   soap_connect(&soap, deliverto, soap_action_uri)
         || soap_envelope_begin_out(&soap)
         || soap_putheader(&soap)
@@ -69,7 +70,7 @@ void
     }
     
    {
-      struct READER_STRUCT* reader=read_bits_bufreader_stack_new((u_char *) buf);
+      struct READER_STRUCT* reader=read_bits_bufreader_stack_new(buf,buf_len);
      switch(op)
      {
      «FOREACH port.getPortType().operation.select(e|e.input!=null) AS op-» «REM» put in front as  optimization for single event source«ENDREM»
