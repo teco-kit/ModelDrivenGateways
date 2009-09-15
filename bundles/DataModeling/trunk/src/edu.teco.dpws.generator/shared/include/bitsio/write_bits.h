@@ -1,6 +1,9 @@
 #ifndef _WRITE_BITS_H_
 #define _WRITE_BITS_H_
+
 #include <stdlib.h>
+#include <stdio.h>
+
 
 #ifndef  _WRITE_BITS_C_
 struct WRITER_STRUCT;

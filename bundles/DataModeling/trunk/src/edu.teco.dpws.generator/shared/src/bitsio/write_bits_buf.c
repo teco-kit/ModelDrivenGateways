@@ -9,11 +9,11 @@
  *        25.08.2008 21:43    tr 	complete rewrite
  * ========================================================================
  */
-#define  _WRITE_BITS_C_ 1
 #include <stdint.h>
-#include <stddef.h>
 #include <assert.h>
 
+#include "bits_io.h"
+#include <bitsio/write_bits.h>
 
 struct WRITER_STRUCT {
 	size_t byte_pos; /*byte byte_position*/
@@ -23,13 +23,12 @@ struct WRITER_STRUCT {
 	size_t size;/*TODO: unchecked*/
 };
 
-#include <bitsio/write_bits.h>
-
 /* ========================================================================
  *
  *
  * ========================================================================*/
-struct WRITER_STRUCT * write_bits_bufwriter_init(struct WRITER_STRUCT *writer, char *buf, size_t size) {
+struct WRITER_STRUCT * write_bits_bufwriter_init(struct WRITER_STRUCT *writer,
+		char *buf, size_t size) {
 	if (writer) {
 		writer->buf = buf;
 		writer->lastByte = 0;
@@ -43,9 +42,8 @@ struct WRITER_STRUCT * write_bits_bufwriter_init(struct WRITER_STRUCT *writer, c
 
 const size_t write_bits_bufwriter_size = sizeof(struct WRITER_STRUCT);
 
-size_t write_bits_bufwriter_getsize(){return write_bits_bufwriter_size; }
 
-static void write_full(uint8_t *out, uint8_t *rest, uint8_t *in, uint8_t offset)
+static void write_full(uint8_t *out, uint8_t *rest, const uint8_t *in, uint8_t offset)
 {
 	uint16_t temp;           	    /*             rest  | in		*/
 							        /*          [XXXXX000|87654321] */
@@ -54,7 +52,7 @@ static void write_full(uint8_t *out, uint8_t *rest, uint8_t *in, uint8_t offset)
 	*rest=(temp&0xff);       	    /*			[54321000|        ] */
 }
 
-static int write_part(uint8_t *out, uint8_t *rest, uint8_t *in, uint8_t offset, uint8_t len)
+static int write_part(uint8_t *out, uint8_t *rest, const uint8_t *in, uint8_t offset, uint8_t len)
 {
 	if(offset+len>=8)
 	{
@@ -90,14 +88,13 @@ ssize_t write_bits_buf_little(struct WRITER_STRUCT* writer, void *buf,
 	old_byte_pos= writer->byte_pos;
 
 	{
-		signed int i;
+		int i;
 		i=((bits_len-1)/8);
 		/*unroll for last bits*/
 
 		if(bits_len%8)
 		{
-			int offset;
-                        offset=write_part((uint8_t *)writer->buf+writer->byte_pos,(uint8_t *)&writer->lastByte,(uint8_t *)buf+i, writer->bit_pos,bits_len%8);
+			int offset=write_part((uint8_t *)writer->buf+writer->byte_pos,(uint8_t *)&writer->lastByte,(uint8_t *)buf+i, writer->bit_pos,bits_len%8);
 
 			writer->byte_pos+=offset/8;
 			writer->bit_pos=offset%8;
@@ -105,13 +102,13 @@ ssize_t write_bits_buf_little(struct WRITER_STRUCT* writer, void *buf,
 		}
 
 		if (writer->bit_pos == 0)
-			for(i=i;i>=0;i--)
+			for(;i>=0;i--)
 			{
 				writer->buf[writer->byte_pos]=((char *)buf)[i];
 				writer->byte_pos++;
 			}
 		else
-			for(i=i;i>=0;i--)
+			for(;i>=0;i--)
 			{
 				write_full((uint8_t *)writer->buf+writer->byte_pos,(uint8_t *)&writer->lastByte,(uint8_t *)buf+i,writer->bit_pos);
 				writer->byte_pos++;
