@@ -80,7 +80,7 @@
 {
   /*set_metadata_ThisDevice*/
   struct ws4d_thisDevice *_device = dpws_change_thisdevice(&device);
-  const ws4d_device_FriendlyName_var(friendlyName) = {«EXPAND loc_strings FOREACH this.friendlyName»};
+  static const ws4d_device_FriendlyName_var(friendlyName) = {«EXPAND loc_strings FOREACH this.friendlyName»};
   
   ws4d_device_set_FriendlyName(_device, friendlyName,2);
   ws4d_device_set_FirmwareVersion(_device, "«this.firmwareVersion»");
@@ -92,8 +92,8 @@
 «DEFINE set_metadata_ThisModel FOR ThisModelType»
  { /*set_metadata_ThisModel*/
     struct ws4d_thisModel *model = dpws_change_thismodel(&device);
-    const ws4d_model_Name_var(name) = {«EXPAND loc_strings FOREACH this.modelName»};
-    const ws4d_model_Manufacturer_var(manufacturer)={«EXPAND loc_strings FOREACH this.manufacturer»};
+    static const ws4d_model_Name_var(name) = {«EXPAND loc_strings FOREACH this.modelName»};
+    static const ws4d_model_Manufacturer_var(manufacturer)={«EXPAND loc_strings FOREACH this.manufacturer»};
     
     ws4d_model_set_Manufacturer(model, manufacturer,«this.manufacturer.size»);
     ws4d_model_set_ManufacturerUrl(model, "«this.manufacturerUrl»");
@@ -114,17 +114,18 @@ ws4d_locstring_init_string("«getLang()»","«value»"),
 «DEFINE nsmap FOR wsdp::HostServiceType»
 static struct Namespace namespaces[]= {
 
-    {"SOAP-ENV", "http://schemas.xmlsoap.org/soap/envelope/", "http://www.w3.org/2002/06/soap-envelope"},
-    
+    {"SOAP-ENV", "http://www.w3.org/2003/05/soap-envelope", "http://www.w3.org/2002/06/soap-envelope"},
+«REM»  
     {"SOAP-ENC", "http://schemas.xmlsoap.org/soap/encoding/", "http://www.w3.org/2002/06/soap-encoding"},
-    
+    {"wsdp", "http://docs.oasis-open.org/ws-dd/ns/dpws/2009/01", NULL, NULL},
+    {"wsa", "http://www.w3.org/2005/08/addressing", NULL, NULL},
+«ENDREM»
+  
 	{"xsi", "http://www.w3.org/2001/XMLSchema-instance", "http://www.w3.org/*/XMLSchema-instance", NULL},
-	
 	{"xsd", "http://www.w3.org/2001/XMLSchema", "http://www.w3.org/*/XMLSchema", NULL},
+
 	
-	{"wsdp", "http://schemas.xmlsoap.org/ws/2006/02/devprof", NULL, NULL},
-	
-	{"wsa", "http://schemas.xmlsoap.org/ws/2004/08/addressing", NULL, NULL},
+
 «EXPAND nsmap FOREACH types»
 	{NULL, NULL, NULL, NULL}
 }; 
