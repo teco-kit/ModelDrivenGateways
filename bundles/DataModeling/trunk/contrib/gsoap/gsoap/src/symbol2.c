@@ -4741,7 +4741,8 @@ soap_serve(Table *table)
   fprintf(fserver,"\n}");
 
   fprintf(fserver,"\n\n#ifndef WITH_NOSERVEREQUEST\nSOAP_FMAC5 int SOAP_FMAC6 %s_serve_request(struct soap *soap)\n{", nflag?prefix:"soap");
-  fprintf(fserver, "\n\tif (soap_peek_element(soap))\n\treturn soap->error;");
+  fprintf(fserver, "\n\tsoap_peek_element(soap);");
+ // fprintf(fserver, "\n\tif (soap_peek_element(soap))\n\treturn soap->error;");
   catch_method = NULL;
   for (method = table->list; method; method = method->next)
   { char *action = NULL;
