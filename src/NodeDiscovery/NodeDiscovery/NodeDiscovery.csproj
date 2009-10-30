@@ -57,13 +57,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\WSEventing\Reference.cs">
+    <Compile Include="Service References\SSimp\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Service References\www.teco.edu\Reference.cs">
+    <Compile Include="Service References\WSEventing\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -74,7 +73,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="app.svclog" />
+    <None Include="msg.svclog" />
     <None Include="SensorValues.wsdl" />
+    <None Include="Service References\SSimp\NodeDiscovery.SSimp.SSimpSample.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\SSimp\NodeDiscovery.SSimp.SSimpStatus.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\SSimp\SensorValues.wsdl" />
     <None Include="Service References\WSEventing\eventing.wsdl" />
     <None Include="Service References\WSEventing\NodeDiscovery.WSEventing.GetStatusOpResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -94,26 +102,19 @@
     <None Include="Service References\WSEventing\wse.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\www.teco.edu\NodeDiscovery.www.teco.edu.SSimpSample.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\www.teco.edu\NodeDiscovery.www.teco.edu.SSimpStatus.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\www.teco.edu\SensorValues.wsdl" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Service References\SSimp\" />
     <WCFMetadataStorage Include="Service References\WSEventing\" />
-    <WCFMetadataStorage Include="Service References\www.teco.edu\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\www.teco.edu\configuration91.svcinfo" />
+    <None Include="Service References\SSimp\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\www.teco.edu\configuration.svcinfo" />
+    <None Include="Service References\SSimp\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\www.teco.edu\Reference.svcmap">
+    <None Include="Service References\SSimp\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -129,6 +130,9 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
