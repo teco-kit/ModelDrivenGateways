@@ -8,7 +8,7 @@ using System.Text;
 using System.ServiceModel;
 using System.ServiceModel.Discovery;
 using NodeDiscovery.WSEventing;
-using NodeDiscovery.www.teco.edu;
+using NodeDiscovery.SSimp;
 
 
 namespace NodeDiscovery
@@ -41,8 +41,10 @@ namespace NodeDiscovery
         static EndpointAddress FindServiceAddress()
         {
             // Create DiscoveryClient
-            DiscoveryClient discoveryClient = new DiscoveryClient(new UdpDiscoveryEndpoint());
-
+            DiscoveryClient discoveryClient = new DiscoveryClient(new UdpDiscoveryEndpoint(DiscoveryVersion.WSDiscoveryApril2005));
+                
+                //new DiscoveryClient(new UdpDiscoveryEndpoint());# 
+            
     //        discoveryClient.Endpoint.Binding.ReceiveTimeout = new TimeSpan(0,0,1);
 
             Console.WriteLine("Finding endpoints via UDP Discovery");

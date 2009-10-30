@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="d194f323-fc62-42b9-8231-110d5949b07d" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>true</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="file://C:\Users\VS2010\Desktop\NodeDiscovery\eventing.wsdl" Protocol="file" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="wse.xsd" MetadataType="Schema" ID="801ae26d-90d4-4292-9a0c-259b589146a8" SourceId="1" SourceUrl="file:///C:/Users/VS2010/Desktop/NodeDiscovery/wse.xsd" />
+    <MetadataFile FileName="wsa.xsd" MetadataType="Schema" ID="e0b96357-facd-4f36-9833-4c660a9bb259" SourceId="1" SourceUrl="file:///C:/Users/VS2010/Desktop/NodeDiscovery/wsa.xsd" />
+    <MetadataFile FileName="eventing.wsdl" MetadataType="Wsdl" ID="cd9e8bf7-0597-4342-b042-41575ae8e0e6" SourceId="1" SourceUrl="file:///C:/Users/VS2010/Desktop/NodeDiscovery/eventing.wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
