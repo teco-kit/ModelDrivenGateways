@@ -34,6 +34,7 @@
 //gsoap wse schema import: http://schemas.xmlsoap.org/ws/2004/08/eventing/
 #import "wse.h"
 
+#import "dom.h"
 struct SOAP_ENV__Header
 {
   _wsa__MessageID    wsa__MessageID   0; ///< WS-Addressing
@@ -46,6 +47,7 @@ struct SOAP_ENV__Header
   _wsd__AppSequence *wsd__AppSequence 0; ///< WS-Discovery
   _wsdp__ServiceId  wsdp__ServiceId   0; ///< WS-DevProf
   _wse__Identifier   wse__Identifier  0; ///< WS-Eventing
+  xsd__anyType* elts;
 };
 
 /*****************************************************************************

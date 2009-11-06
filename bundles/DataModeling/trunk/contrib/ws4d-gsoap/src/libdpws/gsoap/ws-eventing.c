@@ -687,11 +687,11 @@ wse_process_subscribe_res (struct soap *soap,
   if (!subsm_data)
     return SOAP_ERR;
 
-  wsa_header_gen_response (soap, NULL, to,
+  if(SOAP_OK==wsa_response (soap, NULL, to,
                            "http://schemas.xmlsoap.org/ws/2004/08/eventing/SubscribeResponse",
                            wsa_header_get_MessageId (soap),
-                           sizeof (struct SOAP_ENV__Header));
-
+                           sizeof (struct SOAP_ENV__Header)))
+{
   ep_parm = soap_malloc (soap, sizeof (struct wsa__ReferenceParametersType));
   subs_id = ws4d_subs_get_id (subs);
   soap_default_wsa__ReferenceParametersType (soap, ep_parm);
@@ -716,9 +716,9 @@ wse_process_subscribe_res (struct soap *soap,
                  &res->Expires);
 
   wsa_header_set_Action (soap,
-                         "http://schemas.xmlsoap.org/ws/2004/08/eventing/SubscribeResponse");
-
-  return SOAP_OK;
+                         "http://schemas.xmlsoap.org/ws/2004/08/eventing/SubscribeResponse"); //??? not done in wsa_gen_header_response
+ }
+ return soap->error;
 }
 
 int
@@ -861,7 +861,7 @@ wse_process_unsubscribe_req (struct soap *soap,
 int
 wse_process_unsubscribe_res (struct soap *soap, char *to)
 {
-  return wsa_header_gen_response (soap, NULL, to,
+  return wsa_response (soap, NULL, to,
                                   "http://schemas.xmlsoap.org/ws/2004/08/eventing/UnsubscribeResponse",
                                   wsa_header_get_MessageId
                                   (soap), sizeof (struct SOAP_ENV__Header));;

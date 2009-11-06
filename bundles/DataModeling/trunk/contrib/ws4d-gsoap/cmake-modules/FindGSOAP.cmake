@@ -60,6 +60,8 @@ FOREACH(_GSOAP_LOCATION ${_GSOAP_SEARCH_PATHS})
 
     SET(GSOAP_RT_SEARCH_PATHS
       ${_GSOAP_LOCATION}
+      ${_GSOAP_LOCATION}/include
+      ${_GSOAP_LOCATION}/share/gsoap
       ${_GSOAP_LOCATION}/soapcpp2
       ${_GSOAP_LOCATION}/gsoap)
 
@@ -329,15 +331,9 @@ MACRO(GSOAP_GENERATE gsoap_file prefix destination)
     PROPERTIES GENERATED TRUE)
 
   # run gsoap code generator
-  IF(CYGWIN)
-    ADD_CUSTOM_COMMAND(OUTPUT ${gsoap_generated_libs}
-        COMMAND ${GSOAP_SOAPCPP2} -2 -can -xw -p${prefix} -I$\(shell cygpath -am ${DPWS_WS_DIR}\) -d$\(shell cygpath -am ${destination}\) $\(shell cygpath -am ${used_gsoap_file}\)
-        DEPENDS ${used_gsoap_file})
-  ELSE(CYGWIN)
   ADD_CUSTOM_COMMAND(OUTPUT ${gsoap_generated_libs}
-    COMMAND ${GSOAP_SOAPCPP2} -2 -can -xw -p${prefix} -I${DPWS_WS_DIR} -d${destination} ${used_gsoap_file}
+    COMMAND ${GSOAP_SOAPCPP2} -2 -can -xw -p${prefix}  -I${DPWS_WS_DIR} -I${GSOAP_INCLUDE_DIR}/../share/gsoap/import/ -d${destination} ${used_gsoap_file}
     DEPENDS ${used_gsoap_file})
-  ENDIF(CYGWIN)
 
   # apply patches to generated code
   IF(${ARGC} GREATER 3)
@@ -377,15 +373,9 @@ MACRO(GSOAP_GENERATE_DATABINDING gsoap_file prefix destination)
     PROPERTIES GENERATED TRUE)
 
   # run gsoap code generator
-  IF(CYGWIN)
     ADD_CUSTOM_COMMAND(OUTPUT ${gsoap_generated_libs}
-      COMMAND ${GSOAP_SOAPCPP2} -2 -CS -xw -cp${prefix} -I$\(shell cygpath -am ${DPWS_WS_DIR}\) -d$\(shell cygpath -am ${destination}\) $\(shell cygpath -am ${used_gsoap_file}\)
+      COMMAND ${GSOAP_SOAPCPP2} -2 -CS -xw -cp${prefix} -I${DPWS_WS_DIR}  -I${GSOAP_INCLUDE_DIR}/../share/gsoap/import/ -d${destination} ${used_gsoap_file}
       DEPENDS ${used_gsoap_file})
-  ELSE(CYGWIN)
-    ADD_CUSTOM_COMMAND(OUTPUT ${gsoap_generated_libs}
-      COMMAND ${GSOAP_SOAPCPP2} -2 -CS -xw -cp${prefix} -I${DPWS_WS_DIR} -d${destination} ${used_gsoap_file}
-      DEPENDS ${used_gsoap_file})
-  ENDIF(CYGWIN)
 
   # apply patches to generated code
   IF(${ARGC} GREATER 3)

@@ -26,5 +26,6 @@ struct SOAP_ENV__Header
   char             *dummy1          0;
   char             *dummy2          0;
   _wse__Identifier  wse__Identifier 0; ///< WS-Eventing
+   xsd__anyType* elts;
 };
 

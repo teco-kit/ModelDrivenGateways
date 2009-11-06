@@ -44,6 +44,7 @@ struct wsa_plugin_data
   struct message_id_s *ids_buffer;
   int ids_buffer_size;
   int (*fheader) (struct soap *);
+  int (*fresponse)(struct soap*, int, size_t);
   void (*fseterror) (struct soap *, const char **, const char **);
   ws4d_alloc_list alist;
 #ifdef WITH_MUTEXES
@@ -737,6 +738,60 @@ wsa_header_gen_request (struct soap *soap, const char *MessageId,
     }
 }
 
+static int
+wsa_response_override(struct soap *soap, int status, size_t count)
+{ 
+  soap->fresponse =wsa_get_plugindata (soap)->fresponse; //restore old (necessary??)
+  count=count;
+ //TODO: why is this done elsewhere already???: soap->fpost(soap, soap_strdup(soap, soap->endpoint), soap->host, soap->port, soap->path, NULL, count);
+  return status;
+}
+
+/**
+ *
+ */
+int
+wsa_response (struct soap *soap, const char *MessageId,
+                         const char *To, const char *Action,
+                         const char *RelatesTo, size_t size)
+{
+	/* check mandatory parameters */
+  soap_assert (soap, soap && Action && RelatesTo, SOAP_ERR);
+
+  if (!To || (0 == strcmp(To, wsa_anonymousURI))) {
+	  To = wsa_anonymousURI;
+  } 
+
+  if (To != wsa_anonymousURI) // no strcmp needed -> s.a.
+  {
+	  struct soap *reply_soap = soap_copy(soap);
+	  if (reply_soap) {
+		  soap_copy_stream(reply_soap, soap);
+		  soap_clr_omode(reply_soap, SOAP_ENC_MIME | SOAP_ENC_DIME
+				  | SOAP_ENC_MTOM);
+		  soap->socket = SOAP_INVALID_SOCKET; /* prevents close */
+		  if (soap_connect(soap, To, Action)) /*Todo: can this be delayed ??*/
+			  return soap->error;
+		  soap_send_empty_response(reply_soap, soap->error); /* HTTP ACCEPTED */
+		  soap_closesock(reply_soap);
+		  soap_end(reply_soap);
+		  soap_free(reply_soap);
+
+		  wsa_get_plugindata (soap)->fresponse = soap->fresponse; //save old (necessary??)
+		  soap->fresponse = wsa_response_override;
+	  } else
+		  return soap->error;
+  } else {
+		  //soap->fresponse = soap->fresponse;
+  }
+
+
+
+
+
+	return wsa_header_gen_response(soap, MessageId, To, Action, RelatesTo, size);
+}
+
 /**
  *
  */
@@ -748,7 +803,35 @@ wsa_header_gen_response (struct soap *soap, const char *MessageId,
   int err = 0;
 
   /* check mandatory parameters */
-  soap_assert (soap, soap && To && Action && RelatesTo, SOAP_ERR);
+
+#define REF_PARAM_HACK
+#ifdef REF_PARAM_HACK
+   struct wsa__EndpointReferenceType *endpoint;
+   int i;
+   struct soap_dom_element *ref_first=NULL,*ref_last=NULL;
+
+   if(soap->header && soap->header->wsa__ReplyTo)
+   {
+   soap_assert (soap, soap && soap->header && soap->header->wsa__ReplyTo && "hope that its not gone", SOAP_ERR); //TODO: do not assert hope ;)
+
+   endpoint= soap->header->wsa__ReplyTo;
+   if(endpoint->ReferenceParameters)
+   for(i=0;i<endpoint->ReferenceParameters->__sizepar;i++)
+   {
+	   if(endpoint->ReferenceParameters->__par[i].__type!=SOAP_TYPE_xsd__anyType)
+		   continue;
+	   if(ref_first==NULL)
+		   ref_first=endpoint->ReferenceParameters->__par[i].__any;
+	   else   if(ref_last->next==NULL)
+		   ref_last->next=endpoint->ReferenceParameters->__par[i].__any;
+
+	   ref_last=endpoint->ReferenceParameters->__par[i].__any;
+   }
+   }
+#else
+#warning WSA wont work if ReferenceParameters are submitted
+#endif
+   soap_assert (soap, soap && To && Action && RelatesTo, SOAP_ERR);
 
   if (soap_header_new (soap, size)
       || wsa_header_set_To (soap, To)
@@ -757,6 +840,10 @@ wsa_header_gen_response (struct soap *soap, const char *MessageId,
     {
       return SOAP_ERR;
     }
+
+#ifdef REF_PARAM_HACK
+   soap->header->elts=ref_first;
+#endif
 
   if (MessageId)
     {
