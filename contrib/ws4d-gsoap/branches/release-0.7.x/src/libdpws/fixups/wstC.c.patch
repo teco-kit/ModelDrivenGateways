@@ -1,0 +1,30 @@
+--- gen/wstC.c	2007-08-01 16:27:04.000000000 +0200
++++ gen/wstC.c.fixup	2007-08-01 16:32:01.000000000 +0200
+@@ -2875,25 +2875,13 @@
+ }
+ 
+ SOAP_FMAC3 struct __wst__Get * SOAP_FMAC4 soap_in___wst__Get(struct soap *soap, const char *tag, struct __wst__Get *a, const char *type)
+-{;
++{
+ 	short soap_flag;
+ 	a = (struct __wst__Get *)soap_id_enter(soap, soap->id, a, SOAP_TYPE___wst__Get, sizeof(struct __wst__Get), 0, NULL, NULL, NULL);
+ 	if (!a)
+ 		return NULL;
+ 	soap_default___wst__Get(soap, a);
+-		for (soap_flag = 0;; soap_flag = 1)
+-		{	soap->error = SOAP_TAG_MISMATCH;
+-		/* transient __ skipped */
+-			if (soap->error == SOAP_TAG_MISMATCH)
+-				if (soap_flag)
+-				{	soap->error = SOAP_OK;
+-					break;
+-				}
+-			if (soap->error == SOAP_NO_TAG)
+-				break;
+-			if (soap->error)
+-				return NULL;
+-		}
++	soap->error = SOAP_OK;
+ 	return a;
+ }
+ 
