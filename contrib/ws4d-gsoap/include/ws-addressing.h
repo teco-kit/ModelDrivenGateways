@@ -86,6 +86,10 @@ int wsa_header_gen_request (struct soap *soap, const char *MessageId,
                             const char *FaultTo, const char *ReplyTo,
                             size_t size);
 
+int wsa_response (struct soap *soap, const char *MessageId,
+                             const char *To, const char *Action,
+                             const char *RelatesTo, size_t size);
+
 int wsa_header_gen_response (struct soap *soap, const char *MessageId,
                              const char *To, const char *Action,
                              const char *RelatesTo, size_t size);

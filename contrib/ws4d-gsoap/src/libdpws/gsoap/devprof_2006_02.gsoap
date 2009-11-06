@@ -19,6 +19,8 @@
 //gsoap wsdp schema import: http://schemas.xmlsoap.org/ws/2006/02/devprof
 #import "wsdp.h"
 
+#import "dom.h"
+
 /*****************************************************************************
  *	 Header
  *****************************************************************************/
@@ -35,6 +37,7 @@ struct SOAP_ENV__Header
   _wsd__AppSequence *wsd__AppSequence 0;        ///< WS-Discovery
   _wsdp__ServiceId wsdp__ServiceId 0;     ///< WS-DevProf
   _wse__Identifier wse__Identifier 0;   ///< WS-Eventing
+  xsd__anyType* elts;
 };
 
 

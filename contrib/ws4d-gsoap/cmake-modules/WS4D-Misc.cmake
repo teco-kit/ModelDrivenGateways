@@ -106,7 +106,7 @@ MACRO(DO_WSDL2H outfiles opts typemap)
     SET(outfile ${CMAKE_CURRENT_BINARY_DIR}/${name}.h)
         IF(CYGWIN)
             ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
-                COMMAND ${GSOAP_WSDL2H} ARGS ${opts} -t$\(shell cygpath -am ${typemap}\) -n$\(shell cygpath -am ${name}\) -o$\(shell cygpath -am ${outfile}\) $\(shell cygpath -am ${it}\)
+                COMMAND ${GSOAP_WSDL2H} ARGS ${opts} -t\"$\(shell cygpath -am ${typemap}\)\" -n\"$\(shell cygpath -am ${name}\)\" -o\"$\(shell cygpath -am ${outfile}\)\" \"$\(shell cygpath -am ${it}\)\"
                 COMMAND ${GNU_SED_EXECUTABLE} ARGS -i -e '/^..gsoapopt/d' ${outfile}
                 DEPENDS ${it} ${typemap})
             ELSE(CYGWIN)
