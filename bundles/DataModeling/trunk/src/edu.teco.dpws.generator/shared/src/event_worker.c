@@ -39,7 +39,7 @@ void send_buf(struct dpws_s *device, uint16_t service_id, uint8_t op_id,
 
 	p_acl_add_str(p, "opn", (uint8_t *) &op_id, sizeof(op_id), 0);
 
-	p_acl_add_str(p, "xml", buf, length, 0);
+	p_acl_add_str(p, "xml",  (uint8_t *) buf, length, 0);
 
 	p_socket_send(s_send, p);
 	p_pkt_free(p);
@@ -142,7 +142,7 @@ event_worker_loop() {
 	return 0;
 }
 
-int event_worker_init(void *_device) {
+int event_worker_init(void *_device, uint8_t *bindaddr) {
 #ifndef WITH_USBBRIDGE
 	device = _device;
 #endif
@@ -156,8 +156,7 @@ int event_worker_init(void *_device) {
 
 	usbbridge_set_eventdevice(&bridge,_device);
 #else
-	if (0 > (s_recv = p_socket_open(0, 0, 5555)) || 0 > (s_send
-			= p_socket_open(0, 0, 5556))) {
+	if (0 > (s_recv = p_socket_open(*(uint32_t*)bindaddr,*(uint32_t*)bindaddr, 5555)) || 0 > (s_send = p_socket_open(*(uint32_t*)bindaddr, *(uint32_t*)bindaddr, 5556))) {
 		printf("cannot bind libparticle  ...\n");
 		return SOAP_ERR;
 	}
