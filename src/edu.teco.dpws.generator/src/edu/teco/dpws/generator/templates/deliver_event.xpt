@@ -7,7 +7,7 @@
 //#include "«name».nsmap"
 #include <ws4d-gSOAP/dpws_device.h>
 #include <bitsio/read_bits_buf.h>
-#include <soap.h>
+#include <ws4d-gSOAP/dpwsH.h>
 #include "«name»_operations.h"
 #include <sendrcv.h>
 

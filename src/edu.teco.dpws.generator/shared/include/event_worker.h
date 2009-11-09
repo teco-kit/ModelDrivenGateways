@@ -2,7 +2,7 @@
 #define EVENT_WORKER_H_
 
 int
-event_worker_init (void *device);
+event_worker_init (void *device,uint8_t *);
 
 int
 event_worker_shutdown ();
