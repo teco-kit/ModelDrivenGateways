@@ -17,7 +17,7 @@ namespace NodeDiscovery
     {
           public void SensorValuesEvent(SensorValuesEvent request)
    {
-       throw new NotImplementedException();
+       Console.WriteLine("Got event: {0} !!!",request.Sample);
    }
     public void SubscriptionEnd(SubscriptionEnd1 request)
     {
@@ -84,13 +84,12 @@ namespace NodeDiscovery
             InstanceContext ithis=new InstanceContext(this);
             String callbackEndpoint="http://vs2010test/blub" ;
 
-            if (true)
-            {
-            // Create a client
-                SensorValuesClient client = new SensorValuesClient(new InstanceContext(this));
-                client.Endpoint.Address = endpointAddress;
-                callbackEndpoint=client.InnerChannel.LocalAddress.Uri.AbsoluteUri;
 
+            // Create a client
+           SensorValuesClient client = new SensorValuesClient(new InstanceContext(this));
+                client.Endpoint.Address = endpointAddress;
+            //    callbackEndpoint=client.InnerChannel.LocalAddress.Uri.AbsoluteUri;
+                callbackEndpoint = client.InnerDuplexChannel.LocalAddress.Uri.AbsoluteUri;
            
                 Console.WriteLine("Invoking at {0}", endpointAddress);
 
@@ -98,7 +97,7 @@ namespace NodeDiscovery
                 SSimpSample response = client.GetSensorValues();
 
                 Console.WriteLine("Got response: {0}", response);
-            }
+            
             
             Console.WriteLine("Subscribing event {1} at {0}", endpointAddress,"http://www.teco.edu/SensorValues/SensorValuesEventOut");
             EventSourceClient eventSource = new EventSourceClient(ithis);
@@ -134,6 +133,8 @@ namespace NodeDiscovery
             SubscribeOpResponse subscription;
             try
             {
+                Console.WriteLine("Press <ENTER> to subscribe.");
+                Console.ReadLine();
                 subscription = eventSource.SubscribeOp(s);
             }
             catch (TimeoutException t )
