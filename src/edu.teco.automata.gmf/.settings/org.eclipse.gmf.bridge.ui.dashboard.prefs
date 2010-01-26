@@ -1,8 +1,0 @@
-#Fri Feb 06 19:47:13 CET 2009
-eclipse.preferences.version=1
-gmf_dashboard/domainGenerationModel=platform\:/resource/edu.teco.automata.gmf/model/Automata.genmodel
-gmf_dashboard/domainModel=platform\:/resource/edu.teco.automata.gmf/model/Automata.ecore
-gmf_dashboard/generationModel=platform\:/resource/edu.teco.automata.gmf/model/Automata.gmfgen
-gmf_dashboard/graphicalDefinitionModel=platform\:/resource/edu.teco.automata.gmf/model/Automata.gmfgraph
-gmf_dashboard/mappingModel=platform\:/resource/edu.teco.automata.gmf/model/Automata.gmfmap
-gmf_dashboard/toolingDefinitionModel=platform\:/resource/edu.teco.automata.gmf/model/Automata.gmftool

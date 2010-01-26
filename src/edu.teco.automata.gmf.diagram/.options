@@ -1,7 +1,0 @@
-# Tracing options for the edu.teco.automata.gmf.diagram plug-in
-
-# Common issues
-edu.teco.automata.gmf.diagram/debug=false
-
-# Visual IDs
-edu.teco.automata.gmf.diagram/debug/visualID=false

@@ -1,9 +1,0 @@
-import Automata;
-extension edu::teco::automata::generator::templates::util;
-
-int bitsLen(TTimestamp s): 32;
-
-int bitsLen(IntType s):   bitsLen(s.getMin(),s.getMax(),s.getStepping());
-boolean signed(IntType s): (s.getMin()<0);
-
-IntType toIntType(DataType d): ((IntType)d);
