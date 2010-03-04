@@ -104,7 +104,12 @@ static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
 	{
 		const char* To = wsa_header_get_ReplyTo(soap);
 		char * MessageId = wsa_header_get_MessageId(soap);
-		char * Action = "http://www.teco.edu/SensorValues/GetSensorValuesOut";
+		char * Action = «IF !output.anyAttribute.toList().select(e|e.feature.name=="Action").isEmpty-»
+	     					"«output.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»"
+						«ELSE-»
+							NULL /*TODO: Corrent value */
+						«ENDIF-»;
+		
 
 		soap->omode |= SOAP_IO_CHUNK;
 
