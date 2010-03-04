@@ -1,3 +1,5 @@
+#ifndef _PTR_STACK_H
+#define _PTR_STACK_H 1
 #ifndef CCSC
 typedef void ** ptr_stack;
 
@@ -33,4 +35,5 @@ typedef char *ptr_stack;
 
 
 
+#endif
 #endif
