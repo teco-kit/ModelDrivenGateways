@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.mwe.core.resources.ResourceLoaderFactory;
 import org.eclipse.emf.mwe.utils.StandaloneSetup;
 
+@SuppressWarnings("deprecation")
 public class CProjectCreator extends
 		org.eclipse.emf.mwe.core.lib.AbstractWorkflowComponent2 {
 
