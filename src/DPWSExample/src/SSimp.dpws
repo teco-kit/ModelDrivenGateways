@@ -5,7 +5,7 @@
     xmlns:wdp="http://schemas.xmlsoap.org/ws/2006/02/devprof"
     xmlns:wsm="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xsi:schemaLocation="http://schemas.xmlsoap.org/ws/2006/02/devprof ../../edu.teco.dpws.generator/model/wsdp.xsd http://schemas.xmlsoap.org/ws/2004/09/mex ../../edu.teco.dpws.generator/model/mex.xsd"
-    >
+>
   
   <wsm:MetadataSection Dialect="http://schemas.xmlsoap.org/ws/2006/02/devprof/Relationship">
     <wdp:Relationship Type="http://schemas.xmlsoap.org/ws/2006/02/devprof/host">

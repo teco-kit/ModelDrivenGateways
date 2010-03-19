@@ -1,9 +1,18 @@
 <wsdl:definitions xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
-	xmlns:tns="http://www.teco.edu/SensorValues" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-	xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wse="http://schemas.xmlsoap.org/ws/2004/08/eventing"
+	xmlns:tns="http://www.teco.edu/SensorValues" 
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	
+	xmlns:wsa_="http://www.w3.org/2006/05/addressing/wsdl"
+	xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" 
+
+	xmlns:wse="http://schemas.xmlsoap.org/ws/2004/08/eventing"
+	
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/"
+    
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	
 	name="SensorValues" targetNamespace="http://www.teco.edu/SensorValues"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+	>
 
 	<wsdl:types>
 		<schema xmlns="http://www.w3.org/2001/XMLSchema"
@@ -175,7 +184,7 @@ http://ww1.microchip.com/downloads/en/devicedoc/21462c.pdf</documentation>
 
 	<wsdl:message name="GetSensorValuesMessageIn" />
 	<wsdl:message name="GetSensorValuesMessageOut">
-		<wsdl:part name="current" element="tns:Sample" />
+		<wsdl:part name="out" element="tns:Sample" />
 	</wsdl:message>
 	<wsdl:message name="SensorValuesEventMessageOut">
 		<wsdl:part name="event" element="tns:Sample" />
@@ -188,7 +197,7 @@ http://ww1.microchip.com/downloads/en/devicedoc/21462c.pdf</documentation>
 		<wsdl:part name="out" element="tns:Status"></wsdl:part>
 	</wsdl:message>
 	
-	<wsdl:portType name="SensorValuesPort" wse:EventSource="true">
+	<wsdl:portType name="SensorValues" wse:EventSource="true">
 		<wsdl:operation name="GetSensorValues">
 			<wsdl:input message="tns:GetSensorValuesMessageIn"
 				wsa:Action="http://www.teco.edu/SensorValues/GetSensorValuesIn" />
@@ -203,17 +212,16 @@ http://ww1.microchip.com/downloads/en/devicedoc/21462c.pdf</documentation>
 
 
 		<wsdl:operation name="Config">
-			<wsdl:input message="tns:ConfigRequest"></wsdl:input>
-			<wsdl:output message="tns:ConfigResponse"></wsdl:output>
+			<wsdl:input message="tns:ConfigRequest"
+				wsa:Action="http://www.teco.edu/SensorValues/ConfigRequest" />
+			<wsdl:output message="tns:ConfigResponse"
+			    wsa:Action="http://www.teco.edu/SensorValues/ConfigResponse" />
 		</wsdl:operation>
 	</wsdl:portType>
 
-	<wsdl:binding name="SensorValuesSOAP" type="tns:SensorValuesPort">
-		<soap:binding style="document"
-			transport="http://schemas.xmlsoap.org/soap/http" />
+	<wsdl:binding name="SensorValuesSOAP" type="tns:SensorValues">
+		<soap:binding style="document" 	transport="http://schemas.xmlsoap.org/soap/http" />	
 		<wsdl:operation name="GetSensorValues">
-			<soap:operation
-				soapAction="http://www.teco.edu/SensorValues/GetSensorValues" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -222,16 +230,12 @@ http://ww1.microchip.com/downloads/en/devicedoc/21462c.pdf</documentation>
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="SensorValuesEvent">
-			<soap:operation
-				soapAction="http://www.teco.edu/SensorValues/SensorValuesEvent" />
 			<wsdl:output>
-				<soap:body use="literal" />
+			   	<soap:body use="literal" />
 			</wsdl:output>
 		</wsdl:operation>
 
 		<wsdl:operation name="Config">
-			<soap:operation
-				soapAction="http://www.teco.edu/SensorValues/Config" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -242,8 +246,8 @@ http://ww1.microchip.com/downloads/en/devicedoc/21462c.pdf</documentation>
 	</wsdl:binding>
 
 	<wsdl:service name="SensorValues">
-		<wsdl:port name="SensorValuesPort" binding="tns:SensorValuesSOAP">
-			<wsoap12:address location="" />
+		<wsdl:port name="SensorValues" binding="tns:SensorValuesSOAP">
+		<wsoap12:address location="http://localhost:8080" />
 		</wsdl:port>
 	</wsdl:service>
 </wsdl:definitions>
