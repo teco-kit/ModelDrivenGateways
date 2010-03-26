@@ -28,9 +28,30 @@ Low-Cost ±10 g Dual-Axis Accelerometer with Duty Cycle
 http://www.analog.com/static/imported-files/data_sheets_obsolete/OBSOLETE%20WATERMARK/ADXL210.pdf</documentation>
                 </annotation>
                 <sequence>
-					<element name="x" type="short" />
-					<element name="y" type="short" />
-					<element name="z" type="short" />
+					<element name="x">
+						<simpleType>
+							<restriction base="short">
+								<maxInclusive value="+2000"></maxInclusive>
+								<minInclusive value="-2000"></minInclusive>
+							</restriction>
+						</simpleType>
+					</element>
+					<element name="y">
+						<simpleType>
+							<restriction base="short">
+								<minInclusive value="-2000"></minInclusive>
+								<maxInclusive value="+2000"></maxInclusive>
+							</restriction>
+						</simpleType>
+					</element>
+					<element name="z">
+						<simpleType>
+							<restriction base="short">
+								<maxInclusive value="+2000"></maxInclusive>
+								<minInclusive value="-2000"></minInclusive>
+							</restriction>
+						</simpleType>
+					</element>
 					<element maxOccurs="1" minOccurs="0" name="index" type="byte" />
 				</sequence>
 			</complexType>
@@ -92,7 +113,14 @@ Tiny Serial Digital Thermal Sensor
 http://ww1.microchip.com/downloads/en/devicedoc/21462c.pdf</documentation>
                 </annotation>
                 <sequence>
-					<element name="value" type="byte" />
+					<element name="value">
+						<simpleType>
+							<restriction base="byte">
+								<minInclusive value="-20"></minInclusive>
+								<maxInclusive value="80"></maxInclusive>
+							</restriction>
+						</simpleType>
+					</element>
 					<element maxOccurs="1" minOccurs="0" name="index" type="byte" />
 				</sequence>
 			</complexType>
