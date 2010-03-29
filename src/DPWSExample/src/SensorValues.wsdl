@@ -10,15 +10,43 @@
 
 	<wsdl:types>
 		<schema xmlns="http://www.w3.org/2001/XMLSchema"
-			elementFormDefault="qualified" targetNamespace="http://www.teco.edu/SensorValues"
-			xmlns:p="urn:oasis:names:tc:unitsml:schema:xsd:UnitsMLSchema_lite-0.9.18">
-
+			elementFormDefault="qualified"
+			targetNamespace="http://www.teco.edu/SensorValues">	
+			<annotation>
+				<appinfo>
+					<UnitSet xmlns="urn:oasis:names:tc:unitsml:schema:xsd:UnitsMLSchema-0.9.18">
+					<Unit
+									xmlns="urn:oasis:names:tc:unitsml:schema:xsd:UnitsMLSchema-0.9.18"
+									xml:id="U_mm.s-2">
+									<UnitSystem name="SI"
+										type="SI_derived" xml:lang="en-US" />
+									<UnitName xml:lang="en-US">
+										millimeter per second squared
+									</UnitName>
+									<UnitSymbol type="HTML">
+										mm &#183; s
+										<sup>-2</sup>
+									</UnitSymbol>
+									<RootUnits>
+										<EnumeratedRootUnit unit="meter"
+											prefix="m" />
+										<EnumeratedRootUnit
+											unit="second" powerNumerator="-2" />
+									</RootUnits>
+								</Unit>
+					</UnitSet>
+				</appinfo>
+			</annotation>
 			<complexType name="ADXL210_Sample">
 				<annotation>
-					<documentation>Analog Devices ADXL210
-						Low-Cost ±10 g Dual-Axis Accelerometer with Duty Cycle
+					<documentation>
+						Analog Devices ADXL210 Low-Cost ±10 g Dual-Axis
+						Accelerometer with Duty Cycle
 
-						(z-output from optional orthogonally mounted second device)
+						(z-output from optional orthogonally mounted
+						second device)
+
+
 
 						http://www.analog.com/static/imported-files/data_sheets_obsolete/OBSOLETE%20WATERMARK/ADXL210.pdf
 					</documentation>
@@ -27,20 +55,11 @@
 					<element name="x">
 						<annotation>
 							<appinfo>
-								<Unit
-									xmlns="urn:oasis:names:tc:unitsml:schema:xsd:UnitsMLSchema-0.9.18"
-									xml:id="U_mm.s-2" dimensionURL="#D_L.T-2">
-									<UnitSystem name="SI" type="SI_derived" xml:lang="en-US" />
-									<UnitName xml:lang="en-US">millimeter per second squared</UnitName>
-									<UnitSymbol type="HTML">
-										mm &#183; s<sup>-2</sup>
-									</UnitSymbol>
-									<RootUnits>
-										<EnumeratedRootUnit unit="meter" prefix="m" />
-										<EnumeratedRootUnit unit="second"	powerNumerator="-2" />
-									</RootUnits>
-									<QuantityReference url="#Q_acceleration" />
-								</Unit>
+								<Quantity
+									xmlns="urn:oasis:names:tc:unitsml:schema:xsd:UnitsMLSchema-0.9.18">
+									<QuantityName>acceleration</QuantityName>
+									<UnitReference>#U_mm.s-2</UnitReference>
+								</Quantity>
 							</appinfo>
 						</annotation>
 						<simpleType>
@@ -66,70 +85,87 @@
 							</restriction>
 						</simpleType>
 					</element>
-					<element maxOccurs="1" minOccurs="0" name="index" type="byte" />
+					<element maxOccurs="1" minOccurs="0" name="index"
+						type="byte" />
 				</sequence>
 			</complexType>
 
 			<complexType name="TSL2550_Sample">
 				<annotation>
-					<documentation>Taos TSL2550
-						Ambient Light Sensor
+					<documentation>
+						Taos TSL2550 Ambient Light Sensor
 
-						The TSL2550 is a digital-output light sensor with a two-wire, SMBus
-						serial interface. It combines
-						two photodiodes and a companding analog-to-digital converter (ADC) on
-						a single CMOS
-						integrated circuit to provide light measurements over an effective 12-bit
-						dynamic range with a
-						response similar to that of the human eye.
-						The TSL2550 is designed for use with broad wavelength light sources.
-						One of the photodiodes (channel 0) is
-						sensitive to visible and infrared light, while the second photodiode
+						The TSL2550 is a digital-output light sensor
+						with a two-wire, SMBus serial interface. It
+						combines two photodiodes and a companding
+						analog-to-digital converter (ADC) on a single
+						CMOS integrated circuit to provide light
+						measurements over an effective 12-bit dynamic
+						range with a response similar to that of the
+						human eye. The TSL2550 is designed for use with
+						broad wavelength light sources. One of the
+						photodiodes (channel 0) is sensitive to visible
+						and infrared light, while the second photodiode
 						(channel 1) is sensitive primarily to infrared
 						light.
 
+
+
 						http://www.taosinc.com/getfile.aspx?type=press&amp;file=tsl2550-e75.pdf
-						Light Level (lux) =(daylight-infrared)*0.39*e(0.181R^2 )
+						Light Level (lux)
+						=(daylight-infrared)*0.39*e(0.181R^2 )
 
 						Typical outputs:
 
 						Fluorescent (297 lux) : daylight=831 infrared=68
-						Daylight, shade (201 lux): daylight=895 infrared=343
-						Incadescent (42 lux): daylight 42 infrared=959</documentation>
+						Daylight, shade (201 lux): daylight=895
+						infrared=343 Incadescent (42 lux): daylight 42
+						infrared=959
+					</documentation>
 				</annotation>
 				<sequence>
 					<element name="daylight" type="unsignedShort">
 						<annotation>
-							<documentation>ADC ouput for channel 0</documentation>
+							<documentation>
+								ADC ouput for channel 0
+							</documentation>
 						</annotation>
 					</element>
 					<element name="infrared" type="unsignedShort">
 						<annotation>
-							<documentation>ADC ouput for channel 1</documentation>
+							<documentation>
+								ADC ouput for channel 1
+							</documentation>
 						</annotation>
 					</element>
-					<element maxOccurs="1" minOccurs="0" name="index" type="byte" />
+					<element maxOccurs="1" minOccurs="0" name="index"
+						type="byte" />
 				</sequence>
 			</complexType>
 
 			<complexType name="FSR152_Sample">
 				<sequence>
 					<element name="value" type="unsignedByte" />
-					<element maxOccurs="1" minOccurs="0" name="index" type="byte" />
+					<element maxOccurs="1" minOccurs="0" name="index"
+						type="byte" />
 				</sequence>
 			</complexType>
 
 			<complexType name="SP101_Sample">
 				<sequence>
 					<element name="volume" type="unsignedByte" />
-					<element maxOccurs="1" minOccurs="0" name="index" type="byte" />
+					<element maxOccurs="1" minOccurs="0" name="index"
+						type="byte" />
 				</sequence>
 			</complexType>
 
 			<complexType name="TC74_Sample">
 				<annotation>
-					<documentation>Microchip TC74
-						Tiny Serial Digital Thermal Sensor
+					<documentation>
+						Microchip TC74 Tiny Serial Digital Thermal
+						Sensor
+
+
 
 						http://ww1.microchip.com/downloads/en/devicedoc/21462c.pdf
 					</documentation>
@@ -143,20 +179,24 @@
 							</restriction>
 						</simpleType>
 					</element>
-					<element maxOccurs="1" minOccurs="0" name="index" type="byte" />
+					<element maxOccurs="1" minOccurs="0" name="index"
+						type="byte" />
 				</sequence>
 			</complexType>
 
 			<complexType name="SSimpSample">
 				<annotation>
-					<documentation>Single Sample with sensors enabled according to
-						configuration</documentation>
+					<documentation>
+						Single Sample with sensors enabled according to
+						configuration
+					</documentation>
 				</annotation>
 
 				<sequence>
-					<element maxOccurs="1" minOccurs="0" name="TimeStamp" type="dateTime" />
-					<element maxOccurs="1" minOccurs="0" name="Accelleration"
-						type="tns:ADXL210_Sample">
+					<element maxOccurs="1" minOccurs="0"
+						name="TimeStamp" type="dateTime" />
+					<element maxOccurs="1" minOccurs="0"
+						name="Accelleration" type="tns:ADXL210_Sample">
 					</element>
 					<element maxOccurs="1" minOccurs="0" name="Audio"
 						type="tns:SP101_Sample" />
@@ -164,8 +204,8 @@
 						type="tns:TSL2550_Sample" />
 					<element maxOccurs="1" minOccurs="0" name="Force"
 						type="tns:FSR152_Sample" />
-					<element maxOccurs="1" minOccurs="0" name="Temperature"
-						type="tns:TC74_Sample" />
+					<element maxOccurs="1" minOccurs="0"
+						name="Temperature" type="tns:TC74_Sample" />
 				</sequence>
 
 			</complexType>
@@ -178,9 +218,12 @@
 					<documentation></documentation>
 				</annotation>
 				<sequence>
-					<element maxOccurs="1" minOccurs="1" name="rate" type="byte">
+					<element maxOccurs="1" minOccurs="1" name="rate"
+						type="byte">
 						<annotation>
-							<documentation>sample period= 2^rate * 13 ms</documentation>
+							<documentation>
+								sample period= 2^rate * 13 ms
+							</documentation>
 						</annotation>
 					</element>
 				</sequence>
@@ -189,22 +232,24 @@
 
 			<complexType name="SensorConfigurationType">
 				<annotation>
-					<documentation>If a config element is present the sensor will be
-						enabled, otherwise it will be disable. </documentation>
+					<documentation>
+						If a config element is present the sensor will
+						be enabled, otherwise it will be disable.
+					</documentation>
 				</annotation>
 				<sequence>
-					<element maxOccurs="1" minOccurs="0" name="Acceleration"
-						type="tns:SSimpRateConfig" />
+					<element maxOccurs="1" minOccurs="0"
+						name="Acceleration" type="tns:SSimpRateConfig" />
 					<element maxOccurs="1" minOccurs="0" name="Audio"
 						type="tns:SSimpRateConfig" />
 					<element maxOccurs="1" minOccurs="0" name="Light"
 						type="tns:SSimpRateConfig" />
-					<element maxOccurs="1" minOccurs="0" name="AmbientLight"
-						type="tns:SSimpRateConfig" />
+					<element maxOccurs="1" minOccurs="0"
+						name="AmbientLight" type="tns:SSimpRateConfig" />
 					<element maxOccurs="1" minOccurs="0" name="Force"
 						type="tns:SSimpRateConfig" />
-					<element maxOccurs="1" minOccurs="0" name="Temperature"
-						type="tns:SSimpRateConfig" />
+					<element maxOccurs="1" minOccurs="0"
+						name="Temperature" type="tns:SSimpRateConfig" />
 				</sequence>
 			</complexType>
 
@@ -214,11 +259,14 @@
 
 			<complexType name="SSimpStatus">
 				<sequence>
-					<element name="SensorConfig" type="tns:SensorConfigurationType">
+					<element name="SensorConfig"
+						type="tns:SensorConfigurationType">
 					</element>
-					<element name="AllSensorConfig" type="tns:SensorConfigurationType">
+					<element name="AllSensorConfig"
+						type="tns:SensorConfigurationType">
 					</element>
-					<element name="BatteryVoltage" type="unsignedShort">
+					<element name="BatteryVoltage"
+						type="unsignedShort">
 						<annotation>
 							<documentation></documentation>
 						</annotation>
@@ -232,11 +280,12 @@
 
 			<complexType name="SSimpControl">
 				<sequence>
-					<element name="SensorConfig" type="tns:SensorConfigurationType"
+					<element name="SensorConfig"
+						type="tns:SensorConfigurationType" minOccurs="0" maxOccurs="1">
+					</element>
+					<element name="NewTime" type="dateTime"
 						minOccurs="0" maxOccurs="1">
 					</element>
-					<element name="NewTime" type="dateTime" minOccurs="0"
-						maxOccurs="1"></element>
 				</sequence>
 			</complexType>
 
