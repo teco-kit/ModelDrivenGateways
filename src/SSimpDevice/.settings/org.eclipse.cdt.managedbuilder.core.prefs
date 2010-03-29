@@ -1,4 +1,0 @@
-#Fri Aug 14 18:25:57 CEST 2009
-eclipse.preferences.version=1
-environment/buildEnvironmentInclude/cdt.managedbuild.config.gnu.cygwin.exe.debug.463850461.1742493888=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true" appendContributed\="true">\r\n<variable name\="CPATH" operation\="remove"/>\r\n<variable name\="C_INCLUDE_PATH" operation\="remove"/>\r\n</environment>\r\n
-environment/buildEnvironmentLibrary/cdt.managedbuild.config.gnu.cygwin.exe.debug.463850461.1742493888=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true" appendContributed\="true">\r\n<variable name\="LIBRARY_PATH" operation\="remove"/>\r\n</environment>\r\n

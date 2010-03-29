@@ -1,9 +1,0 @@
-import squery;
-
-extension edu::teco::squery::Extensions;
-extension edu::teco::squery::GenLinking reexport;
-
-/*
- * If you need more sophisticated linking semantic just overwrite the linking extensions here and add your own logic.
- * Have a look at the generated edu::teco::squery::GenLinking (typically located in src-gen)
- */

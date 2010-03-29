@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/DPWSExample/src"
+    modelPluginID="DPWSExample" modelName="SensorValues" importerID="org.eclipse.xsd.ecore.importer"
+    complianceLevel="6.0" copyrightFields="false">
+  <foreignModel>SensorValues.wsdl</foreignModel>
+  <genPackages prefix="Values" basePackage="edu.teco.sensor" resource="XML" disposableProviderFactory="true"
+      ecorePackage="values.ecore#/">
+    <genClasses ecoreClass="values.ecore#//ADXL210Sample">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//ADXL210Sample/x"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//ADXL210Sample/y"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//ADXL210Sample/z"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//ADXL210Sample/index"/>
+    </genClasses>
+    <genClasses ecoreClass="values.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference values.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference values.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//DocumentRoot/sample"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//DocumentRoot/status"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//DocumentRoot/statusControl"/>
+    </genClasses>
+    <genClasses ecoreClass="values.ecore#//FSR152Sample">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//FSR152Sample/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//FSR152Sample/index"/>
+    </genClasses>
+    <genClasses ecoreClass="values.ecore#//SensorConfigurationType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SensorConfigurationType/acceleration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SensorConfigurationType/audio"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SensorConfigurationType/light"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SensorConfigurationType/ambientLight"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SensorConfigurationType/force"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SensorConfigurationType/temperature"/>
+    </genClasses>
+    <genClasses ecoreClass="values.ecore#//SP101Sample">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//SP101Sample/volume"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//SP101Sample/index"/>
+    </genClasses>
+    <genClasses ecoreClass="values.ecore#//SSimpControl">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SSimpControl/sensorConfig"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//SSimpControl/newTime"/>
+    </genClasses>
+    <genClasses ecoreClass="values.ecore#//SSimpRateConfig">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//SSimpRateConfig/rate"/>
+    </genClasses>
+    <genClasses ecoreClass="values.ecore#//SSimpSample">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//SSimpSample/timeStamp"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SSimpSample/accelleration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SSimpSample/audio"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SSimpSample/light"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SSimpSample/force"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SSimpSample/temperature"/>
+    </genClasses>
+    <genClasses ecoreClass="values.ecore#//SSimpStatus">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SSimpStatus/sensorConfig"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference values.ecore#//SSimpStatus/allSensorConfig"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//SSimpStatus/batteryVoltage"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//SSimpStatus/currentTime"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//SSimpStatus/upTime"/>
+    </genClasses>
+    <genClasses ecoreClass="values.ecore#//TC74Sample">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//TC74Sample/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//TC74Sample/index"/>
+    </genClasses>
+    <genClasses ecoreClass="values.ecore#//TSL2550Sample">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//TSL2550Sample/daylight"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//TSL2550Sample/infrared"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute values.ecore#//TSL2550Sample/index"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
