@@ -47,7 +47,7 @@ int «serviceId»_setup_device(struct dpws_s *device, struct soap *service)
   
   struct ws4d_epr *dpws_service = dpws_service_init(device, "«serviceId»");
 
-  if (dpws_service_bind (device, dpws_service, service, uri, DPWS_URI_MAX_LEN, 100))
+  if (0!=(ret=dpws_service_bind (device, dpws_service, service, uri, DPWS_URI_MAX_LEN, 100)))
     {
       fprintf (stderr, "%s:%d:Can't init device and services\n",__FILE__,__LINE__);
       return ret;
@@ -190,8 +190,8 @@ return WS4D_OK;
 «EXPAND setup_Host FOR host»
 «EXPAND setup_Services(hosted) FOR host»
 
-«EXPAND set_metadata_ThisDevice(host.serviceId) FOREACH metadataSection.getThisDevice()»;
-«EXPAND set_metadata_ThisModel(host.serviceId) FOREACH metadataSection.getThisModel()»;
+«EXPAND set_metadata_ThisDevice(host.serviceId) FOREACH metadataSection.getThisDevice()»
+«EXPAND set_metadata_ThisModel(host.serviceId) FOREACH metadataSection.getThisModel()»
 
 «EXPAND setup_wsdls(hosted) FOR host»
               
