@@ -58,7 +58,7 @@ static int read_part(const uint8_t *in, uint8_t *rest, uint8_t *out, uint8_t off
  *
  * ========================================================================*/
 #define read_bits_buf_little read_bits
-ssize_t read_bits_buf_little(struct READER_STRUCT *reader, void *buf, int bits_len)
+ssize_t read_bits_buf_little(struct READER_STRUCT *reader, char *buf, int bits_len)
 {
 	int old_byte_pos;
 

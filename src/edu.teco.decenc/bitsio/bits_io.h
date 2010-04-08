@@ -21,13 +21,7 @@
 #define u_char unsigned char
 #endif
 
-#ifndef ssize_t
-#define ssize_t int
-#endif
 
-#ifndef size_t
-#define size_t int
-#endif
 
 #define LOW_N_BITS(a_res_byte , nUm) (a_res_byte & ((1 << (nUm)) - 1))
 #define UP_N_BITS(a_res_byte , nUm) (a_res_byte & ~((1 << (8 - nUm)) - 1))
