@@ -24,6 +24,7 @@
 #define «getNSPrefix()»_DateTime struct timeval
 
 «REM» «EXPAND declaration FOREACH eAllContents.typeSelect(EClass)»«ENDREM»
+«EXPAND definition FOREACH eAllContents.typeSelect(EDataType).select(e|!e.name.endsWith("Object"))»
 «EXPAND definition FOREACH eAllContents.typeSelect(EClass).selectFirst(e|e.name=="DocumentRoot").eAllReferences.select(r|r.eAnnotations.exists(a|a.source=="http:///org/eclipse/emf/ecore/util/ExtendedMetaData" && a.details.exists(d|d.key=="namespace"&&d.value=="##targetNamespace"))).eType.typeSelect(EClass)»
 «EXPAND typedef FOREACH eAllContents.typeSelect(EClass).select(e|e.getProperty("did_definition")==true)»
 
@@ -31,6 +32,9 @@
 «ENDFILE»
 «ENDDEFINE»
 
+«DEFINE definition FOR EDataType»
+typedef «instanceTypeName.toFirstUpper().p()»  «name.p()»;
+«ENDDEFINE»
 «DEFINE declaration FOR EClass»
 struct «name.p()»;
 «EXPAND listDeclarations»
