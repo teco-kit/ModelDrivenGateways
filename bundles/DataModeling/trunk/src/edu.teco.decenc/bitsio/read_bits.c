@@ -42,7 +42,7 @@ void read_init(struct READER_STRUCT * reader, int fd)
 ssize_t read_bits(struct READER_STRUCT * reader, char *dst_buf, int bits_len)
 {
    int     bytes;    /* = bits_len / 8;*/
-   int     rest_len; /* = bits_len % 8; */
+   int     rest_len; /* = bits_lenz % 8; */
    u_char  a_byte;
    ssize_t ret, res;
 

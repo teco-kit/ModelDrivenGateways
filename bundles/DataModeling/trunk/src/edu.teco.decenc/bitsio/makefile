@@ -9,10 +9,6 @@ LIB_BUF = libbitsio_buf.a
 
 all: ${LIB} ${LIB_BUF}
 
-${LIB}: ${OBJ}
-	ar r $@ $?
-	ranlib $@
-
 ${LIB_BUF}: ${OBJ_BUF}
 	ar r $@ $?
 	ranlib $@

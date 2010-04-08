@@ -1,6 +1,7 @@
 #ifndef _WRITE_BITS_H_
 #define _WRITE_BITS_H_
-#include <unistd.h>
+#include <stdint.h>
+#include <sys/types.h>
 
 struct WRITER_STRUCT;
 

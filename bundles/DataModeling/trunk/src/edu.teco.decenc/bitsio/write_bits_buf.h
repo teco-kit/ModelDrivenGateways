@@ -6,7 +6,7 @@
 
 extern const size_t write_bits_bufwriter_size;
 
-struct WRITER_STRUCT *write_bits_bufwriter_init(struct WRITER_STRUCT *, char *buf, ssize_t size);
+struct WRITER_STRUCT *write_bits_bufwriter_init(struct WRITER_STRUCT *, char *buf, size_t size);
 
 #define write_bits_bufwriter_stack_new(buf,size)  write_bits_bufwriter_init((struct WRITER_STRUCT *)alloca(write_bits_bufwriter_size),buf,size)
 
