@@ -184,7 +184,7 @@ FOR SimpleState»
    «targetDef.proceed()»
 «ENDAROUND»
 
-«AROUND edu::teco::automata::generator::templates::encoderRoot::complexEnd FOR SimpleState» 
+«AROUND edu::teco::automata::generator::templates::encoderRoot::complexEnd(Integer next) FOR SimpleState» 
     pop();
    «targetDef.proceed()»
 «ENDAROUND»
