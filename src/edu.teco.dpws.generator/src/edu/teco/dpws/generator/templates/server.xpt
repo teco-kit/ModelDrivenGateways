@@ -1,33 +1,36 @@
-«IMPORT wsdl11»
+ï¿½IMPORT wsdl11ï¿½
 
 
-«EXTENSION edu::teco::dpws::generator::templates::wsdl»
-«EXTENSION org::eclipse::xtend::util::stdlib::globalvar»
+ï¿½EXTENSION edu::teco::dpws::generator::templates::wsdlï¿½
+ï¿½EXTENSION org::eclipse::xtend::util::stdlib::globalvarï¿½
 
-«DEFINE Root FOR TDefinitions»
-«EXPAND service FOREACH service »
-«REM» «EXPAND edu::teco::dpws::generator::templates::domdebug::debug FOREACH service»«ENDREM»
-«EXPAND deliver_event::deliverEvent FOREACH service»
-«ENDDEFINE»
+ï¿½DEFINE Root FOR TDefinitionsï¿½
+ï¿½EXPAND service FOREACH service ï¿½
+ï¿½REMï¿½ ï¿½EXPAND edu::teco::dpws::generator::templates::domdebug::debug FOREACH serviceï¿½ï¿½ENDREMï¿½
+ï¿½EXPAND deliver_event::deliverEvent FOREACH serviceï¿½
+ï¿½ENDDEFINEï¿½
 
-«DEFINE service FOR TService»
-«storeGlobalVar("WSDLInMessageTypes",port.getPortType().operation.select(e|e.input!=null).input.getMessage().part.element.localPart.toSet())»
-«storeGlobalVar("WSDLOutMessageTypes",port.getPortType().operation.select(e|e.output!=null).output.getMessage().part.element.localPart.toSet())»
+ï¿½DEFINE service FOR TServiceï¿½
+ï¿½storeGlobalVar("WSDLInMessageTypes",port.getPortType().operation.select(e|e.input!=null).input.getMessage().part.element.localPart.toSet())ï¿½
+ï¿½storeGlobalVar("WSDLOutMessageTypes",port.getPortType().operation.select(e|e.output!=null).output.getMessage().part.element.localPart.toSet())ï¿½
 
-«FILE name+"_operations.h"»
+ï¿½FILE name+"_operations.h"ï¿½
 
-enum «name»_operations
+#ifndef ï¿½name.toUpperCase()ï¿½_OPERATIONS_H
+#define ï¿½name.toUpperCase()ï¿½_OPERATIONS_H
+enum ï¿½nameï¿½_operations
  {
- «FOREACH port.getPortType().operation AS op SEPARATOR ","»OP_«name»_«op.name»«ENDFOREACH»
+ ï¿½FOREACH port.getPortType().operation AS op SEPARATOR ","ï¿½OP_ï¿½nameï¿½_ï¿½op.nameï¿½ï¿½ENDFOREACHï¿½
  };
-«ENDFILE»
-«FILE name+"Server.c"»
+#endif //ï¿½name.toUpperCase()ï¿½_OPERATIONS_H
+ï¿½ENDFILEï¿½
+ï¿½FILE name+"Server.c"ï¿½
 
 enum operations
 {
- «FOREACH port.getPortType().operation AS op SEPARATOR ","»
-   OP_«op.name»
- «ENDFOREACH»
+ ï¿½FOREACH port.getPortType().operation AS op SEPARATOR ","ï¿½
+   OP_ï¿½op.nameï¿½
+ ï¿½ENDFOREACHï¿½
 };
  
 #include <ws4d-gSOAP/dpwsH.h>
@@ -36,79 +39,79 @@ enum operations
 
 #include <sendrcv.h>
 
-	«EXPAND call FOREACH port.getPortType().operation.select(e|e.input!=null)-»
-	«EXPAND server-»
-«ENDFILE»
-«ENDDEFINE»
+	ï¿½EXPAND call FOREACH port.getPortType().operation.select(e|e.input!=null)-ï¿½
+	ï¿½EXPAND server-ï¿½
+ï¿½ENDFILEï¿½
+ï¿½ENDDEFINEï¿½
 
-«DEFINE server FOR TService»
-int  «name»_serve_request(struct soap *soap) //TODO: pass device context
+ï¿½DEFINE server FOR TServiceï¿½
+int  ï¿½nameï¿½_serve_request(struct soap *soap) //TODO: pass device context
 {
 	soap_peek_element(soap);
-	«EXPAND dispatch FOREACH port.getPortType().operation.select(e|e.input!=null)-»
+	ï¿½EXPAND dispatch FOREACH port.getPortType().operation.select(e|e.input!=null)-ï¿½
 	return soap->error = SOAP_NO_METHOD;
 }
-«ENDDEFINE»
+ï¿½ENDDEFINEï¿½
 
-«DEFINE dispatch FOR TOperation»
+ï¿½DEFINE dispatch FOR TOperationï¿½
 	if (
-	«IF !input.getMessage().part.isEmpty»
-	(«IF !input.anyAttribute.toList().select(e|e.feature.name=="Action").isEmpty»!soap->action && «ENDIF»  !soap_match_tag(soap, soap->tag, "«getNSPrefix()»:«input.getMessage().part.first().element.localPart»"))
-	«ELSE»
+	ï¿½IF !input.getMessage().part.isEmptyï¿½
+	(ï¿½IF !input.anyAttribute.toList().select(e|e.feature.name=="Action").isEmptyï¿½!soap->action && ï¿½ENDIFï¿½  !soap_match_tag(soap, soap->tag, "ï¿½getNSPrefix()ï¿½:ï¿½input.getMessage().part.first().element.localPartï¿½"))
+	ï¿½ELSEï¿½
 	0
-	«ENDIF»
+	ï¿½ENDIFï¿½
 	||
-	«IF !input.anyAttribute.toList().select(e|e.feature.name=="Action").isEmpty»
-	(soap->action && !strcmp(soap->action, "«input.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»"))
-	«ELSE»
+	ï¿½IF !input.anyAttribute.toList().select(e|e.feature.name=="Action").isEmptyï¿½
+	(soap->action && !strcmp(soap->action, "ï¿½input.anyAttribute.toList().select(e|e.feature.name=="Action").first().valueï¿½"))
+	ï¿½ELSEï¿½
 	0
-	«ENDIF»
-	«REM» TODO:Add SOAP:action vs. wsa:action ??«ENDREM»
+	ï¿½ENDIFï¿½
+	ï¿½REMï¿½ TODO:Add SOAP:action vs. wsa:action ??ï¿½ENDREMï¿½
 	)
-		return soap_serve_«name»(soap);
-«ENDDEFINE»
+		return soap_serve_ï¿½nameï¿½(soap);
+ï¿½ENDDEFINEï¿½
 
-«DEFINE call FOR TOperation»
-  «FOREACH this.input.getMessage().part.element AS arg»
-  #include "«arg.localPart»_sax2bin.h"
-  «ENDFOREACH»
-  «FOREACH this.output.getMessage().part.element AS arg»
-  #include "«arg.localPart»_bin2sax.h"
-  «ENDFOREACH»
+ï¿½DEFINE call FOR TOperationï¿½
+  ï¿½FOREACH this.input.getMessage().part.element AS argï¿½
+  #include "ï¿½arg.localPartï¿½_sax2bin.h"
+  ï¿½ENDFOREACHï¿½
+  ï¿½FOREACH this.output.getMessage().part.element AS argï¿½
+  #include "ï¿½arg.localPartï¿½_bin2sax.h"
+  ï¿½ENDFOREACHï¿½
   
-static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
+static int soap_serve_ï¿½nameï¿½(struct soap *soap)  //TODO: pass device context
 {
-	int op_id=OP_«name»;
+	int op_id=OP_ï¿½nameï¿½;
 	int service_id=0; //TODO
 	struct dpws_s *device=NULL;
 	
-«IF  !this.input.getMessage().part.element.isEmpty»
+ï¿½IF  !this.input.getMessage().part.element.isEmptyï¿½
     {  	  
    	  char sendbuf[256];
    	  memset(sendbuf,0xff,sizeof(sendbuf));
       struct WRITER_STRUCT* writer=write_bits_bufwriter_stack_new(sendbuf,sizeof(sendbuf));
-  «FOREACH this.input.getMessage().part.element AS arg»
+  ï¿½FOREACH this.input.getMessage().part.element AS argï¿½
   	  {
-       if («arg.localPart»_sax2bin_run(soap,writer)<0) return soap->error;
+       if (ï¿½arg.localPartï¿½_sax2bin_run(soap,writer)<0) return soap->error;
   	  }
-  «ENDFOREACH»
+  ï¿½ENDFOREACHï¿½
       send_buf(device,service_id,op_id,soap,sendbuf,write_buf_finish(writer));
     }
-«ELSE»
+ï¿½ELSEï¿½
     send_buf(device,service_id,op_id,soap,NULL,0);
-«ENDIF»
+ï¿½ENDIFï¿½
 
-«REM»TODO: Error Handling«ENDREM»
+ï¿½REMï¿½TODO: Error Handlingï¿½ENDREMï¿½
 
   /* prepare response */
 	{
 		const char* To = wsa_header_get_ReplyTo(soap);
 		char * MessageId = wsa_header_get_MessageId(soap);
-		char * Action = «IF !output.anyAttribute.toList().select(e|e.feature.name=="Action").isEmpty-»
-	     					"«output.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»"
-						«ELSE-»
+		char * Action = ï¿½IF !output.anyAttribute.toList().select(e|e.feature.name=="Action").isEmpty-ï¿½
+	     					"ï¿½output.anyAttribute.toList().select(e|e.feature.name=="Action").first().valueï¿½"
+						ï¿½ELSE-ï¿½
 							NULL /*TODO: Corrent value */
-						«ENDIF-»;
+						ï¿½ENDIF-ï¿½;
 		
 
 		soap->omode |= SOAP_IO_CHUNK;
@@ -157,7 +160,7 @@ static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
    {
     	return soap->error;
    }
-   «IF  !this.output.getMessage().part.element.isEmpty»
+   ï¿½IF  !this.output.getMessage().part.element.isEmptyï¿½
    {
       char * buf;
       ssize_t len=rcv_buf(device,service_id,op_id,soap,&buf);
@@ -168,14 +171,14 @@ static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
         return soap->error;
       }
       struct READER_STRUCT* reader=read_bits_bufreader_stack_new(buf,len);
-      «FOREACH this.output.getMessage().part.element AS arg»
+      ï¿½FOREACH this.output.getMessage().part.element AS argï¿½
       {
-       «arg.localPart»_bin2sax_run(reader,soap);
+       ï¿½arg.localPartï¿½_bin2sax_run(reader,soap);
       }
       
-      «ENDFOREACH»
+      ï¿½ENDFOREACHï¿½
    }
-   «ENDIF»
+   ï¿½ENDIFï¿½
 
    if ( soap_body_end_out(soap)
        || soap_envelope_end_out(soap)
@@ -186,4 +189,4 @@ static int soap_serve_«name»(struct soap *soap)  //TODO: pass device context
 	
    return    soap_closesock(soap);
 }
-«ENDDEFINE»
+ï¿½ENDDEFINEï¿½
