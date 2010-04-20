@@ -22,8 +22,9 @@ enum «name»_operations
  {
  «FOREACH port.getPortType().operation AS op SEPARATOR ","»OP_«name»_«op.name»«ENDFOREACH»
  };
-«ENDFILE»
 #endif //«name.toUpperCase()»_OPERATIONS_H
+«ENDFILE»
+
 «FILE name+"Server.c"»
 
 enum operations
