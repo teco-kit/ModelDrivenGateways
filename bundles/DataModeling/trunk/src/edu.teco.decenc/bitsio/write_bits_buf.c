@@ -81,7 +81,7 @@ static int write_part(uint8_t *out, uint8_t *rest, const uint8_t *in, uint8_t of
 #define write_bits_buf_little write_bits
 
 
-ssize_t write_bits_buf_little(struct WRITER_STRUCT* writer, const char *buf,
+ssize_t write_bits_buf_little(struct WRITER_STRUCT* writer, const void *buf,
 		size_t bits_len) {
 	int old_byte_pos;
 
