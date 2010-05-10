@@ -63,7 +63,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
 ################################################################################
 
 # stdsoap2.c
-SET_SOURCE_FILES_PROPERTIES(${GSOAP_STDSOAP2_SOURCE}
+SET_SOURCE_FILES_PROPERTIES(
 	PROPERTIES COMPILE_FLAGS "-DWITH_NONAMESPACES -DWITH_UDP")
 
 ################################################################################
@@ -72,14 +72,14 @@ SET_SOURCE_FILES_PROPERTIES(${GSOAP_STDSOAP2_SOURCE}
 
 # create airconditioner executable und define dependencies
 # the device includes the airconditioner.c and event_worker.c, the
-# gsoap runtime (${GSOAP_STDSOAP2_SOURCE}), the server lib by gsoap
+# gsoap runtime (), the server lib by gsoap
 # (${gen_DIR}/acs1ServerLib.c), the client lib of the inverted service
 # by gsoap for eventing (${gen_DIR}/acs_inv1ClientLib.c), the device
 # description and setup code (${gen_DIR}/acs_metadata.c) and the embedded
 # wsdl files (${gen_DIR}/acs_wsdl.c)
 
 ADD_EXECUTABLE(acs_service
-	airconditioner.c event_worker.c ${GSOAP_STDSOAP2_SOURCE} ${gen_DIR}/acs1ServerLib.c ${gen_DIR}/acs_inv1ClientLib.c ${gen_DIR}/acs_metadata.c ${gen_DIR}/acs_wsdl.c)
+	airconditioner.c event_worker.c  ${gen_DIR}/acs1ServerLib.c ${gen_DIR}/acs_inv1ClientLib.c ${gen_DIR}/acs_metadata.c ${gen_DIR}/acs_wsdl.c)
 
 EXTEND_TGT_COMPILE_FLAGS(acs_service FLAGS "-DDPWS_DEVICE -DDPWS_HOSTED_SERVICE -DWITH_MUTEXES")
 

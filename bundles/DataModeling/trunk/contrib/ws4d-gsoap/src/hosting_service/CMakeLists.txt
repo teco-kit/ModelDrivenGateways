@@ -44,7 +44,7 @@ GSOAP_SET_RUNTIME_FLAGS("-DWITH_NONAMESPACES -DWITH_UDP")
 # hosting_service
 ADD_EXECUTABLE(hosting_service
 	hosting_service.c
-	${GSOAP_STDSOAP2_SOURCE})
+	)
 
 TARGET_LINK_LIBRARIES(hosting_service
 	${DPWS_LIBRARIES}

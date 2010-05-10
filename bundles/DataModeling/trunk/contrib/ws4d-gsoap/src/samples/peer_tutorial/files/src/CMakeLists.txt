@@ -66,7 +66,7 @@ GSOAP_SET_RUNTIME_FLAGS("-DWITH_NONAMESPACES -DWITH_UDP")
 
 # create airconditioner executable und define dependencies
 # the device includes the airconditioner.c and event_worker.c, the
-# gsoap runtime (${GSOAP_STDSOAP2_SOURCE}), the server lib by gsoap
+# gsoap runtime (), the server lib by gsoap
 # (${gen_DIR}/acs1ServerLib.c), the client lib of the inverted service
 # by gsoap for eventing (${gen_DIR}/acs_inv1ClientLib.c), the device
 # description and setup code (${gen_DIR}/acs_metadata.c) and the embedded
@@ -75,7 +75,7 @@ GSOAP_SET_RUNTIME_FLAGS("-DWITH_NONAMESPACES -DWITH_UDP")
 SET(acc_device_SRCS
 	acc_device.c
 	discovery_helper.c
-	${GSOAP_STDSOAP2_SOURCE}
+	
 	${gen_DIR}/acc1ServerLib.c
 	${gen_DIR}/acc_metadata.c
 	${gen_DIR}/acc_wsdl.c)

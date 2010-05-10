@@ -56,7 +56,6 @@ SET(iop_device_lib_SRCS
 	SimpleService.c
 	AttachmentService.c
 	EventingService.c
-	${GSOAP_STDSOAP2_SOURCE}
 	${gen_DIR}/sisServerLib.c
 	${gen_DIR}/atsServerLib.c
 	${gen_DIR}/evsClientLib.c
@@ -118,7 +117,7 @@ SET(iop_test_driver_SRCS
 SET_SOURCE_FILES_PROPERTIES( ${iop_test_driver_SRCS}
 	PROPERTIES COMPILE_FLAGS "-DWITH_MUTEXES")
 
-ADD_EXECUTABLE(iop_test_driver ${iop_test_driver_SRCS} ${GSOAP_STDSOAP2_SOURCE})
+ADD_EXECUTABLE(iop_test_driver ${iop_test_driver_SRCS} )
 
 TARGET_LINK_LIBRARIES(iop_test_driver
 	${DPWS_LIBRARIES}

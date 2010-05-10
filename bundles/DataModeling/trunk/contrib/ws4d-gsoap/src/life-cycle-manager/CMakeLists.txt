@@ -77,7 +77,7 @@ SET(life-cycle-manager_SRCS
 	fileio.c
 	ioapi.c
 	unzip.c
-	${GSOAP_STDSOAP2_SOURCE}
+	
 	${gen_DIR}/lcmServerLib.c
 	${gen_DIR}/lcm_metadata.c
 	${gen_DIR}/lcm_wsdl.c)

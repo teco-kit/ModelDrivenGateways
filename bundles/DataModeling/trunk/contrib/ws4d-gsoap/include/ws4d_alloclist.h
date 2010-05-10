@@ -24,6 +24,7 @@
 #include "ws4d_mutex.h"
 #include "ws4d_list.h"
 
+
 /**
  * @addtogroup DpwsMemoryManagement Memory management
  * @ingroup WS4D_UTILS
@@ -224,6 +225,7 @@ void *ws4d_memdup (const void *src, size_t length, ws4d_alloc_list * alist);
  */
 char *ws4d_strdup (const char *src, ws4d_alloc_list * alist);
 
+wchar_t *ws4d_widedup (const wchar_t *src, ws4d_alloc_list * alist);
 
 /**
  * Function duplicates string and registers allocation in allocation list.
@@ -244,6 +246,7 @@ char *ws4d_strdup (const char *src, ws4d_alloc_list * alist);
  * @return pointer to newly-allocated string or NULL if no memory
  */
 char *ws4d_strndup (const char *src, size_t size, ws4d_alloc_list * alist);
+
 
 /** @} */
 
