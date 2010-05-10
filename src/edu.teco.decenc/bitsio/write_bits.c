@@ -43,7 +43,7 @@ struct WRITER_STRUCT *write_fdwriter_alloc(int fd)
  *
  *
  * ========================================================================*/
-ssize_t write_bits(struct WRITER_STRUCT *writer, const char *bits, size_t bits_len)
+ssize_t write_bits(struct WRITER_STRUCT *writer, const void *bits, size_t bits_len)
 {
    int      i;
    int      bytes;    /* = bits_len / 8; */
@@ -60,8 +60,8 @@ ssize_t write_bits(struct WRITER_STRUCT *writer, const char *bits, size_t bits_l
 
       for (i = 0; i < bytes; i++)
       {
-         a_byte = (bits[i] >> writer->currBits) | (writer->lastByte);
-         writer->lastByte = LOW_N_BITS_SHIFT(bits[i], writer->currBits);
+         a_byte = (((char *)bits)[i] >> writer->currBits) | (writer->lastByte);
+         writer->lastByte = LOW_N_BITS_SHIFT(((char *)bits)[i], writer->currBits);
          res = write(writer->fd, &a_byte, 1);
          if (res < 0)
          {
@@ -76,7 +76,7 @@ ssize_t write_bits(struct WRITER_STRUCT *writer, const char *bits, size_t bits_l
 
          /* set rest of the bits to zero */
 
-         u_char last = LOW_N_BITS(bits[bytes], rest_len);
+         u_char last = LOW_N_BITS(((char *)bits)[bytes], rest_len);
 
          if (rest_len + writer->currBits > 8)
          {
@@ -96,7 +96,7 @@ ssize_t write_bits(struct WRITER_STRUCT *writer, const char *bits, size_t bits_l
          }
          else if (rest_len + writer->currBits == 8)
          {
-            a_byte = bits[bytes] | writer->lastByte;
+            a_byte = ((char *)bits)[bytes] | writer->lastByte;
 
             writer->lastByte = 0;
             writer->currBits = 0;
@@ -110,7 +110,7 @@ ssize_t write_bits(struct WRITER_STRUCT *writer, const char *bits, size_t bits_l
          }
          else
          {
-            writer->lastByte |= bits[bytes] << (8 - writer->currBits - rest_len);
+            writer->lastByte |= ((char *)bits)[bytes] << (8 - writer->currBits - rest_len);
             writer->currBits  += rest_len;
          }
       }
@@ -135,7 +135,7 @@ ssize_t write_bits(struct WRITER_STRUCT *writer, const char *bits, size_t bits_l
       {
          /* set rest of the bits to zero */
 
-         writer->lastByte = LOW_N_BITS(bits[bytes], rest_len) << (8 - rest_len);
+         writer->lastByte = LOW_N_BITS(((char *)bits)[bytes], rest_len) << (8 - rest_len);
          writer->currBits = rest_len;
       }
 
