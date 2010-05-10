@@ -56,6 +56,12 @@
 #include "ws-metadataexchange.h"
 #include "ws-eventing.h"
 
+struct dpws_deliveryMode_push_data
+{
+  char *Address;
+  char *Identifier;
+  xsd__anyType * ReferenceParameters;
+};
 /* forward declarations */
 int __wsd__Hello (struct soap *soap, struct wsd__HelloType *wsd__Hello);
 
@@ -104,6 +110,8 @@ __wse__SubscriptionEnd (struct soap *soap,
                         struct _wse__SubscriptionEnd *_req);
 
 
+
+
 char *
 dpws_header_gen_MessageId (char *buffer, size_t size)
 {
@@ -137,7 +145,10 @@ dpws_header_gen_oneway (struct soap *soap, const char *MessageId,
     }
 
   return wsa_header_gen_oneway (soap, MessageId, To, Action, FaultTo, size);
+
 }
+
+
 
 int
 dpws_header_gen_request (struct soap *soap, const char *MessageId,
@@ -2837,12 +2848,28 @@ const char *dpws_deliveryMode_push = DPWS_DELIVERYMODE_PUSH;
 const char *dpws_filterType_action = DPWS_FILTERTYPE_ACTION;
 
 #ifdef DPWS_DEVICE
-
-struct dpws_deliveryMode_push_data
+int dpws_header_gen_event (struct soap *soap, struct dpws_s *device, char* soap_action_uri, struct ws4d_subscription *subs,size_t size)
 {
-  char *Address;
-  char *Identifier;
-};
+
+	//if(ws4d_subsm_is_delivery (subs, dpws_deliveryMode_push))
+	ws4d_assert(ws4d_subsm_is_delivery (subs, dpws_deliveryMode_push) && "delivery type not supported",WS4D_ERR);
+
+	{
+		struct dpws_deliveryMode_push_data *subs_data=((struct dpws_deliveryMode_push_data *)subs->delivery_mode->data);
+	    int ret=dpws_header_gen_oneway(soap, NULL,  subs_data->Address,soap_action_uri,NULL,size);
+
+	#define REF_PARAM_HACK 1
+
+#ifdef REF_PARAM_HACK
+	if(ret!=WS4D_OK) return ret;
+	soap->header->elts=subs_data->ReferenceParameters;
+#endif
+	  return ret;
+	}
+
+
+}
+
 
 #define DPWS_SUBSCRIPTION_SERVICE "wse_subscription_manager"
 
@@ -2854,6 +2881,51 @@ dpws_header_gen_wseIdentifier (struct soap *soap, struct dpws_s *device,
 
   identifier = dpws_subsm_get_deliveryPush_identifier (device, subs);
   return wse_header_set_Identifier (soap, identifier);
+}
+static struct soap_dom_attribute *ws4d_dom_attribute_copy(struct soap_dom_attribute  *att, struct soap* soap, ws4d_alloc_list * alist)
+{
+	if(att==NULL) return NULL;
+	else
+	{
+	struct soap_dom_attribute *att2 = ws4d_malloc_alist(sizeof(struct soap_dom_attribute),alist);
+	att2->data=ws4d_strdup(att->data,alist);
+	att2->name=ws4d_strdup(att->name,alist);
+
+	att2->nstr=ws4d_strdup(att->nstr,alist);
+	att2->soap=soap;
+	att2->wide=ws4d_widedup(att->wide,alist);
+
+
+
+	att2->next=ws4d_dom_attribute_copy(att->next,soap,alist);
+
+	return att2;
+	}
+}
+
+
+static struct soap_dom_element *ws4d_dom_element_copy(struct soap_dom_element  *dom, struct soap_dom_element  *prnt, struct soap* soap, ws4d_alloc_list * alist)
+{
+	if(dom==NULL) return NULL;
+	else
+	{
+	struct soap_dom_element *dom2 = ws4d_malloc_alist(sizeof(struct soap_dom_element),alist);
+
+	dom2->atts=ws4d_dom_attribute_copy(dom->atts,soap,alist);
+	dom2->data=ws4d_strdup(dom->data,alist);
+	dom2->elts=ws4d_dom_element_copy(dom->elts,dom2,soap,alist);
+	dom2->head=ws4d_strdup(dom->head,alist);
+	dom2->name=ws4d_strdup(dom->name,alist);
+	dom2->next=ws4d_dom_element_copy(dom->next,prnt,soap,alist);
+	dom2->node=NULL;
+	dom2->nstr=ws4d_strdup(dom->nstr,alist);
+	dom2->prnt=prnt;
+	dom2->tail=ws4d_strdup(dom->head,alist);
+	dom2->soap=soap;
+	dom2->wide=ws4d_widedup(dom->wide,alist);
+
+	return dom2;
+	}
 }
 
 static int
@@ -2876,9 +2948,34 @@ dpws_processDelivery_push (struct ws4d_subscription *subs, void *data)
       subs_data->Address =
         ws4d_strdup (delivery->wse__NotifyTo.Address,
                      ws4d_subs_get_alist (subs));
+
+
       subs_data->Identifier =
         ws4d_strdup (wse_subs_get_id (&delivery->wse__NotifyTo),
                      ws4d_subs_get_alist (subs));
+
+      {
+      xsd__anyType *ref_last=NULL;
+      wsa__ReferenceParametersType  *refs=delivery->wse__NotifyTo.ReferenceParameters;
+      int i;
+
+      for(i=0;i<refs->__sizepar;i++) // This loop removes non anyType parameters (for unknown reason)
+      {
+
+			  if(refs->__par[i].__type!=SOAP_TYPE_xsd__anyType) //assert (false)??
+    			   continue;
+			  else
+			  {
+			   xsd__anyType * el=ws4d_dom_element_copy(((xsd__anyType *)refs->__par[i].__any),NULL,NULL,ws4d_subs_get_alist (subs));
+    		   if(subs_data->ReferenceParameters==NULL)
+    			   subs_data->ReferenceParameters=el;
+    		   else if(ref_last->next==NULL)
+    			   ref_last->next=el;
+
+    		   ref_last=el;
+			  }
+      }
+      }
 
       subs->delivery_mode->data = subs_data;
 

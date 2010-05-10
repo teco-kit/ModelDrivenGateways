@@ -243,6 +243,24 @@ ws4d_strdup (const char *src, ws4d_alloc_list * alist)
   return res;
 }
 
+wchar_t *
+ws4d_widedup (const wchar_t *src, ws4d_alloc_list * alist)
+{
+  wchar_t *res = NULL;
+  size_t len;
+
+  if (!src)
+    return res;
+
+  for(len=0;src[len]!=0; len++);
+
+  res = (wchar_t *) ws4d_memdup (src, (len + 1)*sizeof(wchar_t), alist);
+
+  res[len] = '\0';
+
+  return res;
+}
+
 char *
 ws4d_strndup (const char *src, size_t size, ws4d_alloc_list * alist)
 {

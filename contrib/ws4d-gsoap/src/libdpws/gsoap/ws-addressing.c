@@ -816,7 +816,7 @@ wsa_header_gen_response (struct soap *soap, const char *MessageId,
 
    endpoint= soap->header->wsa__ReplyTo;
    if(endpoint->ReferenceParameters)
-   for(i=0;i<endpoint->ReferenceParameters->__sizepar;i++)
+   for(i=0;i<endpoint->ReferenceParameters->__sizepar;i++) // This loop removes non anyType parameters (for unknown reason)
    {
 	   if(endpoint->ReferenceParameters->__par[i].__type!=SOAP_TYPE_xsd__anyType)
 		   continue;

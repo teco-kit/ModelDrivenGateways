@@ -18,7 +18,7 @@
  * 02110-1301 USA
  */
 
-#include "stdsoap2.h"
+#include <stdsoap2.h>
 #include "soap_misc.h"
 
 #include "wse.nsmap"

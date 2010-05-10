@@ -81,7 +81,7 @@ ADD_CUSTOM_TARGET(tool_embedwsdl DEPENDS ${DPWS_EMBEDWSDL})
 ################################################################################
 
 ADD_EXECUTABLE(supervisor
-	supervisor.c ${GSOAP_STDSOAP2_SOURCE})
+	supervisor.c)
 
 EXTEND_TGT_COMPILE_FLAGS(supervisor 
 	FLAGS "-DWITH_MUTEXES")
@@ -92,10 +92,13 @@ IF (TOOL_COMPILE_FLAGS)
 ENDIF (TOOL_COMPILE_FLAGS)
 
 TARGET_LINK_LIBRARIES(supervisor
+	${DPWS-CMT_LIBRARIES}
 	${DPWS_LIBRARIES}
 	${DPWS-CMT_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
-	${OPENSSL_LIBRARIES})
+	${OPENSSL_LIBRARIES}
+	gsoap
+)
 
 ADD_DEPENDENCIES(supervisor
 	${DPWS_LIBRARIES}
@@ -107,7 +110,7 @@ ADD_DEPENDENCIES(supervisor
 ################################################################################
 
 ADD_EXECUTABLE(resolve
-	resolve.c ${GSOAP_STDSOAP2_SOURCE})
+	resolve.c)
 GET_TARGET_PROPERTY(RESOLVE_LOCATION resolve LOCATION)
 SET(RESOLVE_BINARY ${RESOLVE_LOCATION} CACHE PATH "")
 
@@ -116,13 +119,18 @@ IF (TOOL_COMPILE_FLAGS)
 ENDIF (TOOL_COMPILE_FLAGS)
 
 TARGET_LINK_LIBRARIES(resolve
+	${DPWS-C_LIBRARIES}
 	${DPWS_LIBRARIES}
 	${DPWS-C_LIBRARIES}
-	${OPENSSL_LIBRARIES})
+	${OPENSSL_LIBRARIES}
+	gsoap
+)
 	
 ADD_DEPENDENCIES(resolve
+	${DPWS-C_LIBRARIES}
 	${DPWS_LIBRARIES}
-	${DPWS-C_LIBRARIES})
+	${DPWS-C_LIBRARIES}
+)
 
 
 ################################################################################
@@ -130,18 +138,20 @@ ADD_DEPENDENCIES(resolve
 ################################################################################
 
 ADD_EXECUTABLE(probe
-	probe.c ${GSOAP_STDSOAP2_SOURCE})
+	probe.c)
 
 IF (TOOL_COMPILE_FLAGS)
 	EXTEND_TGT_COMPILE_FLAGS(probe FLAGS "${TOOL_COMPILE_FLAGS}")
 ENDIF (TOOL_COMPILE_FLAGS)
 
 TARGET_LINK_LIBRARIES(probe
+	${DPWS-C_LIBRARIES}
 	${DPWS_LIBRARIES}
 	${DPWS-C_LIBRARIES}
 	${OPENSSL_LIBRARIES})
 
 ADD_DEPENDENCIES(probe
+	${DPWS-C_LIBRARIES}
 	${DPWS_LIBRARIES}
 	${DPWS-C_LIBRARIES})
 
@@ -151,18 +161,20 @@ ADD_DEPENDENCIES(probe
 ################################################################################
 
 ADD_EXECUTABLE(dprobe
-	dprobe.c ${GSOAP_STDSOAP2_SOURCE})
+	dprobe.c)
 
 IF (TOOL_COMPILE_FLAGS)
 	EXTEND_TGT_COMPILE_FLAGS(dprobe FLAGS "${TOOL_COMPILE_FLAGS}")
 ENDIF (TOOL_COMPILE_FLAGS)
 
 TARGET_LINK_LIBRARIES(dprobe
+	${DPWS-C_LIBRARIES}
 	${DPWS_LIBRARIES}
 	${DPWS-C_LIBRARIES}
 	${OPENSSL_LIBRARIES})
 
 ADD_DEPENDENCIES(dprobe
+	${DPWS-C_LIBRARIES}
 	${DPWS_LIBRARIES}
 	${DPWS-C_LIBRARIES})
 
@@ -172,18 +184,22 @@ ADD_DEPENDENCIES(dprobe
 ################################################################################
 
 ADD_EXECUTABLE(describe
-	describe.c ${GSOAP_STDSOAP2_SOURCE})
+	describe.c)
 
 IF (TOOL_COMPILE_FLAGS)
 	EXTEND_TGT_COMPILE_FLAGS(describe FLAGS "${TOOL_COMPILE_FLAGS}")
 ENDIF (TOOL_COMPILE_FLAGS)
 
 TARGET_LINK_LIBRARIES(describe
+	${DPWS-C_LIBRARIES}
 	${DPWS_LIBRARIES}
 	${DPWS-C_LIBRARIES}
-	${OPENSSL_LIBRARIES})
+	${OPENSSL_LIBRARIES}
+	gsoap
+)
 	
 ADD_DEPENDENCIES (describe
+	${DPWS-C_LIBRARIES}
 	${DPWS_LIBRARIES}
 	${DPWS-C_LIBRARIES})
 
@@ -193,13 +209,14 @@ ADD_DEPENDENCIES (describe
 ################################################################################
 
 ADD_EXECUTABLE(subscribe
-	subscribe.c ${GSOAP_STDSOAP2_SOURCE})
+	subscribe.c)
 
 IF (TOOL_COMPILE_FLAGS)
 	EXTEND_TGT_COMPILE_FLAGS(subscribe FLAGS "${TOOL_COMPILE_FLAGS}")
 ENDIF (TOOL_COMPILE_FLAGS)
 
 TARGET_LINK_LIBRARIES(subscribe
+	${DPWS-C_LIBRARIES}
 	${DPWS_LIBRARIES}
 	${DPWS-C_LIBRARIES}
 	${OPENSSL_LIBRARIES})
@@ -214,16 +231,19 @@ ADD_DEPENDENCIES (subscribe
 ################################################################################
 
 ADD_EXECUTABLE(unsubscribe
-	unsubscribe.c ${GSOAP_STDSOAP2_SOURCE})
+	unsubscribe.c)
 
 IF (TOOL_COMPILE_FLAGS)
 	EXTEND_TGT_COMPILE_FLAGS(unsubscribe FLAGS "${TOOL_COMPILE_FLAGS}")
 ENDIF (TOOL_COMPILE_FLAGS)
 
 TARGET_LINK_LIBRARIES(unsubscribe
+	${DPWS-C_LIBRARIES}
 	${DPWS_LIBRARIES}
 	${DPWS-C_LIBRARIES}
-	${OPENSSL_LIBRARIES})
+	${OPENSSL_LIBRARIES}
+	gsoap
+)
 
 ADD_DEPENDENCIES (unsubscribe
 	${DPWS_LIBRARIES}
@@ -235,16 +255,19 @@ ADD_DEPENDENCIES (unsubscribe
 ################################################################################
 
 ADD_EXECUTABLE(subsstatus
-	subsstatus.c ${GSOAP_STDSOAP2_SOURCE})
+	subsstatus.c)
 
 IF (TOOL_COMPILE_FLAGS)
 	EXTEND_TGT_COMPILE_FLAGS(subsstatus FLAGS "${TOOL_COMPILE_FLAGS}")
 ENDIF (TOOL_COMPILE_FLAGS)
 
 TARGET_LINK_LIBRARIES(subsstatus
+	${DPWS-C_LIBRARIES}
 	${DPWS_LIBRARIES}
 	${DPWS-C_LIBRARIES}
-	${OPENSSL_LIBRARIES})
+	${OPENSSL_LIBRARIES}
+	gsoap
+)
 
 ADD_DEPENDENCIES (subsstatus
 	${DPWS_LIBRARIES}

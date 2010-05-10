@@ -9,6 +9,7 @@
 
 //gsoap wsdp schema import: http://schemas.xmlsoap.org/ws/2006/02/devprof
 #import "wsdp.h"
+#import "dom.h"
 
 /*****************************************************************************
  *	 Header
