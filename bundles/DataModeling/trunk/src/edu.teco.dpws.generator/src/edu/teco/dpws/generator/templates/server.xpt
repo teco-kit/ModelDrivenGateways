@@ -49,23 +49,29 @@ enum operations
 int  «name»_serve_request(struct soap *soap) //TODO: pass device context
 {
 	soap_peek_element(soap);
-	«EXPAND dispatch FOREACH port.getPortType().operation.select(e|e.input!=null)-»
+	«FOREACH port AS p»
+	/* Port «p.name» */
+	«EXPAND dispatch(p) FOREACH port.getPortType().operation.select(e|e.input!=null)-»
+	«ENDFOREACH»
 	return soap->error = SOAP_NO_METHOD;
 }
 «ENDDEFINE»
 
-«DEFINE dispatch FOR TOperation»
+«DEFINE dispatch(TPort port) FOR TOperation»
 	if (
+	(soap->action && !strcmp(soap->action, 
+	«IF !input.anyAttribute.toList().select(e|e.feature.name=="Action").isEmpty-»
+	"«input.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»"
+	«ELSE-»
+	"«input.message.namespaceURI»/«port.name»Port/«input.message.localPart»"
+	«ENDIF-»
+	))
+
 	«IF !input.getMessage().part.isEmpty»
-	(«IF !input.anyAttribute.toList().select(e|e.feature.name=="Action").isEmpty»!soap->action && «ENDIF»  !soap_match_tag(soap, soap->tag, "«getNSPrefix()»:«input.getMessage().part.first().element.localPart»"))
-	«ELSE»
-	0
-	«ENDIF»
-	||
-	«IF !input.anyAttribute.toList().select(e|e.feature.name=="Action").isEmpty»
-	(soap->action && !strcmp(soap->action, "«input.anyAttribute.toList().select(e|e.feature.name=="Action").first().value»"))
-	«ELSE»
-	0
+	 ||
+	 (! soap->action && !soap_match_tag(soap, soap->tag, 
+	 "«getNSPrefix()»:«input.getMessage().part.first().element.localPart»")
+	 )
 	«ENDIF»
 	«REM» TODO:Add SOAP:action vs. wsa:action ??«ENDREM»
 	)
