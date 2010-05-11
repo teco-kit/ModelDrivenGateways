@@ -56,25 +56,14 @@ void
   dpws_for_each_subs (subs, next, _device,
                       soap_action_uri)
   {
-    char uuidstr[WS4D_UUID_SIZE]={0};
-    char msgid[WS4D_UUID_SCHEMA_SIZE];
     
-    char *deliverto = dpws_subsm_get_deliveryPush_address (device, subs);
-    
-    if (!deliverto)
-      continue;
-      
-    ws4d_uuid_generate_random (uuidstr);
-    ws4d_uuid_generate_schema (msgid, uuidstr);
-    
-    wsa_header_gen_oneway( &soap, NULL, deliverto,
-                            soap_action_uri,
-                            NULL, sizeof (struct SOAP_ENV__Header));
+    if(WS4D_OK!=
+    dpws_header_gen_event(&soap,device,soap_action_uri,subs,sizeof(struct SOAP_ENV__Header)))
+    	continue;
 
-    printf ("Sending Event to %s\n", deliverto);
        
     soap.omode|=SOAP_IO_CHUNK;
-    if (   soap_connect(&soap, deliverto, soap_action_uri)
+    if (   soap_connect(&soap, dpws_subsm_get_deliveryPush_address (device, subs), soap_action_uri)
         || soap_envelope_begin_out(&soap)
         || soap_putheader(&soap)
         || soap_body_begin_out(&soap) )
