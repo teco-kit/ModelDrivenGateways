@@ -30,7 +30,9 @@ namespace NodeDiscovery
         private static bool AnnouncementFound = false;
         private static System.Diagnostics.Process UsbBridgeProcess = null;
         private static System.Diagnostics.Process SSimpDevice = null;
-
+        private static EndpointAddress endpointAddress = null;
+        private static EndpointAddress hostedEndPoint = null;
+           
         /// <summary>
         /// Initial point of the program.
         /// </summary>
@@ -52,10 +54,9 @@ DECRC 2009
 DPWS Discovery Project,
 Contact N. L. Fantana (nicolaie.fantana@de.abb.com)
 
- * Please, start Gateway and any DummyNode before select the options.
+ * Please, start Gateway before select the options.
+   Additionally a running dummynode is required when using manual discovery (Option D) 
 ");
-            EndpointAddress endpointAddress = null;
-            EndpointAddress hostedEndPoint = null;
             // Go always into the menu, until the user selects to exit.
             while (true)
             {
@@ -311,7 +312,7 @@ Select: ");
                 // Open the host async
                 announcementServiceHost.Open();
 
-                Console.WriteLine("Please, start manually the SSimpleDevice in the bin Directory.");
+                Console.WriteLine("Please start a dummynode.");
                 Console.Write("Waiting for an announcement (Enter-Exit) ...");
                 Console.ReadLine();
             }
@@ -327,28 +328,29 @@ Select: ");
         {
             EndpointDiscoveryMetadata metadata = e.EndpointDiscoveryMetadata;
 
-            // We are looking for services that 
-            // implement the ISimpleChatService contract
-            FindCriteria criteria =
-                new FindCriteria(typeof(SensorValuesClient));
-
-            if (criteria.IsMatch(metadata))
+            // Check if service is SSimpDeviceType which is the Host service used 
+            foreach (System.Xml.XmlQualifiedName type in metadata.ContractTypeNames)
             {
-                Console.WriteLine("New service found: !!");
-                AnnouncementFound = true;
+                if (type.Equals(new System.Xml.XmlQualifiedName("SSimpDeviceType", "http://www.teco.edu/SensorValues")))
+                {
+                    Console.WriteLine("New service found: !!");
+                    AnnouncementFound = true;
+                    
+                    endpointAddress = new EndpointAddress(metadata.ListenUris[0]);
+                    hostedEndPoint = GetMetaData(endpointAddress);
+                    Console.WriteLine("Service can now be invoked");
+                }
             }
         }
 
         private static void OnOfflineAnnouncement(object sender, AnnouncementEventArgs e)
         {
             EndpointDiscoveryMetadata metadata = e.EndpointDiscoveryMetadata;
-
-            FindCriteria criteria =
-                new FindCriteria(typeof(SensorValuesClient));
-
-            if (criteria.IsMatch(metadata))
+            if (metadata.ListenUris[0].Equals(endpointAddress.Uri))
             {
                 Console.WriteLine("Service said goodbye!!");
+                endpointAddress = null;
+                hostedEndPoint = null;
             }
         }
 
