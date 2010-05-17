@@ -52,3 +52,9 @@ C:\Users\riedel\Personal\Code\DPWS2\NodeDiscovery\NodeDiscovery\bin\Debug\NodeDi
 C:\Users\riedel\Personal\Code\DPWS2\NodeDiscovery\NodeDiscovery\obj\x86\Debug\ResolveAssemblyReference.cache
 C:\Users\riedel\Personal\Code\DPWS2\NodeDiscovery\NodeDiscovery\obj\x86\Debug\NodeDiscovery.exe
 C:\Users\riedel\Personal\Code\DPWS2\NodeDiscovery\NodeDiscovery\obj\x86\Debug\NodeDiscovery.pdb
+C:\Users\Administrator\Documents\NodeDiscovery0.7_teco_2010-05-11\NodeDiscovery\bin\Debug\NodeDiscovery.exe.config
+C:\Users\Administrator\Documents\NodeDiscovery0.7_teco_2010-05-11\NodeDiscovery\obj\x86\Debug\NodeDiscovery.exe
+C:\Users\Administrator\Documents\NodeDiscovery0.7_teco_2010-05-11\NodeDiscovery\obj\x86\Debug\NodeDiscovery.pdb
+C:\Users\Administrator\Documents\NodeDiscovery0.7_teco_2010-05-11\NodeDiscovery\bin\Debug\NodeDiscovery.exe
+C:\Users\Administrator\Documents\NodeDiscovery0.7_teco_2010-05-11\NodeDiscovery\bin\Debug\NodeDiscovery.pdb
+C:\Users\Administrator\Documents\NodeDiscovery0.7_teco_2010-05-11\NodeDiscovery\obj\x86\Debug\ResolveAssemblyReference.cache
