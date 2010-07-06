@@ -1,4 +1,5 @@
 «IMPORT Automata»
+«IMPORT ecore»
 «EXTENSION edu::teco::automata::generator::templates::c::binEncoder»
 
 «DEFINE ctype FOR DataType»«metaType.name»/*unknown*/«ERROR "type"+metaType.name+"unknown"»«ENDDEFINE»
@@ -94,7 +95,7 @@
 {
 u«EXPAND ctype» c;
 ret= read_bits(reader, (u_char *)&c, «bitsLen()»);
-if(ret>0) //todo check for exact
+if(ret>=0) //todo check for exact
 	{
   		ret=asprintf(«out», «EXPAND printstr», «EXPAND decodeInt("c")»); //TODO: check overflows
 	}
@@ -211,3 +212,4 @@ memcpy(«out»,&t,sizeof(t));
 «ERROR "DataType "+metaType.name+" not supported"»
 «ENDIF»
 «ENDDEFINE»
+

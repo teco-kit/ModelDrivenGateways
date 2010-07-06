@@ -29,8 +29,10 @@ import edu.teco.automata.Automata.StartState;
 import edu.teco.automata.Automata.State;
 import edu.teco.automata.Automata.StateMachine;
 import edu.teco.automata.Automata.StopState;
+import edu.teco.automata.Automata.TByte;
 import edu.teco.automata.Automata.TDouble;
 import edu.teco.automata.Automata.TInt;
+import edu.teco.automata.Automata.TShort;
 import edu.teco.automata.Automata.TString;
 import edu.teco.automata.generator.xml.XmlReader;
 
@@ -271,7 +273,51 @@ protected void doModification(WorkflowContext ctx, ProgressMonitor monitor,
                      ((TInt) ((SimpleState) previousState).getType())
                         .setStepping((int)spContent.getStepping());
 
-               }
+               }else if (baseType.contains("byte")) {//TODO
+            	   if(null!=ann.getDetails().get(
+                               "minInclusive"))
+                   ((TByte) ((SimpleState) previousState).getType())
+                         .setMin(Integer.parseInt(ann.getDetails().get(
+                               "minInclusive")));
+            	   if(null!=ann.getDetails().get(
+                   "maxInclusive"))
+                   ((TByte) ((SimpleState) previousState).getType())
+                         .setMax(Integer.parseInt(ann.getDetails().get(
+                               "maxInclusive")));
+                   
+                   if (spContent.getStepping() != -1)
+                      ((TByte) ((SimpleState) previousState).getType())
+                         .setStepping((int)spContent.getStepping());
+
+                }
+               else if (baseType.contains("unsignedByte")) {//TODO
+            	   if(null!=ann.getDetails().get(
+                               "minInclusive"))
+                   ((TShort) ((SimpleState) previousState).getType())
+                         .setMin(Integer.parseInt(ann.getDetails().get(
+                               "minInclusive")));
+            	   else
+            	   {
+            		   ((TShort) ((SimpleState) previousState).getType())
+                       .setMin(0);//TODO
+            	   }
+            	   
+            	   if(null!=ann.getDetails().get(
+                   "maxInclusive"))
+                   ((TShort) ((SimpleState) previousState).getType())
+                         .setMax(Integer.parseInt(ann.getDetails().get(
+                               "maxInclusive")));
+            	   else
+            	   {
+            		   ((TShort) ((SimpleState) previousState).getType())
+                       .setMax(255);//TODO
+            	   }
+                   
+                   if (spContent.getStepping() != -1)
+                      ((TShort) ((SimpleState) previousState).getType())
+                         .setStepping((int)spContent.getStepping());
+
+                }
             }
          }
 
