@@ -427,6 +427,22 @@ int dpws_header_gen_oneway (struct soap *soap, const char *MessageId,
                             const char *FaultTo, size_t size);
 
 /**
+ * function generates SOAP header for an event delivery
+ *
+ *
+ * @param soap soap handle to generate header
+ * @param dpws device
+ * @param soap_action_uri address of action
+ * @param subscription to fulfill
+ * @param size size of struct SOAP_ENV__Header
+ *
+ * @return SOAP_OK on success or SOAP_ERR on failure
+ */
+#ifdef DPWS_DEVICE
+//int dpws_header_gen_event (struct soap *soap, struct dpws_s *device, char* soap_action_uri, struct ws4d_subscription *subs,size_t size);
+#endif
+
+/**
  * function generates SOAP header for a request of a request-response message exchange pattern
  *
  * look at air conditioner src/acs_simpleClient.c function main() for an example
