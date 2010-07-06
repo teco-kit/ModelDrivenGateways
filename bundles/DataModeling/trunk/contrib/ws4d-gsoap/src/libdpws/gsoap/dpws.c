@@ -2954,6 +2954,7 @@ dpws_processDelivery_push (struct ws4d_subscription *subs, void *data)
         ws4d_strdup (wse_subs_get_id (&delivery->wse__NotifyTo),
                      ws4d_subs_get_alist (subs));
 
+      if(delivery->wse__NotifyTo.ReferenceParameters)
       {
       xsd__anyType *ref_last=NULL;
       wsa__ReferenceParametersType  *refs=delivery->wse__NotifyTo.ReferenceParameters;
