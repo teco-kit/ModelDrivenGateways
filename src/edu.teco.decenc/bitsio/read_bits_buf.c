@@ -8,6 +8,8 @@
  *        05.04.2008 21:43    dy    initial version
  * ========================================================================
  */
+#define  _READ_BITS_C_ 1
+
 #include <stdint.h>
 
 #include "bits_io.h"

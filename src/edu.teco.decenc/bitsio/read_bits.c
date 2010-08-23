@@ -8,6 +8,7 @@
  *        05.04.2008 21:43    dy    initial version
  * ========================================================================
  */
+#define  _READ_BITS_C_ 1
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -15,7 +16,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <errno.h>
-#include "read_bits.h"
+#include <read_bits.h>
 #include "bits_io.h"
 
 
