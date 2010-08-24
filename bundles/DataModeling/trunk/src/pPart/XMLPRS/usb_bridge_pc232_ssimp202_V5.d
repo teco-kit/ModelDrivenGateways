@@ -1,1 +1,0 @@
-usb_bridge_pc232_ssimp202_V5.hex: FORCE
