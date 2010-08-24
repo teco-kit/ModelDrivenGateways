@@ -46,7 +46,6 @@
 #include INC(boards/BOARD.c)
 
 
-
 #include "system/awarecon.h"			
 #include "system/awarecon.c"		
 
@@ -65,7 +64,7 @@
 #include "sensors/tsl2550.c"
 
 #include INC(boards/SENSORBOARD.c)
-#else 
+#else
 #endif
 
 
@@ -77,12 +76,11 @@
 
 #fuses hs,noprotect,nobrownout,nolvp,put,nowdt
 
-
-// other app stuff
-//#include "system/ack.c"						// acknowledged transmit/receive
-//#include "system/rtc.c"						// acknowledged transmit/receive
-//#include "system/rssi.c"
+#ifdef TEST
+#include "prs_test.c" 								// programmable sensors
+#else
 #include "prs74.c" 								// programmable sensors
+#endif
 
 
 
@@ -91,17 +89,15 @@
 #separate
 void SlotEndCallBack()
 {
-//	RTCUpdate();
-//	ACLACKRun();
-	//RSSIRun();
 	PRSRun();
-
 }
 
 
 void main()
 {
-
+#ifdef TEST
+ PRSTest1();
+#else
 	//TYPICAL STARTUP FLOW
 	//*****************************************************************
 
@@ -131,6 +127,7 @@ void main()
 	{
 	  PRSSendSensorValues();
 	}
+#endif
 }
 
 
