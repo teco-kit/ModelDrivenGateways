@@ -1,0 +1,4 @@
+add 9-bit uart modes
+--This line, and those below, will be ignored--
+
+M    boards/18f6720.c
