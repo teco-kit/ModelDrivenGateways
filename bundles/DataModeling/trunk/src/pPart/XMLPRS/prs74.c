@@ -6,59 +6,40 @@
 * Till Riedel <riedel@teco.edu>
 *
 */
-#define NDEBUG
-#define CCSC
+#define NDEBUG 1
+#define CCSC 1
 
-#include <bitsio/write_bits_buf.c>
 #include <bitsio/read_bits_buf.c>
+#include <bitsio/write_bits_buf.c>
 
 #define __attribute__(X)
 #include <sens_types.h>
 
 //#include "debug_dom.h"
+
+
 #include <Sample_dom2bin.c>
+
+#include <Status_dom2bin.c>
+#include <StatusControl_bin2dom.c>
 
 #include <SensorValues_operations.h>
 
+#include "sensorvalues_service.c"
+
 // macros.
 
-#include "prs74.h"
-
-#define PRS_SEND_TIMEOUT_MAX     5     // number of bit to set, i. e. 32 slots.
-
-#define PRS_SLEEP_WANTED         1     // allow sleep here.
-#define PRS_SLOTS_FOR_ONE_SLEEP  202      // sleep-time ca. 2630 - 2640 ms = 202 slots.
-#define PRS_SLOTS_SLEEP_SAFE     13    // 13 slots for safe wake-up.
-#define  PRS_RATE_SLEEP_POSSIBLE    8     // every 256 slots, as 128 < 202 + 13
-
-#define PRS_BITMASK_ACCL_AMBIENT_TEMP  0b01010011
-#define PRS_BITMASK_AUDIO_FORCE        0b00100100
-
-
 // globals.
-unsigned int   PRS_sensors_included; //assert(sizeof(PRS_sensors_included)*8>PRS_SENSORS_MAX)
 
-unsigned int   PRS_sensors_wanted;
-unsigned int   PRS_sensor_rates[ PRS_SENSORS_MAX ]= PRS_SENSORS_DEFAULT;
-
-unsigned long  PRS_slot_counter=0;
-unsigned long  PRS_send_timeout;
-unsigned long  PRS_last_slot_sent;
-unsigned int   PRS_try_sleep;
-//unsigned int   PRS_control_messages_counter;
 
 // functions.
 void PRSInit();
 void PRSRun();
 void PRSSendSensorValues();
-//void PRSGoToSleep();
-void PRSAddSensorValueToSend( unsigned int sensor );
-void PRSSetAccl( void );
-void PRSSetAcclZ( void );
-void PRSSetAudio( void );
-void PRSSetAmbientlight( void );
-void PRSSetForce( void );
-void PRSSetTemp( void );
+
+int sendEvent( int  timeout );
+int sendPacket (int timeout, uint16_t svc, uint8_t op, char *buf, size_t len);
+
 
 int sendPacket( int  timeout );
 
@@ -67,161 +48,180 @@ static sens_SSimpSample s;
 
 void PRSInit()
 {
-
-   enable_interrupts( GLOBAL );
-   ACLStart();
-   PRS_sensors_included = 0;
-#ifdef ACCL_SENSOR
-   bit_set( PRS_sensors_included, PRS_ACCL  );
-#endif
-#ifdef AUDIO_SENSOR
-   bit_set( PRS_sensors_included, PRS_AUDIO );
-#endif
-#ifdef LIGHT_SENSOR
-   bit_set( PRS_sensors_included, PRS_LIGHT );
-#endif
-#ifdef AMBIENT_LIGHT_SENSOR
-   bit_set( PRS_sensors_included, PRS_AMBIENTLIGHT );
-#endif
-#ifdef FORCE_SENSOR
-   bit_set( PRS_sensors_included, PRS_FORCE );
-#endif
-#ifdef TEMPERATURE_SENSOR
-   bit_set( PRS_sensors_included, PRS_TEMP );
-#endif
-
-#ifdef DUMMY_MODE 
-#ifdef TEMPERATURE_SENSOR
-#error dummy mode
-#endif
-   {
-     int i;
-     for(i=0;i<PRS_SENSORS_MAX;i++)
-       bit_set( PRS_sensors_included, i );
-   }
-#endif
-   /* PRS_sensors_included = 0; */
-
-   // rest of init.
-   PRS_slot_counter = 0;
-   PRS_send_timeout = PRS_SEND_TIMEOUT_MAX;
-   PRS_last_slot_sent = 0;
-
-   PRS_try_sleep = 0;
-
-   {
-     int i;
-   for( i = 0; i < 8; ++i )
-   {
-      if( PRS_sensor_rates[ i ] < 16 ) bit_set( PRS_sensors_wanted, i );
-      else bit_clear( PRS_sensors_wanted, i );
-   }
-   }
+init_sensors();
+init_time();
+BuzzerTone(TONE_E5,100);
+BuzzerTone(TONE_E4,100);
+BuzzerTone(TONE_E5,100);
+ACLSubscribe(ACL_TYPE_ALPHA_ARG('S','V','C'));
 }
+
+int has_dat=0,send_enough=0;
+unsigned long  PRS_slot_counter=0;
+unsigned long  PRS_last_slot_sent=-1;
 
 void PRSRun()
 {
    ++PRS_slot_counter;
-}
 
+   has_dat=!get_sensor_values(&s, PRS_slot_counter%(1<<15));
+
+   if(has_dat) SSimpLEDAmberOn();
+   else  SSimpLEDAmberOff();
+
+   if((PRS_slot_counter&0xff)==0)
+   {
+	   update_time(); //every 3 seconds, later may need wakeup...
+
+	   if(!ACLSendingBusy()&&!ACL_payload_length&&!send_enough)
+	   {
+		   ACLAddNewType(ACL_TYPE_ALPHA_ARG('A','C','M'));
+		   ACLAddNewType(ACL_TYPE_ALPHA_ARG('C','E','H'));
+		   {int i; for(i=0;i<8;i++)ACLAddData(255);}
+		   ACLSendPacket(1);
+	   }
+	   else
+	   send_enough=0;
+   }
+
+
+}
 
 void PRSSendSensorValues()
 {
-   unsigned int i;
    unsigned int timeout;
-   unsigned int sensor_mask = 0;
-   unsigned int dummy;
 
-   if( PRS_last_slot_sent != PRS_slot_counter )
+   if(PRS_last_slot_sent != PRS_slot_counter && has_dat )
    {
-      unsigned long slot_counter_changes;
       PRS_last_slot_sent = PRS_slot_counter;
 
-      slot_counter_changes = PRS_last_slot_sent ^ ( PRS_last_slot_sent - 1 );
+      sendEvent( timeout );
+   }
 
-      for( i = 0; i < PRS_SENSORS_MAX; ++i )
-      {
-         dummy = PRS_sensor_rates[ i ];
-         if( dummy < 16 )
-         {
-            if( bit_test( slot_counter_changes, dummy )) bit_set( sensor_mask, i );
-         }
-      }
+   if(ACLAddressedDataIsNew()){
+	   char *dat;
 
-      memset(&s,0,sizeof(s));
-      if( sensor_mask ) 
-      {
-         bit_set( timeout, PRS_send_timeout );
+	   dat=ACLGetReceivedSubjectData();
+
+  	   if(ACLGetType(dat)==ACL_TYPE_ALPHA('S','V','C') && (*(uint16_t*) dat)==0)
+	   {
 
 
-         for( i = 0; i < PRS_SENSORS_MAX; ++i )
-         {
-            if( bit_test( sensor_mask, i ))
-               PRSAddSensorValueToSend( i );
-         }
+		   dat=ACLGetNextTupleData(dat);
+		   if(dat && ACLGetType(dat)==ACL_TYPE_ALPHA('O','P','?'))
+		   {
+			   uint8_t op;
+			   op=*dat;
+		   switch(op)
+		   {
+			   case  OP_SensorValues_GetSensorValues:
+				   {
+					   sens_SSimpSample out={};
+					   char buf[64];
+					   ssize_t dat_len;
 
-         sendPacket( timeout );
-         PRS_try_sleep = 1;
 
-      }
+					   get_sensor_values(&out,-1);
+					   {
+						   struct WRITER_STRUCT writer;
 
-     // if( PRS_SLEEP_WANTED && PRS_try_sleep && !PRS_control_messages_counter ) PRSGoToSleep();
+						   write_bits_bufwriter_init(&writer,buf,64);
+						   Sample_dom2bin_run(&out, &writer);
+						   dat_len=write_buf_finish(&writer);
+					   }
+					  sendPacket (20, 0 ,op, buf, dat_len);
+					 // BuzzerTone(TONE_E5,100);
+				   }
+				   break;
+			   case  OP_SensorValues_Config:
+				   {
+					   char buf[64];
+					   size_t dat_len;
+					   sens_SSimpControl in={};
+				       sens_SSimpStatus out={};
+				       //BuzzerTone(TONE_A5,100);
+					   {
+						   struct READER_STRUCT reader;
+						   dat=ACLGetNextTupleData(dat);
+						   read_bits_bufreader_init(&reader,dat,ACLGetDataLength(dat));
+						   StatusControl_bin2dom_run(&in, &reader);
+						   dat_len=*write_buf_finish(&reader);
+					   }
+					   //BuzzerTone(TONE_H5,100);
+					   configure_sensors(&in,&out);
+					   //BuzzerTone(TONE_C5,100);
+					   {
+						   struct WRITER_STRUCT writer;
+						   write_bits_bufwriter_init(&writer,buf,64);
+						   Status_dom2bin_run(&out, &writer);
+						   dat_len=write_buf_finish(&writer);
+					   }
+					  // BuzzerTone(TONE_D5,100);
+					   sendPacket (20, 0 ,op, buf, dat_len);
+				   }
+				   break;
+			   default:
+				  // BuzzerTone(TONE_E4,100);
+		   }
+		   }
+	   }
+  	   ACLSetDataToOld();
    }
 }
 
-int sendPacket( int  timeout )
+
+
+int sendPacket (int timeout, uint16_t svc, uint8_t op, char *buf, size_t len)
 {
-   ssize_t data_len;
-   char buf[64];
+	//	uint8_t op=
 
-   {
-     struct WRITER_STRUCT writer;
+	ACLAddNewType(ACL_TYPE_ALPHA_ARG('S','V','C'));
+	ACLAddDataN(&svc,sizeof(svc));
 
-     write_bits_bufwriter_init(&writer,buf,64);
-     Sample_dom2bin_run(&s, &writer);
-     data_len=write_buf_finish(&writer);
-   }
+	ACLAddNewType(ACL_TYPE_ALPHA_ARG('O','P','?'));
+	ACLAddDataN(&op,sizeof(op));
 
-   {
-     uint16_t svc=0;
-     uint8_t op=OP_SensorValues_SensorValuesEvent;
+	ACLAddNewType(ACL_TYPE_ALPHA_ARG('X','M','L'));
+	ACLAddDataN(buf,len);
 
-     ACLAddNewType(ACL_TYPE_ALPHA_ARG('S','V','C'));
-     ACLAddDataN(&svc,sizeof(svc));
+	ACLSendPacket(timeout);
+	while(ACLSendingBusy());
+	send_enough=1;
+	return ACLGetSendSuccess();
+}
 
-     ACLAddNewType(ACL_TYPE_ALPHA_ARG('O','P','?'));
-     ACLAddDataN(&op,sizeof(op));
+int sendEvent( int  timeout )
+{
+	ssize_t dat_len;
+	char buf[64];
+	int ret;
 
-     ACLAddNewType(ACL_TYPE_ALPHA_ARG('X','M','L'));
-     ACLAddDataN(buf,data_len);
+	{
+		struct WRITER_STRUCT writer;
 
-     ACLSendPacket(20);
-   while(ACLSendingBusy());
-   }
+		write_bits_bufwriter_init(&writer,buf,64);
+		Sample_dom2bin_run(&s, &writer);
+		dat_len=write_buf_finish(&writer);
+	}
+
+
+
+	ret=sendPacket (20, 0 ,OP_SensorValues_SensorValuesEvent, buf, dat_len);
 
 #ifdef DUMMMY_MODE
-   {
-     int i;
-     for(i=0;i<sizeof(s);i+=48)
-     {
-       ACLAddNewType(ACL_TYPE_ALPHA_ARG('D','O','M'));
-       ACLAddDataN(((char *)&s)+i,((sizeof(s)-i)<48)?(sizeof(s)-i):48);
-       ACLSendPacket(20);
-       while(ACLSendingBusy());
-     }
-   }
+	{
+		int i;
+		for(i=0;i<sizeof(s);i+=48)
+		{
+			ACLAddNewType(ACL_TYPE_ALPHA_ARG('D','O','M'));
+			ACLAddDataN(((char *)&s)+i,((sizeof(s)-i)<48)?(sizeof(s)-i):48);
+			ACLSendPacket(20);
+			while(ACLSendingBusy());
+		}
+	}
 #endif
 
 
-   return 0;
+	return ret;
 }
 
-#ifndef REAL_TIME_CLOCK
-unsigned int RTCGetTimeFromServer()
-{
-   return 0;
-}
-void RTCAddTimeStampACL() {}
-#endif
-
-#include "prs74_set.c"

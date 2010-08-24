@@ -45,7 +45,7 @@
 
 #include INC(boards/BOARD.c)
 
-#include INC(boards/SENSORBOARD.c)
+
 
 #include "system/awarecon.h"			
 #include "system/awarecon.c"		
@@ -57,12 +57,14 @@
 //#include "piezo.c"
 //#include "sensors/tsl250.c"
 //#include "sensors\tc74.c"
-#include "sensors/fsr.c"
+//#include "sensors/fsr.c"
 #include "sensors/SP0101NC1.c"
 #include "sensors/adxl210.c"
 #include "sensors/adxl210_z.c"
 #include "sensors/mcp9800.c"
 #include "sensors/tsl2550.c"
+
+#include INC(boards/SENSORBOARD.c)
 #else 
 #endif
 
@@ -77,10 +79,13 @@
 
 
 // other app stuff
-#include "system/ack.c"						// acknowledged transmit/receive
-#include "system/rtc.c"						// acknowledged transmit/receive
+//#include "system/ack.c"						// acknowledged transmit/receive
+//#include "system/rtc.c"						// acknowledged transmit/receive
 //#include "system/rssi.c"
 #include "prs74.c" 								// programmable sensors
+
+
+
 // this function is called from the fsm at the end of an rf slot
 // make sure that it terminates in time
 #separate
@@ -90,25 +95,12 @@ void SlotEndCallBack()
 //	ACLACKRun();
 	//RSSIRun();
 	PRSRun();
-        //BuzzerTone(TONE_F5,10);
+
 }
 
 
 void main()
 {
-
-   /* unsigned int stund;        */
-   /* unsigned int minut;        */
-   /* unsigned int sekund;       */
-   /* unsigned long millisekund; */
-   /* unsigned int tag;          */
-   /* unsigned int monat;        */
-   /* unsigned int jahr;         */
-   /* unsigned int i;            */
-
-
-   /* byte test[10];             */
-
 
 	//TYPICAL STARTUP FLOW
 	//*****************************************************************
@@ -117,31 +109,22 @@ void main()
 	
 	PCInit();											// is not dangerous, because all pins are set correct . bport is input, i2c and eeprom are initianlized as well
 	SSimpInit();
+
 	ACLInit();											// init the stack and start it
-	AppSetLEDBehaviour(LEDS_ON_SEND);
+	AppSetLEDBehaviour(LEDS_ON_RECEIVE);
 	PCLedRedOn();
 	delay_ms(100);
 	PCLedRedOff();
 	enable_interrupts(global);							// must be done before lifesign and
 
 
-
-	//#if des then init the ssimp
-
-
-
-	//*****************************************************************
+    //*****************************************************************
 	//now start your code here
 
 
 	SSimpSensorsInit();
 	SSimpSensorsOn();
 
-//	ACLACKInit();
-
-//RTCInit();
-
-	//RSSIInit();
 	PRSInit();
 
 	for(;;)

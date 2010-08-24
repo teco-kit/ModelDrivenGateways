@@ -7,19 +7,21 @@ MAC?=5
 TARGET=prs_app
 IGNORE_WARNINGS?=216,207,201
 
-.PHONY: build install
+.PHONY: install
 
 SUFFIX=$(BOARD)_$(SENSORBOARD)_V$(MAC)
 SUFFIX_DEFINES=BOARD SENSORBOARD MAC
 
 HEXFILE=$(TARGET)_$(SUFFIX).hex
 
-CFLAGS+=I+=../../SensorValuesService/src-gen/ I+=../../edu.teco.dpws.generator/shared/include/ I+=../../edu.teco.dpws.generator/shared/src/
+CFLAGS+=I+=../../SensorValuesService/src-gen/ I+=../../edu.teco.dpws.generator/shared/include/ I+=../../edu.teco.dpws.generator/shared/src/ I+=../../edu.teco.decenc/bitsio/
+
+all: build
 
 build:$(HEXFILE)
 include $(PBS)/Mk/ccsc.mk
 
-$(HEXFILE): FORCE
+#$(HEXFILE): FORCE
 
 
 %_$(SUFFIX).c:%.c
