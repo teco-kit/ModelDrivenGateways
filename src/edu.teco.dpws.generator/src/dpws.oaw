@@ -1,6 +1,6 @@
 <workflow>
 
-<property name="baseName" value="SSimp"/>
+<property name="baseName" value="uPart"/>
 <property name="dirName" value="../DPWSExample/src/"/>
 <property name="path" value="${dirName}/${baseName}.dpws"/>
 
@@ -17,9 +17,8 @@
     <modelSlot value="metadata" />
     <uri value="${path}" />
     
-    <metaModel id="metadata"
-      class="org.eclipse.xtend.typesystem.xsd.XSDMetaModel">
-      <schemaFile value="wsdl11.xsd" />
+    <metaModel id="metadata"     class="org.eclipse.xtend.typesystem.xsd.XSDMetaModel">
+      <!--schemaFile value="wsdp.xsd" /-->
     </metaModel>
   </component>
  
