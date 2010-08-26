@@ -54,29 +54,18 @@ int «this.states.typeSelect(StartState).first().out.name»_dom2bin_run(struct «th
 #include "«this.states.typeSelect(StartState).first().out.name»_dom2bin.h"
 
 
-static int dom_automata(struct WRITER_STRUCT *writer,ptr_stack stack, int *_label);
-
 int «this.states.typeSelect(StartState).first().out.name»_dom2bin_run(struct «this.states.typeSelect(StartState).out.typeSelect(SimpleState).first().ecore.name.p()» *dom, struct WRITER_STRUCT *writer ) 
 {
-	int ret;
 	int label=0;
-	
 	new_ptr_stack(stack,dom);
 	
-	while((ret=dom_automata(writer,stack,&label))>0);
-	
-    return ret;	
-}
-
-// return:  0 if EOF, 0<for fault, and  read bits else (TODO)
-static int dom_automata(struct WRITER_STRUCT *writer,ptr_stack stack, int *_label)
 {
-#define label (*_label)
 void *last=NULL;
 «ENDDEFINE»
 
 «DEFINE footer(String nameID) FOR StateMachine»
 return 1;
+}
 }
 «ENDDEFINE»
 
@@ -116,7 +105,7 @@ FOR SimpleState»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::loopEnd(String endName) FOR SimpleState»
     «targetDef.proceed()»
-    pop();
+    if(pop());
     }
      
     last=NULL;
@@ -185,7 +174,7 @@ FOR SimpleState»
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::complexEnd(Integer next) FOR SimpleState» 
-    pop();
+    if(pop());
    «targetDef.proceed()»
 «ENDAROUND»
 
@@ -202,7 +191,7 @@ FOR SimpleState»
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::simpleEnd FOR SimpleState» 
-   pop();
+   if(pop());
   «targetDef.proceed()»
 «ENDAROUND»
 
