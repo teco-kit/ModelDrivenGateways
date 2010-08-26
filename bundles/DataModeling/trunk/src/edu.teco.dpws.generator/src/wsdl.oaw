@@ -8,7 +8,7 @@
 <property name="platformURI" value=".."/>
 <property name="outlet" value="${platformURI}/${prjName}/src-gen"/>
 
-<property name="debug" value="false"/>
+<property name="debug" value="true"/>
 
 
 <property name="NSPrefix" value="sens"/>
@@ -49,7 +49,7 @@
 
   </component>
 
-    <component id="xsdParser"   class="edu.teco.automata.generator.XSD2EcoreReader">
+  <component id="xsdParser"   class="edu.teco.automata.generator.XSD2EcoreReader">
     <xsdPath value="${path}"/>
     <outputSlot value="SchemaModel"/>
     <firstElementOnly value="true"/>
@@ -69,6 +69,7 @@
    <outputSlot value="InMessageAutomata"/>
   </component> 
 
+  
   <if cond="${debug}">
    <component id="xmiWrite"
     class="org.eclipse.xtend.typesystem.emf.XmiWriter">

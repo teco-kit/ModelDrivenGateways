@@ -8,9 +8,9 @@
  *        05.04.2008 21:43    dy    initial version
  * ========================================================================
  */
+#define  _READ_BITS_C_ 1
 #include <stdint.h>
 
-#include "bits_io.h"
 #include <bitsio/read_bits.h>
 
 struct READER_STRUCT {
@@ -20,34 +20,35 @@ struct READER_STRUCT {
    size_t size;/*TODO: unchecked*/
 };
 
-const size_t read_bits_bufreader_size=sizeof(struct READER_STRUCT);
+ size_t read_bits_bufreader_size=sizeof(struct READER_STRUCT);
 /* ========================================================================
  *
  *
  * ========================================================================*/
-struct READER_STRUCT * read_bits_bufreader_init(struct READER_STRUCT *reader, const char *src_buf, size_t size)
+struct READER_STRUCT * read_bits_bufreader_init(struct READER_STRUCT *reader, char *src_buf, size_t size)
 {
    reader->buf  = (char *)src_buf;
    reader->byte_pos    = 0;
    reader->bit_pos = 0;
    reader->size=size;
+   read_bits_bufreader_size=read_bits_bufreader_size; /*to make read_bits_bufreader_size used*/
    return reader;
 }
 
-static void read_full(const uint8_t *in, uint8_t *rest, uint8_t *out, uint8_t offset)
+static void read_full( uint8_t *in, uint8_t *rest, uint8_t *out, uint8_t offset)
 {
 	uint16_t temp;             					/*              rest     |  in      */
-	temp= (*rest<<8)|(*in);   					/* offset=5 -> 	[XXXXX876 | 54321YYY] */
+	temp= ((uint16_t)*rest<<8)|(*in);   					/* offset=5 -> 	[XXXXX876 | 54321YYY] */
 	*out= (uint8_t) (temp >> (8-offset)); 	   	/* 				[00000XXX | 87654321] */
 }
 
-static int read_part(const uint8_t *in, uint8_t *rest, uint8_t *out, uint8_t offset, uint8_t len)
+static int read_part( uint8_t *in, uint8_t *rest, uint8_t *out, uint8_t offset, uint8_t len)
 {
 	{
 		uint16_t temp;                       /*              rest     |  in      */
-		temp= (*rest<<8)|(*in);     		 /* o=5, l=6 -> [XXXXX654 |321YYYYYY] */
-		*out= (uint8_t) (temp >> ((8-offset)%8+(8-len)));/* [000XXXXX |XXX654321] */
-		*out&=(1<<len)-1;						         /* [          000111111] */
+		temp= ((uint16_t)*rest<<8)|(*in);     		 /* o=5, l=6 -> [XXXXX654 |321YYYYY] */
+		*out= (uint8_t) (temp >> ((8-offset)%8+(8-len)));/* [000XXXXX |XX654321] */
+		*out&=(1<<len)-1;					         /* [          00111111] */
 	}
 
 	return offset+len;
@@ -65,12 +66,13 @@ ssize_t read_bits_buf_little(struct READER_STRUCT *reader, void *buf, int bits_l
 	old_byte_pos= reader->byte_pos;
 
 	{
-		int i;
+		signed int i;
 		i=((bits_len-1)/8);
 		/*unroll for last bits*/
 		if(bits_len%8)
 		{
-			int ret=read_part((uint8_t*) reader->buf+reader->byte_pos,(uint8_t*) reader->buf+(reader->byte_pos-((reader->byte_pos==0)?0:1)),(uint8_t*)buf+i, reader->bit_pos,bits_len%8);
+			int ret;
+			ret=read_part((uint8_t*) reader->buf+reader->byte_pos,(uint8_t*) reader->buf+(reader->byte_pos-((reader->byte_pos==0)?0:1)),(uint8_t*)buf+i, reader->bit_pos,bits_len%8);
 
 			if(reader->bit_pos==0) /*pos before read!*/
 				reader->byte_pos++;

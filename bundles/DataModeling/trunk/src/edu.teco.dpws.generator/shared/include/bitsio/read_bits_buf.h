@@ -1,10 +1,19 @@
 #ifndef _READ_BITS_BUF_H_
 #define _READ_BITS_BUF_H_
-#include "read_bits.h"
+#include <bitsio/read_bits.h>
+
 #include <stdlib.h>
+#ifdef __GNUC__
 #include <alloca.h>
-#include <unistd.h>
+#endif
+
+#ifndef u_char
+#define u_char unsigned char
+#endif
+
+#ifndef _READ_BITS_C_
 extern const size_t read_bits_bufreader_size;
+#endif
 
 struct READER_STRUCT *read_bits_bufreader_init(struct READER_STRUCT *,char *buf, size_t size);
 
