@@ -43,8 +43,6 @@
  #ifndef «("___"+this.states.typeSelect(StartState).first().out.name+"_bin2dom_h").toUpperCase()»
  #define «("___"+this.states.typeSelect(StartState).first().out.name+"_bin2dom_h").toUpperCase()» 1
  #include <bitsio/read_bits.h>
- #include <string.h>
- #include <bitsio/read_bits_buf.h>
  #include "«getNSPrefix()»_types.h"
  typedef «this.states.typeSelect(StartState).out.typeSelect(SimpleState).first().ecore.name.p()» «this.states.typeSelect(StartState).first().out.name»_t;
   
@@ -53,40 +51,17 @@
 «ENDFILE»
 
 #include "«this.states.typeSelect(StartState).first().out.name»_bin2dom.h"
-static int dom_automata(struct READER_STRUCT *reader,void **stack,int *label);
+#include <ptr_stack.h>
+#include <string.h>
+#include <bitsio/read_bits_buf.h>
 
 
 int «this.states.typeSelect(StartState).first().out.name»_bin2dom_run(struct READER_STRUCT *reader, «this.states.typeSelect(StartState).out.typeSelect(SimpleState).first().ecore.name.p()» *dom) 
 {
-	int ret;
 	int label=0;
-	void * stack[20]={dom};
-	memset(dom,0,sizeof(*dom));
-	while((ret=dom_automata(reader,stack,&label))>0);
+	new_ptr_stack(stack,dom);
 	
-    return ret;	
-}
-   
-static void *stack_pop(void ***stack) {
-	void *ret=*(*stack);
-	**stack=0;
-	(*stack)--;
-	return ret;
-}
-
-#define pop() stack_pop(&stack)
-
-static void *stack_push(void ***stack, void * X) {
-	return *(++(*stack)) = X;
-}
-#define push(X) stack_push(&stack,X)
-
-#define top() *stack
-
-// return:  0 if EOF, 0<for fault, and  read bits else (TODO)
-static int dom_automata(struct READER_STRUCT *reader,void **stack, int *_label)
-{
-#define label (*_label)
+	memset(dom,0,sizeof(*dom));
 «ENDDEFINE»
 
 «DEFINE footer(String nameID) FOR StateMachine»
@@ -154,13 +129,24 @@ FOR SimpleState»
 FOR SimpleState»
      «IF upperBound!=lowerBound»
       	«IF !stack_isEmpty()»
-      	push(«stack_top().ecore.name.p()»_add_«name.toFirstLower()»(((«stack_top().ecore.name.p()» *)top())));
+      	{
+      	«stack_top().ecore.name.p()» * cur;
+      	«ecore.name.p()» * next;
+      	
+      	cur= («stack_top().ecore.name.p()» *)top();
+      	next=«stack_top().ecore.name.p()»_add_«name.toFirstLower()»(cur);
+      	push(next);
+      	}
         «ELSE»
         «ERROR "optional root??"»
         «ENDIF»
      «ELSE»
      «IF !stack_isEmpty()»
-      	push(&(((«stack_top().ecore.name.p()»*)top())->«name.toFirstLower()»));
+     {
+        «stack_top().ecore.name.p()» * cur;
+        cur=(«stack_top().ecore.name.p()» *)top();  
+      	push(&(cur->«name.toFirstLower()»));
+     }
      «ELSE»
      //push(pop()): preinitialized stack
      «ENDIF»
@@ -169,7 +155,7 @@ FOR SimpleState»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateNameEnd 
 FOR SimpleState»
-    	pop();
+    	if(pop());
 «ENDAROUND»
 
 «AROUND edu::teco::automata::generator::templates::encoderRoot::StateEnd FOR StopState»
@@ -182,7 +168,11 @@ FOR SimpleState»
 «ENDREM»
 «AROUND edu::teco::automata::generator::templates::encoderRoot::stateType 
 FOR SimpleState»
-   «EXPAND edu::teco::automata::generator::templates::c::binEncoder::read("(("+ecore.name.p()+"*)top())") FOR type» 
+{
+   «ecore.name.p()»* cur;
+   cur =(«ecore.name.p()»*) top();
+   «EXPAND edu::teco::automata::generator::templates::c::binEncoder::read("cur") FOR type» 
+}
 «ENDAROUND»
 
 
