@@ -1,37 +1,14 @@
 
 #include "Sample_bin2dom.h"
-static int dom_automata(struct READER_STRUCT *reader, void **stack, int *label);
+#include <ptr_stack.h>
+#include <string.h>
+#include <bitsio/read_bits_buf.h>
 
 int Sample_bin2dom_run(struct READER_STRUCT *reader, sens_SSimpSample *dom) {
-	int ret;
 	int label = 0;
-	void * stack[20] = { dom };
+	new_ptr_stack(stack, dom);
+
 	memset(dom, 0, sizeof(*dom));
-	while ((ret = dom_automata(reader, stack, &label)) > 0)
-		;
-
-	return ret;
-}
-
-static void *stack_pop(void ***stack) {
-	void *ret = *(*stack);
-	**stack = 0;
-	(*stack)--;
-	return ret;
-}
-
-#define pop() stack_pop(&stack)
-
-static void *stack_push(void ***stack, void * X) {
-	return *(++(*stack)) = X;
-}
-#define push(X) stack_push(&stack,X)
-
-#define top() *stack
-
-// return:  0 if EOF, 0<for fault, and  read bits else (TODO)
-static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label) {
-#define label (*_label)
 
 	while (1) {
 		switch (label) {
@@ -64,17 +41,38 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(sens_SSimpSample_add_timeStamp(((sens_SSimpSample *)top())));
-
 				{
-					uint32_t c;
-					read_bits(reader, (u_char *) &c, 32);
+					sens_SSimpSample * cur;
+					sens_DateTime * next;
 
-					struct timeval t = { c, 0 };
-					memcpy(((sens_DateTime*) top()), &t, sizeof(t));
+					cur = (sens_SSimpSample *) top();
+					next = sens_SSimpSample_add_timeStamp(cur);
+					push(next);
 				}
 
-				pop();
+				{
+					sens_DateTime* cur;
+					cur = (sens_DateTime*) top();
+
+					{
+						uint32_t c;
+						read_bits(reader, (u_char *) &c, 32);
+
+						{
+							struct timeval t;
+
+							{
+								t.tv_sec = c;
+							};
+
+							memcpy(cur, &t, sizeof(t));
+						}
+					}
+
+				}
+
+				if (pop())
+					;
 
 			} /* TimeStamp */
 
@@ -89,7 +87,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 1*/
 
-				push(sens_SSimpSample_add_accelleration(((sens_SSimpSample *)top())));
+				{
+					sens_SSimpSample * cur;
+					sens_ADXL210Sample * next;
+
+					cur = (sens_SSimpSample *) top();
+					next = sens_SSimpSample_add_accelleration(cur);
+					push(next);
+				}
 
 				//push Accelleration: next 8
 
@@ -109,16 +114,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_ADXL210Sample*)top())->x));
-
 				{
-					uint16_t c;
-					read_bits(reader, (u_char *) &c, 16);
-					*(int16_t*) ((sens_XType*) top()) = (int16_t)(((c) * 1)
-							+ (-32768));
+					sens_ADXL210Sample * cur;
+					cur = (sens_ADXL210Sample *) top();
+					push(&(cur->x));
 				}
 
-				pop();
+				{
+					sens_XType* cur;
+					cur = (sens_XType*) top();
+
+					{
+						uint16_t c;
+						read_bits(reader, (u_char *) &c, 16);
+						*(int16_t*) cur = (int16_t)(((c) * 1) + (-32768));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -132,16 +147,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_ADXL210Sample*)top())->y));
-
 				{
-					uint16_t c;
-					read_bits(reader, (u_char *) &c, 16);
-					*(int16_t*) ((sens_YType*) top()) = (int16_t)(((c) * 1)
-							+ (-32768));
+					sens_ADXL210Sample * cur;
+					cur = (sens_ADXL210Sample *) top();
+					push(&(cur->y));
 				}
 
-				pop();
+				{
+					sens_YType* cur;
+					cur = (sens_YType*) top();
+
+					{
+						uint16_t c;
+						read_bits(reader, (u_char *) &c, 16);
+						*(int16_t*) cur = (int16_t)(((c) * 1) + (-32768));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -155,16 +180,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_ADXL210Sample*)top())->z));
-
 				{
-					uint16_t c;
-					read_bits(reader, (u_char *) &c, 16);
-					*(int16_t*) ((sens_ZType*) top()) = (int16_t)(((c) * 1)
-							+ (-32768));
+					sens_ADXL210Sample * cur;
+					cur = (sens_ADXL210Sample *) top();
+					push(&(cur->z));
 				}
 
-				pop();
+				{
+					sens_ZType* cur;
+					cur = (sens_ZType*) top();
+
+					{
+						uint16_t c;
+						read_bits(reader, (u_char *) &c, 16);
+						*(int16_t*) cur = (int16_t)(((c) * 1) + (-32768));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -181,16 +216,29 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(sens_ADXL210Sample_add_index(((sens_ADXL210Sample *)top())));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_ADXL210Sample * cur;
+					sens_Byte * next;
+
+					cur = (sens_ADXL210Sample *) top();
+					next = sens_ADXL210Sample_add_index(cur);
+					push(next);
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			} /* index */
 
@@ -202,7 +250,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 2; /* constLoopEnd1 /Sample/Accelleration/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Sample/Accelleration/ */
 
@@ -218,7 +267,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 1*/
 
-				push(sens_SSimpSample_add_audio(((sens_SSimpSample *)top())));
+				{
+					sens_SSimpSample * cur;
+					sens_SP101Sample * next;
+
+					cur = (sens_SSimpSample *) top();
+					next = sens_SSimpSample_add_audio(cur);
+					push(next);
+				}
 
 				//push Audio: next 12
 
@@ -238,16 +294,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SP101Sample*)top())->volume));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(uint8_t*) ((sens_UnsignedByte*) top())
-							= (((c) * 1) + (0));
+					sens_SP101Sample * cur;
+					cur = (sens_SP101Sample *) top();
+					push(&(cur->volume));
 				}
 
-				pop();
+				{
+					sens_UnsignedByte* cur;
+					cur = (sens_UnsignedByte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(uint8_t*) cur = (((c) * 1) + (0));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -264,16 +330,29 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(sens_SP101Sample_add_index(((sens_SP101Sample *)top())));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SP101Sample * cur;
+					sens_Byte * next;
+
+					cur = (sens_SP101Sample *) top();
+					next = sens_SP101Sample_add_index(cur);
+					push(next);
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			} /* index */
 
@@ -285,7 +364,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 8; /* constLoopEnd1 /Sample/Audio/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Sample/Audio/ */
 
@@ -301,7 +381,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 1*/
 
-				push(sens_SSimpSample_add_light(((sens_SSimpSample *)top())));
+				{
+					sens_SSimpSample * cur;
+					sens_TSL2550Sample * next;
+
+					cur = (sens_SSimpSample *) top();
+					next = sens_SSimpSample_add_light(cur);
+					push(next);
+				}
 
 				//push Light: next 17
 
@@ -321,16 +408,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_TSL2550Sample*)top())->daylight));
-
 				{
-					uint16_t c;
-					read_bits(reader, (u_char *) &c, 16);
-					*(uint16_t*) ((sens_UnsignedShort*) top()) = (((c) * 1)
-							+ (0));
+					sens_TSL2550Sample * cur;
+					cur = (sens_TSL2550Sample *) top();
+					push(&(cur->daylight));
 				}
 
-				pop();
+				{
+					sens_UnsignedShort* cur;
+					cur = (sens_UnsignedShort*) top();
+
+					{
+						uint16_t c;
+						read_bits(reader, (u_char *) &c, 16);
+						*(uint16_t*) cur = (((c) * 1) + (0));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -344,16 +441,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_TSL2550Sample*)top())->infrared));
-
 				{
-					uint16_t c;
-					read_bits(reader, (u_char *) &c, 16);
-					*(uint16_t*) ((sens_UnsignedShort*) top()) = (((c) * 1)
-							+ (0));
+					sens_TSL2550Sample * cur;
+					cur = (sens_TSL2550Sample *) top();
+					push(&(cur->infrared));
 				}
 
-				pop();
+				{
+					sens_UnsignedShort* cur;
+					cur = (sens_UnsignedShort*) top();
+
+					{
+						uint16_t c;
+						read_bits(reader, (u_char *) &c, 16);
+						*(uint16_t*) cur = (((c) * 1) + (0));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -370,16 +477,29 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(sens_TSL2550Sample_add_index(((sens_TSL2550Sample *)top())));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_TSL2550Sample * cur;
+					sens_Byte * next;
+
+					cur = (sens_TSL2550Sample *) top();
+					next = sens_TSL2550Sample_add_index(cur);
+					push(next);
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			} /* index */
 
@@ -391,7 +511,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 12; /* constLoopEnd1 /Sample/Light/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Sample/Light/ */
 
@@ -407,7 +528,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 1*/
 
-				push(sens_SSimpSample_add_force(((sens_SSimpSample *)top())));
+				{
+					sens_SSimpSample * cur;
+					sens_FSR152Sample * next;
+
+					cur = (sens_SSimpSample *) top();
+					next = sens_SSimpSample_add_force(cur);
+					push(next);
+				}
 
 				//push Force: next 21
 
@@ -427,16 +555,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_FSR152Sample*)top())->value));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(uint8_t*) ((sens_UnsignedByte*) top())
-							= (((c) * 1) + (0));
+					sens_FSR152Sample * cur;
+					cur = (sens_FSR152Sample *) top();
+					push(&(cur->value));
 				}
 
-				pop();
+				{
+					sens_UnsignedByte* cur;
+					cur = (sens_UnsignedByte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(uint8_t*) cur = (((c) * 1) + (0));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -453,16 +591,29 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(sens_FSR152Sample_add_index(((sens_FSR152Sample *)top())));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_FSR152Sample * cur;
+					sens_Byte * next;
+
+					cur = (sens_FSR152Sample *) top();
+					next = sens_FSR152Sample_add_index(cur);
+					push(next);
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			} /* index */
 
@@ -474,7 +625,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 17; /* constLoopEnd1 /Sample/Force/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Sample/Force/ */
 
@@ -490,7 +642,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 1*/
 
-				push(sens_SSimpSample_add_temperature(((sens_SSimpSample *)top())));
+				{
+					sens_SSimpSample * cur;
+					sens_TC74Sample * next;
+
+					cur = (sens_SSimpSample *) top();
+					next = sens_SSimpSample_add_temperature(cur);
+					push(next);
+				}
 
 				//push Temperature: next 25
 
@@ -510,16 +669,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_TC74Sample*)top())->value));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_ValueType*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_TC74Sample * cur;
+					cur = (sens_TC74Sample *) top();
+					push(&(cur->value));
 				}
 
-				pop();
+				{
+					sens_ValueType* cur;
+					cur = (sens_ValueType*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 7);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-20));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -536,16 +705,29 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(sens_TC74Sample_add_index(((sens_TC74Sample *)top())));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_TC74Sample * cur;
+					sens_Byte * next;
+
+					cur = (sens_TC74Sample *) top();
+					next = sens_TC74Sample_add_index(cur);
+					push(next);
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			} /* index */
 
@@ -557,7 +739,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 21; /* constLoopEnd1 /Sample/Temperature/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Sample/Temperature/ */
 
@@ -571,7 +754,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 			label = 26; // Complex End
 
 
-			pop();
+			if (pop())
+				;
 
 			break;
 

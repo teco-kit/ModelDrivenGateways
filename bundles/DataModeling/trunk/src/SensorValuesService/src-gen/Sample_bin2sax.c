@@ -70,9 +70,13 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 					ret = read_bits(reader, (u_char *) &c, 32);
 					if (ret > 0) //todo check for full length
 					{
-						struct timeval t = { c, 0 };
+						struct timeval t;
 						struct tm res;
 						char out[64];
+
+						{
+							t.tv_sec = c;
+						};
 						ret = strftime(out, sizeof(out), "%Y-%m-%dT%H:%M:%S",
 								localtime_r(&t.tv_sec, &res));
 
@@ -138,7 +142,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint16_t c;
 					ret = read_bits(reader, (u_char *) &c, 16);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret = asprintf(&str, "%d", (int16_t)(((c) * 1)
 								+ (-32768))); //TODO: check overflows
@@ -178,7 +182,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint16_t c;
 					ret = read_bits(reader, (u_char *) &c, 16);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret = asprintf(&str, "%d", (int16_t)(((c) * 1)
 								+ (-32768))); //TODO: check overflows
@@ -218,7 +222,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint16_t c;
 					ret = read_bits(reader, (u_char *) &c, 16);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret = asprintf(&str, "%d", (int16_t)(((c) * 1)
 								+ (-32768))); //TODO: check overflows
@@ -261,7 +265,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint8_t c;
 					ret = read_bits(reader, (u_char *) &c, 8);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret
 								= asprintf(&str, "%d", (int8_t)(((c) * 1)
@@ -336,7 +340,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint8_t c;
 					ret = read_bits(reader, (u_char *) &c, 8);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret = asprintf(&str, "%u", (((c) * 1) + (0))); //TODO: check overflows
 					} else {
@@ -378,7 +382,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint8_t c;
 					ret = read_bits(reader, (u_char *) &c, 8);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret
 								= asprintf(&str, "%d", (int8_t)(((c) * 1)
@@ -453,7 +457,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint16_t c;
 					ret = read_bits(reader, (u_char *) &c, 16);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret = asprintf(&str, "%u", (((c) * 1) + (0))); //TODO: check overflows
 					} else {
@@ -492,7 +496,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint16_t c;
 					ret = read_bits(reader, (u_char *) &c, 16);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret = asprintf(&str, "%u", (((c) * 1) + (0))); //TODO: check overflows
 					} else {
@@ -534,7 +538,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint8_t c;
 					ret = read_bits(reader, (u_char *) &c, 8);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret
 								= asprintf(&str, "%d", (int8_t)(((c) * 1)
@@ -609,7 +613,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint8_t c;
 					ret = read_bits(reader, (u_char *) &c, 8);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret = asprintf(&str, "%u", (((c) * 1) + (0))); //TODO: check overflows
 					} else {
@@ -651,7 +655,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint8_t c;
 					ret = read_bits(reader, (u_char *) &c, 8);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret
 								= asprintf(&str, "%d", (int8_t)(((c) * 1)
@@ -725,12 +729,10 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 
 				{
 					uint8_t c;
-					ret = read_bits(reader, (u_char *) &c, 8);
-					if (ret > 0) //todo check for exact
+					ret = read_bits(reader, (u_char *) &c, 7);
+					if (ret >= 0) //todo check for exact
 					{
-						ret
-								= asprintf(&str, "%d", (int8_t)(((c) * 1)
-										+ (-128))); //TODO: check overflows
+						ret = asprintf(&str, "%d", (int8_t)(((c) * 1) + (-20))); //TODO: check overflows
 					} else {
 						ret = -1;
 					}
@@ -770,7 +772,7 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 				{
 					uint8_t c;
 					ret = read_bits(reader, (u_char *) &c, 8);
-					if (ret > 0) //todo check for exact
+					if (ret >= 0) //todo check for exact
 					{
 						ret
 								= asprintf(&str, "%d", (int8_t)(((c) * 1)
