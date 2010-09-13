@@ -51,19 +51,6 @@
 «IF signed()»(«EXPAND ctype»)«ENDIF»(((«c»)*«getStepping()») + («getMin()»))
 «ENDDEFINE»
 
-«DEFINE encodeTimestamp(String c) FOR TTimestamp»
-(«c».tv_sec)
-«ENDDEFINE»
-
-«DEFINE decodeTimestamp(String t,String c) FOR TTimestamp»
-{
-«t».tv_sec=«c»;
-}
-«ENDDEFINE»
-
-
-
-
 
 «DEFINE strWriteInt(String in) FOR IntType»
 {	
@@ -116,8 +103,6 @@ read_bits(reader,(u_char *)&c,«bitsLen()-»);
 }
 «ENDDEFINE»
 
-
-
 «DEFINE strWrite(String in) FOR TTimestamp»
 {	
   struct timeval t;
@@ -130,61 +115,57 @@ read_bits(reader,(u_char *)&c,«bitsLen()-»);
 	fprintf(stderr, "Input string: %s", str);
     ret=-1;
   }
+  else
   {
-     uint32_t d= «EXPAND encodeTimestamp("t")»;
-	 ret=write_bits(writer,(u_char *)&d, «bitsLen()»);
+     «EXPAND write("t")»;
   }
 }
 «ENDDEFINE»
 
 «DEFINE strRead(String out) FOR TTimestamp»
 {
-uint32_t c;
-ret=read_bits(reader, (u_char *)&c, «bitsLen()»);
-if(ret>0) //todo check for full length
-{
   struct timeval t;
   struct tm res;
   char out[64];
-  «EXPAND decodeTimestamp("t","c")»;
+  
+  «EXPAND read("&t")»;
+  
   ret=strftime(out, sizeof(out), «EXPAND printstr»,localtime_r(&t.tv_sec,&res));
   
   if(ret>0)
   {
-     ret=asprintf(«out», "%s.%06dZ",out,(int) t.tv_usec);
+     ret=asprintf(«out», "%s.%06uZ",out,(uint32_t)((((uint64_t)t.tv_usec)*1000000)>>16));
   }
   else
   {
      ret=-1;
   }
 }
-else
-{
- ret=-1;
-}
- 
-}
 «ENDDEFINE»
 
 «DEFINE write(String in) FOR TTimestamp»
-  {
-     uint32_t d;
-     d = «EXPAND encodeTimestamp(in)»;
-	 ret=write_bits(writer,(u_char *)&d, «bitsLen()»);
-  }
+{
+      ret=write_bits(writer,(u_char *)&(«in»).tv_sec,32);
+     «IF bitsLen()>32»
+      {
+        uint16_t usec;
+        usec=(«in»).tv_usec>>«(16-(bitsLen()-32))-»;
+        ret+=write_bits(writer,(u_char *)&usec,«bitsLen()-32-»);
+       }
+     «ENDIF»
+}
 «ENDDEFINE»
 
 «DEFINE read(String out) FOR TTimestamp»
 {
-uint32_t c;
-read_bits(reader,(u_char *)&c,«bitsLen()-»);
-
-{
-struct timeval t;
-«EXPAND decodeTimestamp("t","c")»;
-
-memcpy(«out»,&t,sizeof(t));
-}
+  read_bits(reader,(u_char *)&(«out»)->tv_sec,32);
+  «IF bitsLen()>32» 
+  {
+  uint16_t usec=0;
+  read_bits(reader,(u_char *)&usec,«bitsLen()-32-»);
+  («out»)->tv_usec=(uint32_t)usec<<«(16-(bitsLen()-32))-»;
+  }
+  «ENDIF»
 }
 «ENDDEFINE»
 

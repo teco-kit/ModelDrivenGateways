@@ -66,30 +66,30 @@ static int gsoap_automata(struct READER_STRUCT *reader, struct soap *soap,
 			{
 
 				{
-					uint32_t c;
-					ret = read_bits(reader, (u_char *) &c, 32);
-					if (ret > 0) //todo check for full length
+					struct timeval t;
+					struct tm res;
+					char out[64];
+
 					{
-						struct timeval t;
-						struct tm res;
-						char out[64];
+						read_bits(reader, (u_char *) &(&t)->tv_sec, 32);
 
 						{
-							t.tv_sec = c;
-						};
-						ret = strftime(out, sizeof(out), "%Y-%m-%dT%H:%M:%S",
-								localtime_r(&t.tv_sec, &res));
-
-						if (ret > 0) {
-							ret = asprintf(&str, "%s.%06dZ", out,
-									(int) t.tv_usec);
-						} else {
-							ret = -1;
+							uint16_t usec = 0;
+							read_bits(reader, (u_char *) &usec, 12);
+							(&t)->tv_usec = (uint32_t) usec << 4;
 						}
+
+					};
+
+					ret = strftime(out, sizeof(out), "%Y-%m-%dT%H:%M:%S",
+							localtime_r(&t.tv_sec, &res));
+
+					if (ret > 0) {
+						ret = asprintf(&str, "%s.%06uZ", out, (uint32_t)(
+								(((uint64_t) t.tv_usec) * 1000000) >> 16));
 					} else {
 						ret = -1;
 					}
-
 				};
 
 				if (ret < 0) {

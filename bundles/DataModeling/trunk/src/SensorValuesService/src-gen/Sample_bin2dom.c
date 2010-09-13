@@ -10,7 +10,7 @@ int Sample_bin2dom_run(struct READER_STRUCT *reader, sens_SSimpSample *dom) {
 
 	memset(dom, 0, sizeof(*dom));
 
-	while (1) {
+	for (;;) {
 		switch (label) {
 
 		// Start State
@@ -55,18 +55,14 @@ int Sample_bin2dom_run(struct READER_STRUCT *reader, sens_SSimpSample *dom) {
 					cur = (sens_DateTime*) top();
 
 					{
-						uint32_t c;
-						read_bits(reader, (u_char *) &c, 32);
+						read_bits(reader, (u_char *) &(cur)->tv_sec, 32);
 
 						{
-							struct timeval t;
-
-							{
-								t.tv_sec = c;
-							};
-
-							memcpy(cur, &t, sizeof(t));
+							uint16_t usec = 0;
+							read_bits(reader, (u_char *) &usec, 12);
+							(cur)->tv_usec = (uint32_t) usec << 4;
 						}
+
 					}
 
 				}

@@ -44,7 +44,7 @@ int sendPacket (int timeout, uint16_t svc, uint8_t op, char *buf, size_t len);
 int sendPacket( int  timeout );
 
 /* dy */
-static sens_SSimpSample s;
+volatile sens_SSimpSample sensors;
 
 void PRSInit()
 {
@@ -64,10 +64,12 @@ void PRSRun()
 {
    ++PRS_slot_counter;
 
-   has_dat=!get_sensor_values(&s, PRS_slot_counter%(1<<15));
+   has_dat=!get_sensor_values(&sensors, PRS_slot_counter%(1<<15));
 
+#ifdef PIN_LED_AMBER_POWER
    if(has_dat) SSimpLEDAmberOn();
    else  SSimpLEDAmberOff();
+#endif
 
    if((PRS_slot_counter&0xff)==0)
    {
@@ -91,11 +93,11 @@ void PRSSendSensorValues()
 {
    unsigned int timeout;
 
-   if(PRS_last_slot_sent != PRS_slot_counter && has_dat )
+   if(has_dat && (PRS_last_slot_sent != PRS_slot_counter))
    {
       PRS_last_slot_sent = PRS_slot_counter;
-
       sendEvent( timeout );
+      has_dat=0;
    }
 
    if(ACLAddressedDataIsNew()){
@@ -138,14 +140,14 @@ void PRSSendSensorValues()
 					   char buf[64];
 					   size_t dat_len;
 					   sens_SSimpControl in={};
-				       sens_SSimpStatus out={};
+					   sens_SSimpStatus out={};
 				       //BuzzerTone(TONE_A5,100);
 					   {
 						   struct READER_STRUCT reader;
 						   dat=ACLGetNextTupleData(dat);
 						   read_bits_bufreader_init(&reader,dat,ACLGetDataLength(dat));
-						   StatusControl_bin2dom_run(&in, &reader);
-						   dat_len=*write_buf_finish(&reader);
+						   StatusControl_bin2dom_run(&reader,&in);
+						   //dat_len=*write_buf_finish(&reader);
 					   }
 					   //BuzzerTone(TONE_H5,100);
 					   configure_sensors(&in,&out);
@@ -200,15 +202,17 @@ int sendEvent( int  timeout )
 		struct WRITER_STRUCT writer;
 
 		write_bits_bufwriter_init(&writer,buf,64);
-		Sample_dom2bin_run(&s, &writer);
+		Sample_dom2bin_run(&sensors, &writer);
 		dat_len=write_buf_finish(&writer);
 	}
 
 
 
-	ret=sendPacket (20, 0 ,OP_SensorValues_SensorValuesEvent, buf, dat_len);
 
-#ifdef DUMMMY_MODE
+	ret=sendPacket (20, 0 ,OP_SensorValues_SensorValuesEvent, buf, dat_len);
+	memset(&sensors,0,sizeof(sensors));
+
+#if 0
 	{
 		int i;
 		for(i=0;i<sizeof(s);i+=48)
