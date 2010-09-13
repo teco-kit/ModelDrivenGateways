@@ -1,6 +1,7 @@
 PBS=../ParticleBaseSystem
 
 BOARD?=pc232
+#SENSORBOARD?=dummy
 SENSORBOARD?=ssimp202
 MAC?=5
 

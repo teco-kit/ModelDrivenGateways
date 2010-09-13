@@ -23,7 +23,7 @@
    
 
    
-   while (1)
+   for (;;)
    {
    switch (label)
    {

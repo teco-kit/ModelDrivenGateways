@@ -684,10 +684,20 @@ static int gsoap_automata(struct soap *soap, struct WRITER_STRUCT *writer,
 								fprintf(stderr, "Error parsing time value\n");
 								fprintf(stderr, "Input string: %s", str);
 								ret = -1;
-							}
-							{
-								uint32_t d = (t.tv_sec);
-								ret = write_bits(writer, (u_char *) &d, 32);
+							} else {
+
+								{
+									ret = write_bits(writer,
+											(u_char *) &(t).tv_sec, 32);
+
+									{
+										uint16_t usec;
+										usec = (t).tv_usec >> 4;
+										ret += write_bits(writer,
+												(u_char *) &usec, 12);
+									}
+
+								};
 							}
 						}
 

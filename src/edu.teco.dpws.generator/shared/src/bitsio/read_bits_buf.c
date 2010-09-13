@@ -10,8 +10,12 @@
  */
 #define  _READ_BITS_C_ 1
 #include <stdint.h>
+#ifndef CCSC
+#include <sys/types.h>
+#else
+#include <stdlib.h>
+#endif
 
-#include <bitsio/read_bits.h>
 
 struct READER_STRUCT {
    int byte_pos;
@@ -19,6 +23,8 @@ struct READER_STRUCT {
    char * buf;
    size_t size;/*TODO: unchecked*/
 };
+
+#include <bitsio/read_bits.h>
 
  size_t read_bits_bufreader_size=sizeof(struct READER_STRUCT);
 /* ========================================================================
@@ -59,7 +65,7 @@ static int read_part( uint8_t *in, uint8_t *rest, uint8_t *out, uint8_t offset, 
  *
  * ========================================================================*/
 #define read_bits_buf_little read_bits
-ssize_t read_bits_buf_little(struct READER_STRUCT *reader, void *buf, int bits_len)
+ssize_t read_bits_buf_little(struct READER_STRUCT *reader, void *buf, size_t bits_len)
 {
 	int old_byte_pos;
 

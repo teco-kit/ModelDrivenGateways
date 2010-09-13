@@ -530,7 +530,7 @@ int StatusControl_bin2dom_run(struct READER_STRUCT *reader,
 
 
 			/* loop /StatusControlNewTime label=label */
-			while (read_bit(reader))
+			if (read_bit(reader))
 
 			{
 
@@ -548,18 +548,16 @@ int StatusControl_bin2dom_run(struct READER_STRUCT *reader,
 					cur = (sens_DateTime*) top();
 
 					{
-						uint32_t c;
-						read_bits(reader, (u_char *) &c, 32);
+						uint32_t sec;
+						read_bits(reader, (u_char *) &sec, 32);
+						cur->tv_sec = (uint32_t) sec;
 
 						{
-							struct timeval t;
-
-							{
-								t.tv_sec = c;
-							};
-
-							memcpy(cur, &t, sizeof(t));
+							uint16_t usec = 0;
+							read_bits(reader, (u_char *) &usec, 12);
+							cur->tv_usec = (uint32_t) usec << 4;
 						}
+
 					}
 
 				}
@@ -578,7 +576,7 @@ int StatusControl_bin2dom_run(struct READER_STRUCT *reader,
 			label = 23; // Complex End
 
 
-			if (pop())
+			//if (pop())
 				;
 
 			break;

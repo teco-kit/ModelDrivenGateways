@@ -1171,9 +1171,15 @@ int Status_dom2bin_run(struct sens_SSimpStatus *dom,
 						val = (sens_DateTime*) top();
 
 						{
-							uint32_t d;
-							d = ((*val).tv_sec);
-							ret = write_bits(writer, (u_char *) &d, 32);
+							ret = write_bits(writer,
+									(u_char *) &((*val)).tv_sec, 32);
+
+							{
+								uint16_t usec;
+								usec = ((*val)).tv_usec >> 4;
+								ret += write_bits(writer, (u_char *) &usec, 12);
+							}
+
 						}
 
 					}
@@ -1210,9 +1216,15 @@ int Status_dom2bin_run(struct sens_SSimpStatus *dom,
 						val = (sens_DateTime*) top();
 
 						{
-							uint32_t d;
-							d = ((*val).tv_sec);
-							ret = write_bits(writer, (u_char *) &d, 32);
+							ret = write_bits(writer,
+									(u_char *) &((*val)).tv_sec, 32);
+
+							{
+								uint16_t usec;
+								usec = ((*val)).tv_usec >> 4;
+								ret += write_bits(writer, (u_char *) &usec, 12);
+							}
+
 						}
 
 					}

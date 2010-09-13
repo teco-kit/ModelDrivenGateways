@@ -49,9 +49,10 @@
 #include "system/awarecon.h"			
 #include "system/awarecon.c"		
 
-#ifndef DUMMY_MODE  
-#include "boards/SensorI2C.c"		
+#include INC(boards/SENSORBOARD.c)
 
+#ifndef DUMMY_MODE
+#include "boards/SensorI2C.c"		
 //+++++ include the sensors your want to use ++++++++++++++++++++++++++++++++++
 //#include "piezo.c"
 //#include "sensors/tsl250.c"
@@ -62,11 +63,8 @@
 #include "sensors/adxl210_z.c"
 #include "sensors/mcp9800.c"
 #include "sensors/tsl2550.c"
-
-#include INC(boards/SENSORBOARD.c)
 #else
 #endif
-
 
 #include "sensors/voltage.c"
 
@@ -96,13 +94,11 @@ void SlotEndCallBack()
 void main()
 {
 #ifdef TEST
+#error TESTMODE
  PRSTest1();
 #else
 	//TYPICAL STARTUP FLOW
 	//*****************************************************************
-
-
-	
 	PCInit();											// is not dangerous, because all pins are set correct . bport is input, i2c and eeprom are initianlized as well
 	SSimpInit();
 

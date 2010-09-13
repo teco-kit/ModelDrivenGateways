@@ -2,7 +2,9 @@
 #define _READ_BITS_H_
 
 #include <stdlib.h>
+#ifndef CCSC
 #include <sys/types.h>
+#endif
 
 #ifndef  _READ_BITS_C_
 struct READER_STRUCT;
