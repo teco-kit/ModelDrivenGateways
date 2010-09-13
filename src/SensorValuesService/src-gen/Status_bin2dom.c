@@ -1,37 +1,14 @@
 
 #include "Status_bin2dom.h"
-static int dom_automata(struct READER_STRUCT *reader, void **stack, int *label);
+#include <ptr_stack.h>
+#include <string.h>
+#include <bitsio/read_bits_buf.h>
 
 int Status_bin2dom_run(struct READER_STRUCT *reader, sens_SSimpStatus *dom) {
-	int ret;
 	int label = 0;
-	void * stack[20] = { dom };
+	new_ptr_stack(stack, dom);
+
 	memset(dom, 0, sizeof(*dom));
-	while ((ret = dom_automata(reader, stack, &label)) > 0)
-		;
-
-	return ret;
-}
-
-static void *stack_pop(void ***stack) {
-	void *ret = *(*stack);
-	**stack = 0;
-	(*stack)--;
-	return ret;
-}
-
-#define pop() stack_pop(&stack)
-
-static void *stack_push(void ***stack, void * X) {
-	return *(++(*stack)) = X;
-}
-#define push(X) stack_push(&stack,X)
-
-#define top() *stack
-
-// return:  0 if EOF, 0<for fault, and  read bits else (TODO)
-static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label) {
-#define label (*_label)
 
 	while (1) {
 		switch (label) {
@@ -60,7 +37,11 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			/* lowerbound=1 upperbound=1*/
 
-			push(&(((sens_SSimpStatus*)top())->sensorConfig));
+			{
+				sens_SSimpStatus * cur;
+				cur = (sens_SSimpStatus *) top();
+				push(&(cur->sensorConfig));
+			}
 
 			//push SensorConfig: next 
 
@@ -76,7 +57,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_acceleration(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_acceleration(cur);
+					push(next);
+				}
 
 				//push Acceleration: next 5
 
@@ -96,16 +84,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -117,7 +115,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 2; /* constLoopEnd1 /Status/SensorConfig/Acceleration/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/SensorConfig/Acceleration/ */
 
@@ -133,7 +132,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_audio(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_audio(cur);
+					push(next);
+				}
 
 				//push Audio: next 8
 
@@ -153,16 +159,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -174,7 +190,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 5; /* constLoopEnd1 /Status/SensorConfig/Audio/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/SensorConfig/Audio/ */
 
@@ -190,7 +207,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_light(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_light(cur);
+					push(next);
+				}
 
 				//push Light: next 11
 
@@ -210,16 +234,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -231,7 +265,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 8; /* constLoopEnd1 /Status/SensorConfig/Light/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/SensorConfig/Light/ */
 
@@ -247,7 +282,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_ambientLight(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_ambientLight(cur);
+					push(next);
+				}
 
 				//push AmbientLight: next 14
 
@@ -267,16 +309,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -288,7 +340,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 11; /* constLoopEnd1 /Status/SensorConfig/AmbientLight/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/SensorConfig/AmbientLight/ */
 
@@ -304,7 +357,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_force(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_force(cur);
+					push(next);
+				}
 
 				//push Force: next 17
 
@@ -324,16 +384,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -345,7 +415,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 14; /* constLoopEnd1 /Status/SensorConfig/Force/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/SensorConfig/Force/ */
 
@@ -361,7 +432,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_temperature(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_temperature(cur);
+					push(next);
+				}
 
 				//push Temperature: next 20
 
@@ -381,16 +459,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -402,7 +490,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 17; /* constLoopEnd1 /Status/SensorConfig/Temperature/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/SensorConfig/Temperature/ */
 
@@ -416,7 +505,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 			label = 21; // Complex End
 
 
-			pop();
+			if (pop())
+				;
 
 			break;
 
@@ -430,7 +520,11 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			/* lowerbound=1 upperbound=1*/
 
-			push(&(((sens_SSimpStatus*)top())->allSensorConfig));
+			{
+				sens_SSimpStatus * cur;
+				cur = (sens_SSimpStatus *) top();
+				push(&(cur->allSensorConfig));
+			}
 
 			//push AllSensorConfig: next 
 
@@ -446,7 +540,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_acceleration(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_acceleration(cur);
+					push(next);
+				}
 
 				//push Acceleration: next 25
 
@@ -466,16 +567,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -487,7 +598,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 22; /* constLoopEnd1 /Status/AllSensorConfig/Acceleration/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/AllSensorConfig/Acceleration/ */
 
@@ -503,7 +615,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_audio(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_audio(cur);
+					push(next);
+				}
 
 				//push Audio: next 28
 
@@ -523,16 +642,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -544,7 +673,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 25; /* constLoopEnd1 /Status/AllSensorConfig/Audio/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/AllSensorConfig/Audio/ */
 
@@ -560,7 +690,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_light(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_light(cur);
+					push(next);
+				}
 
 				//push Light: next 31
 
@@ -580,16 +717,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -601,7 +748,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 28; /* constLoopEnd1 /Status/AllSensorConfig/Light/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/AllSensorConfig/Light/ */
 
@@ -617,7 +765,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_ambientLight(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_ambientLight(cur);
+					push(next);
+				}
 
 				//push AmbientLight: next 34
 
@@ -637,16 +792,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -658,7 +823,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 31; /* constLoopEnd1 /Status/AllSensorConfig/AmbientLight/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/AllSensorConfig/AmbientLight/ */
 
@@ -674,7 +840,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_force(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_force(cur);
+					push(next);
+				}
 
 				//push Force: next 37
 
@@ -694,16 +867,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -715,7 +898,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 34; /* constLoopEnd1 /Status/AllSensorConfig/Force/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/AllSensorConfig/Force/ */
 
@@ -731,7 +915,14 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			if (read_bit(reader)) { /* depth 2*/
 
-				push(sens_SensorConfigurationType_add_temperature(((sens_SensorConfigurationType *)top())));
+				{
+					sens_SensorConfigurationType * cur;
+					sens_SSimpRateConfig * next;
+
+					cur = (sens_SensorConfigurationType *) top();
+					next = sens_SensorConfigurationType_add_temperature(cur);
+					push(next);
+				}
 
 				//push Temperature: next 40
 
@@ -751,16 +942,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpRateConfig*)top())->rate));
-
 				{
-					uint8_t c;
-					read_bits(reader, (u_char *) &c, 8);
-					*(int8_t*) ((sens_Byte*) top()) = (int8_t)(((c) * 1)
-							+ (-128));
+					sens_SSimpRateConfig * cur;
+					cur = (sens_SSimpRateConfig *) top();
+					push(&(cur->rate));
 				}
 
-				pop();
+				{
+					sens_Byte* cur;
+					cur = (sens_Byte*) top();
+
+					{
+						uint8_t c;
+						read_bits(reader, (u_char *) &c, 8);
+						*(int8_t*) cur = (int8_t)(((c) * 1) + (-128));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -772,7 +973,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			label = 37; /* constLoopEnd1 /Status/AllSensorConfig/Temperature/ */
 
-			pop();
+			if (pop())
+				;
 
 			continue; /* constLoopEnd2 /Status/AllSensorConfig/Temperature/ */
 
@@ -786,7 +988,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 			label = 41; // Complex End
 
 
-			pop();
+			if (pop())
+				;
 
 			break;
 
@@ -801,16 +1004,26 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpStatus*)top())->batteryVoltage));
-
 				{
-					uint16_t c;
-					read_bits(reader, (u_char *) &c, 16);
-					*(uint16_t*) ((sens_UnsignedShort*) top()) = (((c) * 1)
-							+ (0));
+					sens_SSimpStatus * cur;
+					cur = (sens_SSimpStatus *) top();
+					push(&(cur->batteryVoltage));
 				}
 
-				pop();
+				{
+					sens_UnsignedShort* cur;
+					cur = (sens_UnsignedShort*) top();
+
+					{
+						uint16_t c;
+						read_bits(reader, (u_char *) &c, 16);
+						*(uint16_t*) cur = (((c) * 1) + (0));
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -824,17 +1037,35 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpStatus*)top())->currentTime));
-
 				{
-					uint32_t c;
-					read_bits(reader, (u_char *) &c, 32);
-
-					struct timeval t = { c, 0 };
-					memcpy(((sens_DateTime*) top()), &t, sizeof(t));
+					sens_SSimpStatus * cur;
+					cur = (sens_SSimpStatus *) top();
+					push(&(cur->currentTime));
 				}
 
-				pop();
+				{
+					sens_DateTime* cur;
+					cur = (sens_DateTime*) top();
+
+					{
+						uint32_t c;
+						read_bits(reader, (u_char *) &c, 32);
+
+						{
+							struct timeval t;
+
+							{
+								t.tv_sec = c;
+							};
+
+							memcpy(cur, &t, sizeof(t));
+						}
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -848,17 +1079,35 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 
 			{
 
-				push(&(((sens_SSimpStatus*)top())->upTime));
-
 				{
-					uint32_t c;
-					read_bits(reader, (u_char *) &c, 32);
-
-					struct timeval t = { c, 0 };
-					memcpy(((sens_DateTime*) top()), &t, sizeof(t));
+					sens_SSimpStatus * cur;
+					cur = (sens_SSimpStatus *) top();
+					push(&(cur->upTime));
 				}
 
-				pop();
+				{
+					sens_DateTime* cur;
+					cur = (sens_DateTime*) top();
+
+					{
+						uint32_t c;
+						read_bits(reader, (u_char *) &c, 32);
+
+						{
+							struct timeval t;
+
+							{
+								t.tv_sec = c;
+							};
+
+							memcpy(cur, &t, sizeof(t));
+						}
+					}
+
+				}
+
+				if (pop())
+					;
 
 			}
 
@@ -871,7 +1120,8 @@ static int dom_automata(struct READER_STRUCT *reader, void **stack, int *_label)
 			label = 45; // Complex End
 
 
-			pop();
+			if (pop())
+				;
 
 			break;
 

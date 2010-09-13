@@ -1,8 +1,6 @@
 #ifndef ___STATUS_BIN2DOM_H
 #define ___STATUS_BIN2DOM_H 1
 #include <bitsio/read_bits.h>
-#include <string.h>
-#include <bitsio/read_bits_buf.h>
 #include "sens_types.h"
 typedef sens_SSimpStatus Status_t;
 
