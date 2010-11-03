@@ -17,13 +17,13 @@
 
 #define sens_DateTime struct timeval
 
+typedef sens_Short sens_XType;
+
 typedef sens_Short sens_YType;
 
 typedef sens_Short sens_ZType;
 
 typedef sens_Byte sens_ValueType;
-
-typedef sens_Short sens_XType;
 
 struct sens_ADXL210Sample {
 
@@ -626,24 +626,24 @@ static sens_DateTime *sens_SSimpControl_next_newTime(struct sens_SSimpControl *s
 	if(last!=&(self->newTime.element[self->newTime.len-1])) return last++;
 	else return NULL;}
 
-typedef struct sens_SSimpStatus sens_SSimpStatus;
-
-typedef struct sens_SensorConfigurationType sens_SensorConfigurationType;
-
-typedef struct sens_TSL2550Sample sens_TSL2550Sample;
+typedef struct sens_FSR152Sample sens_FSR152Sample;
 
 typedef struct sens_SSimpSample sens_SSimpSample;
 
-typedef struct sens_SSimpControl sens_SSimpControl;
-
-typedef struct sens_SP101Sample sens_SP101Sample;
-
-typedef struct sens_TC74Sample sens_TC74Sample;
+typedef struct sens_SSimpRateConfig sens_SSimpRateConfig;
 
 typedef struct sens_ADXL210Sample sens_ADXL210Sample;
 
-typedef struct sens_FSR152Sample sens_FSR152Sample;
+typedef struct sens_SP101Sample sens_SP101Sample;
 
-typedef struct sens_SSimpRateConfig sens_SSimpRateConfig;
+typedef struct sens_SensorConfigurationType sens_SensorConfigurationType;
+
+typedef struct sens_SSimpControl sens_SSimpControl;
+
+typedef struct sens_TSL2550Sample sens_TSL2550Sample;
+
+typedef struct sens_SSimpStatus sens_SSimpStatus;
+
+typedef struct sens_TC74Sample sens_TC74Sample;
 
 #endif
