@@ -9,7 +9,12 @@ enum operations {
 #include <ws4d-gSOAP/ws-addressing.h>
 #include <stdsoap2.h>
 
-#include <sendrcv.h>
+#include <ws4d-gSOAP/dpws_device.h>
+
+extern void send_buf(struct dpws_s *device,uint16_t service_id,uint8_t op_id, struct soap* msg, char* buf ,ssize_t len);
+extern ssize_t rcv_buf(struct dpws_s *device,uint16_t service_id,uint8_t op_id, struct soap* msg, char **buf);
+
+//#include <sendrcv.h>
 
 #include "Sample_bin2sax.h"
 
