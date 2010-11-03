@@ -251,6 +251,11 @@ Select: ");
                                 catch (TimeoutException t)
                                 {
                                     Console.WriteLine("Error reply time out: {0}!!", t.Message);
+                                    hostedEndPoint = null;
+                                    return;
+                                }
+                                catch(EndpointNotFoundException e)
+                                {
                                     return;
                                 }
 
@@ -294,23 +299,23 @@ Select: ");
         /// </summary>
         private static void StartAnouncementProcess()
         {
-            //MulticastListener _multicastListener = new MulticastListener();
-            //_multicastListener.MessageArrived += new EventHandler<MessageEventArgs>(_multicastListener_MessageArrived);
 
-            AnnouncementListener announcementService = new AnnouncementListener();
+            AnnouncementService announcementService = new AnnouncementService();
             // Add event handlers
+            
             announcementService.OnlineAnnouncementReceived += new EventHandler<AnnouncementEventArgs>(OnOnlineAnnouncement);
             announcementService.OfflineAnnouncementReceived += new EventHandler<AnnouncementEventArgs>(OnOfflineAnnouncement);
-
+           
             // Create the service host with a singleton
             using (ServiceHost announcementServiceHost = new ServiceHost(announcementService))
             {
                 // Add the announcement endpoint
                 UdpAnnouncementEndpoint udp = new UdpAnnouncementEndpoint(DiscoveryVersion.WSDiscoveryApril2005);
                 announcementServiceHost.AddServiceEndpoint(udp);
-
+              
                 // Open the host async
                 announcementServiceHost.Open();
+              
 
                 Console.WriteLine("Please start a dummynode.");
                 Console.Write("Waiting for an announcement (Enter-Exit) ...");
@@ -318,16 +323,13 @@ Select: ");
             }
         }
 
-        static void _multicastListener_MessageArrived(object sender, MessageEventArgs e)
-        {
-            Console.WriteLine("Message arrived by the multicast listener: ");
-            Console.WriteLine(e.Message.ToString());
-        }
+      
 
         private static void OnOnlineAnnouncement(object sender, AnnouncementEventArgs e)
         {
+            Console.WriteLine("Hello!");
             EndpointDiscoveryMetadata metadata = e.EndpointDiscoveryMetadata;
-
+            
             // Check if service is SSimpDeviceType which is the Host service used 
             foreach (System.Xml.XmlQualifiedName type in metadata.ContractTypeNames)
             {
@@ -345,8 +347,9 @@ Select: ");
 
         private static void OnOfflineAnnouncement(object sender, AnnouncementEventArgs e)
         {
+            Console.WriteLine("Bye!");
             EndpointDiscoveryMetadata metadata = e.EndpointDiscoveryMetadata;
-            if (metadata.ListenUris[0].Equals(endpointAddress.Uri))
+            if (metadata!=null && metadata.ListenUris.Count>0 && metadata.ListenUris[0].Equals(endpointAddress.Uri))
             {
                 Console.WriteLine("Service said goodbye!!");
                 endpointAddress = null;
@@ -426,9 +429,10 @@ Select: ");
 
             // Creating DiscoveryClient class.
             DiscoveryClient discoveryClient = new DiscoveryClient(new UdpDiscoveryEndpoint(DiscoveryVersion.WSDiscoveryApril2005));
-
+         ;
             Console.Write("Finding for all services in the network (empty criteria)...");
-            FindResponse findResponseX = discoveryClient.Find(new FindCriteria());
+
+            FindResponse findResponseX = discoveryClient.Find(new FindCriteria() {Duration=new TimeSpan(0,0,2)});
             Console.WriteLine("{0} found.\n", findResponseX.Endpoints.Count);
             
             // Search for each endpoint found to resolve the address given.
@@ -538,7 +542,7 @@ Select: ");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Error on getting MetaData.");
+                        Console.WriteLine("Error on getting MetaData.:{0}", ex.Message);
                     }
                 }
             }
@@ -557,6 +561,7 @@ Select: ");
             {
                 // Connect to the discovered service endpoint.
                 client.Endpoint.Address = endpointAddress;
+                client.Endpoint.Binding.ReceiveTimeout = new TimeSpan(0, 0, 2);
 
                 ////Get the ClientBaseAddress, to change from Localhost to an specific IP Address;
                 //CustomBinding binding = (CustomBinding)client.Endpoint.Binding;
