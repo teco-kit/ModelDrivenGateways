@@ -18,7 +18,7 @@ static struct Namespace namespaces[] = {
 
 { NULL, NULL, NULL, NULL } };
 
-void SSimpDevice_init_service(struct soap *service) {
+void DPWSModel_init_service(struct soap *service) {
 	soap_init(service);
 #ifdef DEBUG
 	soap_omode (service, SOAP_XML_INDENT);
@@ -33,11 +33,11 @@ extern int SensorValues_serve_request(struct soap * soap);
 static serve_requests_ptr serve_requests[] = SOAP_SERVE_SET(
 		SensorValues_serve_request);
 
-serve_requests_ptr *SSimpDevice_get_serve_requests() {
+serve_requests_ptr *DPWSModel_get_serve_requests() {
 	return serve_requests;
 }
 
-int SSimpDevice_setup_hosting_service(struct dpws_s *device,
+int DPWSModel_setup_hosting_service(struct dpws_s *device,
 		struct soap *service, char *uuid) {
 	int ret = 0;
 
@@ -68,7 +68,7 @@ int SSimpDevice_setup_hosting_service(struct dpws_s *device,
 
 }
 
-int SSimpDevice_setup_device(struct dpws_s *device, struct soap *service) {
+int DPWSModel_setup_device(struct dpws_s *device, struct soap *service) {
 
 	{
 		char uri[DPWS_URI_MAX_LEN] = "http://host:0/";
@@ -119,7 +119,7 @@ int SSimpDevice_setup_device(struct dpws_s *device, struct soap *service) {
 	return WS4D_OK;
 }
 
-int SSimpDevice_set_metadata_device(struct dpws_s *device) {
+int DPWSModel_set_metadata_device(struct dpws_s *device) {
 	/*set_metadata_ThisDevice*/
 	struct ws4d_thisDevice *_device = dpws_change_thisdevice(device);
 	static const ws4d_device_FriendlyName_var( friendlyName) = {
@@ -134,17 +134,19 @@ int SSimpDevice_set_metadata_device(struct dpws_s *device) {
 	return WS4D_OK;
 }
 
-int SSimpDevice_set_metadata_model(struct dpws_s *device) { /*set_metadata_ThisModel*/
+int DPWSModel_set_metadata_model(struct dpws_s *device) { /*set_metadata_ThisModel*/
 	struct ws4d_thisModel *model = dpws_change_thismodel(device);
 	static const ws4d_model_Name_var( name) = { ws4d_locstring_init_string(
 			"de", "SSimp Sensorknoten"),
 
 	ws4d_locstring_init_string("en", "SSimp Sensorknoten"), };
 	static const ws4d_model_Manufacturer_var
-			( manufacturer) = { ws4d_locstring_init_string("de",
-					"TECO (Universität Karlsruhe)"),
+			( manufacturer) =
+					{ ws4d_locstring_init_string("de",
+							"TECO (Universität Karlsruhe)"),
 
-			ws4d_locstring_init_string("en", "TECO (University of Karlsruhe)"), };
+					ws4d_locstring_init_string("en",
+							"TECO (University of Karlsruhe)"), };
 
 	ws4d_model_set_Manufacturer(model, manufacturer, 2);
 	ws4d_model_set_ManufacturerUrl(model, "http://www.teco.edu");
@@ -154,7 +156,7 @@ int SSimpDevice_set_metadata_model(struct dpws_s *device) { /*set_metadata_ThisM
 	return WS4D_OK;
 }
 
-int SSimpDevice_set_wsdl(struct dpws_s *device) {
+int DPWSModel_set_wsdl(struct dpws_s *device) {
 
 	dpws_append_wsdl(
 			device,
@@ -530,7 +532,7 @@ int SSimpDevice_set_wsdl(struct dpws_s *device) {
 	return WS4D_OK;
 }
 
-void SSimpDevice_event(int svc, int op, void* dev, char *buf, size_t len) {
+void DPWSModel_event(int svc, int op, void* dev, char *buf, size_t len) {
 	switch (svc) {
 
 	case 0: {
