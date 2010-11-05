@@ -32,8 +32,8 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 */
 
 #include "soapH.h"
-#include <iostream.h>
-
+#include <iostream>
+using namespace std;
 const char luserver[] = "http://websrv.cs.fsu.edu/~engelen/luserver.cgi";
 
 int main(int argc, char **argv)
