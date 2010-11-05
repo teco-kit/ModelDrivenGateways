@@ -49,7 +49,8 @@ A commercial use license is available from Genivia, Inc., contact@genivia.com
 #include "soapH.h"
 #include "factorytest.nsmap"
 
-#include <iostream.h>
+#include <iostream>
+using namespace std;
 
 // default factory service endpoint:
 const char *factory = "http://localhost:18085";
