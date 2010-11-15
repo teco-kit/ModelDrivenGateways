@@ -595,7 +595,7 @@ Select: ");
                 do
                 {
                     response = client.GetSensorValues();
-
+                    
                     // Show the results in the console window.
                     if (!silent)
                     {
@@ -693,7 +693,7 @@ Select: ");
                 Console.WriteLine("\tAcceleration Y: {0}", response.Accelleration.y);
                 Console.WriteLine("\tAcceleration Z: {0}", response.Accelleration.z);
             }
-
+         
             if (response.Audio != null)
                 Console.WriteLine("\tAudio: {0}", response.Audio.volume);
             if (response.Force != null)
