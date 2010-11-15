@@ -54,7 +54,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnnouncementListener.cs" />
     <Compile Include="DevicesProfile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,9 +67,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Transport\MessageEventArgs.cs" />
-    <Compile Include="Transport\MulticastListener.cs" />
-    <Compile Include="Transport\TransportConstants.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
