@@ -9,7 +9,10 @@ enum operations {
 #include <ws4d-gSOAP/ws-addressing.h>
 #include <stdsoap2.h>
 
-#include <sendrcv.h>
+#include <ws4d-gSOAP/dpws_device.h>
+
+extern void (*send_buf)(struct dpws_s *, uint16_t , uint8_t , struct soap* , u_char* , ssize_t );
+extern ssize_t (*rcv_buf)(struct dpws_s *device, uint16_t service_id, uint8_t op_id, struct soap* msg, char **buf);
 
 #include "Sample_bin2sax.h"
 
@@ -19,7 +22,7 @@ static int soap_serve_GetSensorValues(struct soap *soap) //TODO: pass device con
 	int service_id = 0; //TODO
 	struct dpws_s *device = NULL;
 
-	send_buf(device, service_id, op_id, soap, NULL, 0);
+	(*send_buf)(device, service_id, op_id, soap, NULL, 0);
 
 	/* prepare response */
 	{
@@ -71,7 +74,7 @@ static int soap_serve_GetSensorValues(struct soap *soap) //TODO: pass device con
 
 	{
 		char * buf;
-		ssize_t len = rcv_buf(device, service_id, op_id, soap, &buf);
+		ssize_t len = (*rcv_buf)(device, service_id, op_id, soap, &buf);
 
 		if (len < 0) {
 			soap->error = soap_receiver_fault(soap, "No reply from Node", NULL);
@@ -114,7 +117,7 @@ static int soap_serve_Config(struct soap *soap) //TODO: pass device context
 				return soap->error;
 		}
 
-		send_buf(device, service_id, op_id, soap, sendbuf, write_buf_finish(
+		(*send_buf)(device, service_id, op_id, soap, sendbuf, write_buf_finish(
 				writer));
 	}
 
@@ -168,7 +171,7 @@ static int soap_serve_Config(struct soap *soap) //TODO: pass device context
 
 	{
 		char * buf;
-		ssize_t len = rcv_buf(device, service_id, op_id, soap, &buf);
+		ssize_t len = (*rcv_buf)(device, service_id, op_id, soap, &buf);
 
 		if (len < 0) {
 			soap->error = soap_receiver_fault(soap, "No reply from Node", NULL);
