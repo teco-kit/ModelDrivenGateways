@@ -1,8 +1,11 @@
 /* Generated file */
 
+#include <ws4d-gSOAP/dpwsH.h>
 #include <ws4d-gSOAP/dpws_device.h>
 #include <stdio.h>
 #include <dpws_append_wsdl.h>
+
+
 
 static struct Namespace namespaces[] = {
 
@@ -68,7 +71,10 @@ int DPWSModel_setup_hosting_service(struct dpws_s *device,
 
 }
 
-int DPWSModel_setup_device(struct dpws_s *device, struct soap *service) {
+void (*send_buf)(struct dpws_s *, uint16_t , uint8_t , struct soap* , u_char* , ssize_t );
+ssize_t (*rcv_buf)(struct dpws_s *device, uint16_t service_id, uint8_t op_id, struct soap* msg, char **buf);
+
+int DPWSModel_setup_device(struct dpws_s *device, struct soap *service, void (*sendfct)(struct dpws_s *, uint16_t , uint8_t , struct soap* , u_char* , ssize_t ), ssize_t (*rcvfct)(struct dpws_s *device, uint16_t service_id, uint8_t op_id, struct soap* msg, char **buf)) {
 
 	{
 		char uri[DPWS_URI_MAX_LEN] = "http://host:0/";
@@ -113,6 +119,8 @@ int DPWSModel_setup_device(struct dpws_s *device, struct soap *service) {
 					__LINE__);
 			return ret;
 		}
+		send_buf = sendfct;
+		rcv_buf = rcvfct;
 
 	}
 
