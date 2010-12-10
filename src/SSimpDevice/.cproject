@@ -74,19 +74,15 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.1696161822" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base">
 								<option id="gnu.c.link.option.libs.1103330148" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="SensorValuesService"/>
+									<listOptionValue builtIn="false" value="ws4d-required"/>
 									<listOptionValue builtIn="false" value="bitsio_buf"/>
-									<listOptionValue builtIn="false" value="dpwsS"/>
-									<listOptionValue builtIn="false" value="dpwsDmt"/>
-									<listOptionValue builtIn="false" value="ws4d_listLmt"/>
-									<listOptionValue builtIn="false" value="gsoap"/>
 									<listOptionValue builtIn="false" value="pthread"/>
 									<listOptionValue builtIn="false" value="particle"/>
 								</option>
 								<option id="gnu.c.link.option.paths.1943835943" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="/usr/local/lib"/>
-									<listOptionValue builtIn="false" value="/usr/local/lib/ws4d-gSOAP"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/edu.teco.dpws.generator/shared/build}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SensorValuesService/Debug}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ws4d-required/Debug}&quot;"/>
 								</option>
 								<option defaultValue="true" id="gnu.c.link.option.shared.1116899896" name="Shared (-shared)" superClass="gnu.c.link.option.shared" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.2013559385" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
