@@ -40,6 +40,13 @@ serve_requests_ptr *DPWSModel_get_serve_requests() {
 	return serve_requests;
 }
 
+/**
+ * Return number of services/serve_requests
+ */
+int DPWSModel_get_service_count() {
+	return 1;
+}
+
 int DPWSModel_setup_hosting_service(struct dpws_s *device,
 		struct soap *service, char *uuid) {
 	int ret = 0;

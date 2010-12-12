@@ -107,17 +107,17 @@ static int soap_serve_Config(struct soap *soap) //TODO: pass device context
 	struct dpws_s *device = NULL;
 
 	{
-		char sendbuf[256];
-		memset(sendbuf, 0xff, sizeof(sendbuf));
-		struct WRITER_STRUCT* writer = write_bits_bufwriter_stack_new(sendbuf,
-				sizeof(sendbuf));
+		char sendbuffer[256];
+		memset(sendbuffer, 0xff, sizeof(sendbuffer));
+		struct WRITER_STRUCT* writer = write_bits_bufwriter_stack_new(sendbuffer,
+				sizeof(sendbuffer));
 
 		{
 			if (StatusControl_sax2bin_run(soap, writer) < 0)
 				return soap->error;
 		}
 
-		(*send_buf)(device, service_id, op_id, soap, sendbuf, write_buf_finish(
+		(*send_buf)(device, service_id, op_id, soap, sendbuffer, write_buf_finish(
 				writer));
 	}
 
