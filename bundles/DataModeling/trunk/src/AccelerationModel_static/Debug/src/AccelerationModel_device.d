@@ -1,0 +1,5 @@
+src/AccelerationModel_device.d src/AccelerationModel_device.o: \
+ ../src/AccelerationModel_device.c \
+ /home/dpwsteco/workspace/edu.teco.dpws.generator/shared/include/dpws_append_wsdl.h
+
+/home/dpwsteco/workspace/edu.teco.dpws.generator/shared/include/dpws_append_wsdl.h:
