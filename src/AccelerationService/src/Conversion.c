@@ -17,34 +17,52 @@
 
 void writeSOAPBuf(struct soap *soap,char * buf)
 {
-	float x=0.0f,y=0.0f,z=0.0f;
-
-	memcpy(&x,&buf[0],sizeof(float));
-	memcpy(&y,&buf[sizeof(float)],sizeof(float));
-	memcpy(&z,&buf[2*sizeof(float)],sizeof(float));
-
-	writeSOAPValues(soap,x,y,z);
+	float x=0.0f,y=0.0f,z=0.0f, tick=0.0f, delta = 0.0f;
+	float * floatbuf = (float*) buf;
+	x = floatbuf[0];
+	y = floatbuf[1];
+	z = floatbuf[2];
+	tick = floatbuf[8];
+	delta = floatbuf[9];
+	writeSOAPValues(soap,x,y,z,tick,delta);
 }
 
-void writeSOAPValues(struct soap *soap,float x,float y,float z)
+void writeSOAPValues(struct soap *soap,float x,float y,float z,float tick, float delta)
 {
 	char * str = NULL;
 
-	soap_element_begin_out(soap, "acs:Sample", 0, "");
+	soap_element_begin_out(soap, "acs:series", 0, "");
 
-
-
-	struct timeval t;
-	struct tm res;
-	char out[64];
-	gettimeofday(&t,NULL);
-	strftime(out, sizeof(out), "%Y-%m-%dT%H:%M:%S",localtime_r(&t.tv_sec, &res));
-	asprintf(&str, "%s.%06uZ", out, (uint32_t)((((uint64_t) t.tv_usec) * 1000000) >> 16));
-	char * TimeStamp_str = soap_strdup(soap, str);
-	soap_outstring(soap, "acs:TimeStamp", -1, &TimeStamp_str, "", SOAP_TYPE_string);
+	asprintf(&str, "%d", (int)tick);
+	char * count_str = soap_strdup(soap, str);
+	soap_outstring(soap, "acs:count", -1, &count_str, "", SOAP_TYPE_string);
 	free(str);
 	str = NULL;
 
+	if(tick<=1)
+	{
+		struct timeval t;
+		struct tm res;
+		char out[64];
+		gettimeofday(&t,NULL);
+		strftime(out, sizeof(out), "%Y-%m-%dT%H:%M:%S",localtime_r(&t.tv_sec, &res));
+		asprintf(&str, "%s.%06uZ", out, (uint32_t)((((uint64_t) t.tv_usec) * 1000000) >> 16));
+		char * TimeStamp_str = soap_strdup(soap, str);
+		soap_outstring(soap, "acs:timestamp", -1, &TimeStamp_str, "", SOAP_TYPE_string);
+		free(str);
+		str = NULL;
+	}
+
+	soap_element_begin_out(soap, "acs:sample", 0, "");
+
+
+	asprintf(&str, "PT%fS", delta);
+	char * delta_str = soap_strdup(soap, str);
+	soap_outstring(soap, "acs:delta", -1, &delta_str, "", SOAP_TYPE_string);
+	free(str);
+	str = NULL;
+
+	soap_element_begin_out(soap, "acs:accl", 0, "");
 	asprintf(&str, "%f", x);
 	char * x_str = soap_strdup(soap, str);
 	soap_outstring(soap, "acs:x", -1, &x_str, "", SOAP_TYPE_string);
@@ -61,6 +79,7 @@ void writeSOAPValues(struct soap *soap,float x,float y,float z)
 	soap_outstring(soap, "acs:z", -1, &z_str, "", SOAP_TYPE_string);
 	free(str);
 
-
-	soap_element_end_out(soap, "acs:Sample");
+	soap_element_end_out(soap, "acs:accl");
+	soap_element_end_out(soap, "acs:sample");
+	soap_element_end_out(soap, "acs:series");
 }
