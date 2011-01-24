@@ -1,0 +1,12 @@
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\bin\Release\Utils\cmd_usbbridge.exe
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\bin\Release\Utils\cygwin1.dll
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\bin\Release\Utils\ftdilib.dll
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\bin\Release\Utils\particle.dll
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\bin\Release\Utils\properties.xml
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\bin\Release\Utils\SSimpDevice.exe
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\bin\Release\NodeDiscovery.exe.config
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\bin\Release\NodeDiscovery.exe
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\bin\Release\NodeDiscovery.pdb
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\obj\x86\Release\ResolveAssemblyReference.cache
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\obj\x86\Release\NodeDiscovery.exe
+D:\Home\Test2\Tet_IOT_DPWS_Group\NodeDiscovery-New\NodeDiscovery\obj\x86\Release\NodeDiscovery.pdb
