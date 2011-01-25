@@ -1,7 +1,7 @@
-PBS=../../ParticleBaseSystem
+PBS=../ParticleBaseSystem
 
 BOARD?=pc232
-MAC?=9
+MAC?=5
 
 TARGET=usb_bridge
 IGNORE_WARNINGS?=216
