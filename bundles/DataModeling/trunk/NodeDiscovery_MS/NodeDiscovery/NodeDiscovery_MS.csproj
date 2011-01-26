@@ -77,6 +77,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Acceleration.wsdl" />
     <None Include="Addressing.xsd">
       <SubType>Designer</SubType>
     </None>

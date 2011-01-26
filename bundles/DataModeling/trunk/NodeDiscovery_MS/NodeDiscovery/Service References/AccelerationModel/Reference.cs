@@ -20,8 +20,7 @@ namespace NodeDiscovery.AccelerationModel {
     public interface AccelerationServiceCallback {
         
         // CODEGEN: Generating message contract since the operation AccelerationServiceEvent is neither RPC nor document wrapped.
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.teco.edu/AccelerationService/AccelerationService/AccelerationServiceEv" +
-            "ent")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.teco.edu/AccelerationService/AccelerationServiceEventOut")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         void AccelerationServiceEvent(NodeDiscovery.AccelerationModel.AccelerationServiceEvent request);
     }
@@ -34,7 +33,7 @@ namespace NodeDiscovery.AccelerationModel {
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.teco.edu/AccelerationService")]
     public partial class AccelerationSeries : object, System.ComponentModel.INotifyPropertyChanged {
         
-        private string countField;
+        private int countField;
         
         private System.DateTime timestampField;
         
@@ -43,8 +42,8 @@ namespace NodeDiscovery.AccelerationModel {
         private AccelerationSample[] sampleField;
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="nonNegativeInteger", Order=0)]
-        public string count {
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public int count {
             get {
                 return this.countField;
             }
