@@ -149,7 +149,7 @@ Select: ");
 
                                 (s.Delivery.Any = new XmlElement[1])[0] = doc.DocumentElement;
                                 (s.Filter = new FilterType()).Dialect = "http://schemas.xmlsoap.org/ws/2006/02/devprof/Action";
-                                (s.Filter.Any = new System.Xml.XmlNode[1])[0] = new System.Xml.XmlDocument().CreateTextNode("http://www.teco.edu/AccelerationService/AccelerationServiceEventMessageOut");
+                                (s.Filter.Any = new System.Xml.XmlNode[1])[0] = new System.Xml.XmlDocument().CreateTextNode("http://www.teco.edu/AccelerationService/AccelerationServiceEventOut");
 
                                 SubscribeResponse subscription;
                                 try

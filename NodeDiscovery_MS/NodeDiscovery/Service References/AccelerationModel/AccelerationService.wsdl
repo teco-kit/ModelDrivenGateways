@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:tns="http://www.teco.edu/AccelerationService" xmlns:wse="http://schemas.xmlsoap.org/ws/2004/08/eventing" xmlns:wsa_="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/" name="AccelerationService" targetNamespace="http://www.teco.edu/AccelerationService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://www.w3.org/2006/05/addressing/wsdl" xmlns:tns="http://www.teco.edu/AccelerationService" xmlns:wse="http://schemas.xmlsoap.org/ws/2004/08/eventing" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/" name="AccelerationService" targetNamespace="http://www.teco.edu/AccelerationService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.teco.edu/AccelerationService">
       <xsd:annotation>
@@ -59,7 +59,7 @@
           </xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-          <xsd:element minOccurs="1" maxOccurs="1" name="count" type="xsd:nonNegativeInteger" />
+          <xsd:element minOccurs="1" maxOccurs="1" name="count" type="xsd:int" />
           <xsd:element minOccurs="0" maxOccurs="1" name="timestamp" type="xsd:dateTime" />
           <xsd:element minOccurs="1" maxOccurs="unbounded" name="sample" type="tns:AccelerationSample" />
         </xsd:sequence>
