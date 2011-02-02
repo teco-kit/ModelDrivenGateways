@@ -59,7 +59,7 @@
         </annotation>
 
         <sequence>
-          <element maxOccurs="1" minOccurs="1" name="delta" type="duration" />
+          <element maxOccurs="1" minOccurs="0" name="delta" type="duration" />
           <element maxOccurs="1" minOccurs="1" name="accl" type="tns:ADXL210_Sample"/>
         </sequence>
 
@@ -74,6 +74,7 @@
         <sequence>
           <element maxOccurs="1" minOccurs="1" name="count" type="int"/>
           <element maxOccurs="1" minOccurs="0" name="timestamp" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="1" name="delta" type="duration" />
           <element maxOccurs="unbounded" minOccurs="1" name="sample" type="tns:AccelerationSample"/>
         </sequence>
       </complexType>

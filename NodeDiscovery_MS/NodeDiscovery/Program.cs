@@ -460,12 +460,13 @@ Select: ");
                 Console.WriteLine("\tFragment count: {0}",response.series.count);
                 if (response.series.timestampSpecified)
                 {
-                    Console.WriteLine("\tTimestamp count: {0}", response.series.timestamp);
+                    Console.WriteLine("\tTimestamp: {0}", response.series.timestamp);
                 }
+                Console.WriteLine("\tDelta: {0}", response.series.delta);
                 for(int i=0;i<response.series.sample.Length;i++)
                 {
                     Console.WriteLine("Sample:");
-                    Console.WriteLine("\tDelta: {0}",response.series.sample[i].delta);
+                    Console.WriteLine("\tDelta: {0}", response.series.sample[i].delta);
                     Console.WriteLine("\tAcceleration X: {0}",response.series.sample[i].accl.x);
                     Console.WriteLine("\tAcceleration Y: {0}",response.series.sample[i].accl.y);
                     Console.WriteLine("\tAcceleration Z: {0}",response.series.sample[i].accl.z);
