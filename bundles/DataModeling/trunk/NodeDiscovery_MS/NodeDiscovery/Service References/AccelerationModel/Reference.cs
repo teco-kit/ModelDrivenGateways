@@ -39,6 +39,8 @@ namespace NodeDiscovery.AccelerationModel {
         
         private bool timestampFieldSpecified;
         
+        private string deltaField;
+        
         private AccelerationSample[] sampleField;
         
         /// <remarks/>
@@ -78,7 +80,19 @@ namespace NodeDiscovery.AccelerationModel {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("sample", Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration", Order=2)]
+        public string delta {
+            get {
+                return this.deltaField;
+            }
+            set {
+                this.deltaField = value;
+                this.RaisePropertyChanged("delta");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("sample", Order=3)]
         public AccelerationSample[] sample {
             get {
                 return this.sampleField;

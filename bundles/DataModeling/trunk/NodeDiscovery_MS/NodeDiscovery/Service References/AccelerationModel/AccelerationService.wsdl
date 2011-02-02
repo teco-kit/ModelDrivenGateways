@@ -48,7 +48,7 @@
           </xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-          <xsd:element minOccurs="1" maxOccurs="1" name="delta" type="xsd:duration" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="delta" type="xsd:duration" />
           <xsd:element minOccurs="1" maxOccurs="1" name="accl" type="tns:ADXL210_Sample" />
         </xsd:sequence>
       </xsd:complexType>
@@ -61,6 +61,7 @@
         <xsd:sequence>
           <xsd:element minOccurs="1" maxOccurs="1" name="count" type="xsd:int" />
           <xsd:element minOccurs="0" maxOccurs="1" name="timestamp" type="xsd:dateTime" />
+          <xsd:element minOccurs="1" maxOccurs="1" name="delta" type="xsd:duration" />
           <xsd:element minOccurs="1" maxOccurs="unbounded" name="sample" type="tns:AccelerationSample" />
         </xsd:sequence>
       </xsd:complexType>
