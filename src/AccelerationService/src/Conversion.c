@@ -48,14 +48,13 @@ void writeSOAPValues(struct soap *soap,float x,float y,float z,float tick, float
 		str = NULL;
 	}
 
-	soap_element_begin_out(soap, "acs:sample", 0, "");
-
-
 	asprintf(&str, "PT%fS", delta);
 	char * delta_str = soap_strdup(soap, str);
 	soap_outstring(soap, "acs:delta", -1, &delta_str, "", SOAP_TYPE_string);
 	free(str);
 	str = NULL;
+
+	soap_element_begin_out(soap, "acs:sample", 0, "");
 
 	soap_element_begin_out(soap, "acs:accl", 0, "");
 	asprintf(&str, "%f", x);
