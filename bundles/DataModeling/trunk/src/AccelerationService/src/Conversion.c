@@ -10,6 +10,7 @@
 #include <stdsoap2.h>
 
 #include "Conversion.h"
+#include "Acceleration_operations.h"
 
 #ifndef SOAP_TYPE_string
 #define SOAP_TYPE_string 0
@@ -17,14 +18,8 @@
 
 void writeSOAPBuf(struct soap *soap,char * buf)
 {
-	float x=0.0f,y=0.0f,z=0.0f, tick=0.0f, delta = 0.0f;
-	float * floatbuf = (float*) buf;
-	x = floatbuf[0];
-	y = floatbuf[1];
-	z = floatbuf[2];
-	tick = floatbuf[8];
-	delta = floatbuf[9];
-	writeSOAPValues(soap,x,y,z,tick,delta);
+	ldcmessage * msg = (ldcmessage*) buf;
+	writeSOAPValues(soap,msg->values[0],msg->values[1],msg->values[2],msg->timertick,msg->delta);
 }
 
 void writeSOAPValues(struct soap *soap,float x,float y,float z,float tick, float delta)
