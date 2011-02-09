@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:sensor="http://particle.teco.edu/SensorValues" xmlns:ssimp="http://particle.teco.edu/boards/SSimp" xmlns:sval="http://aletheia-projekt.de/iot/SensorValues" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="ssimp" ecore:package="SensorValues.Boards.SSimp" targetNamespace="http://particle.teco.edu/boards/SSimp">
+  <xsd:import namespace="http://particle.teco.edu/SensorValues" schemaLocation="SensorValues-Sensors.xsd"/>
+  <xsd:import namespace="http://aletheia-projekt.de/iot/SensorValues" schemaLocation="SensorValues.xsd"/>
+  <xsd:annotation>
+    <xsd:documentation>$Id:$</xsd:documentation>
+  </xsd:annotation>
+  <xsd:complexType ecore:name="Sample" name="SSimpSample">
+    <xsd:annotation>
+      <xsd:documentation>Single Sample with sensors enabled according to configuration</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="sval:Sample">
+        <xsd:sequence>
+          <xsd:element ecore:name="accelleration" form="qualified" minOccurs="0" name="Accelleration" type="sensor:ADXL210_Sample"/>
+          <xsd:element ecore:name="audio" form="qualified" minOccurs="0" name="Audio" type="sensor:SP101_Sample"/>
+          <xsd:element ecore:name="light" form="qualified" minOccurs="0" name="Light" type="sensor:TSL2550_Sample"/>
+          <xsd:element ecore:name="force" form="qualified" minOccurs="0" name="Force" type="sensor:FSR152_Sample"/>
+          <xsd:element ecore:name="temperature" form="qualified" minOccurs="0" name="Temperature" type="sensor:TC74_Sample"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="Configuration" name="SensorConfigurationType">
+    <xsd:annotation>
+      <xsd:documentation>If a config element is present the sensor will be enabled, otherwise it will be disable. </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="sval:Configuration">
+        <xsd:sequence>
+          <xsd:element ecore:name="acceleration" form="qualified" minOccurs="0" name="Acceleration" type="sval:RateConfig"/>
+          <xsd:element ecore:name="audio" form="qualified" minOccurs="0" name="Audio" type="sval:RateConfig"/>
+          <xsd:element ecore:name="light" form="qualified" minOccurs="0" name="Light" type="sval:RateConfig"/>
+          <xsd:element ecore:name="force" form="qualified" minOccurs="0" name="Force" type="sval:RateConfig"/>
+          <xsd:element ecore:name="temperature" form="qualified" minOccurs="0" name="Temperature" type="sval:RateConfig"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+</xsd:schema>

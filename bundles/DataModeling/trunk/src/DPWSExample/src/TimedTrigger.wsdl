@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+	xmlns:tns="http://aletheia-project.de/iot/TimedTrigger/1.0" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+
+	xmlns:wsa_="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+
+	xmlns:wse="http://schemas.xmlsoap.org/ws/2004/08/eventing" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/"
+
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="TimedTrigger"
+	targetNamespace="http://aletheia-project.de/iot/TimedTrigger/1.0" xmlns:p="http://schemas.xmlsoap.org/wsdl/soap/">
+
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://aletheia-project.de/iot/TimedTrigger/1.0" xmlns:tns="http://aletheia-project.de/iot/TimedTrigger/1.0" xmlns="http://aletheia-project.de/iot/TimedTrigger/1.0">
+		<xsd:include  schemaLocation="TimedTrigger.xsd" />	
+		</xsd:schema>
+    </wsdl:types>
+
+	<wsdl:message name="CreateTriggerRequest">
+		<wsdl:part name="parameters" element="tns:TimedTrigger"></wsdl:part>
+	</wsdl:message>
+	
+	<wsdl:message name="CreateTriggerResponse">
+		<wsdl:part name="parameters" element="tns:TimedTriggerRef"></wsdl:part>
+	</wsdl:message>
+	
+	<wsdl:message name="GetTriggerRequest">
+	   <wsdl:part name="parameters" element="tns:TimedTriggerRef"></wsdl:part>
+	</wsdl:message>
+	
+	<wsdl:message name="GetTriggerResponse">
+		<wsdl:part name="parameters" element="tns:TimedTrigger"></wsdl:part>
+	</wsdl:message>
+	
+	<wsdl:message name="DeleteTriggerRequest">
+	   <wsdl:part name="parameters" element="tns:TimedTriggerRef"></wsdl:part>
+	</wsdl:message>
+	
+	<wsdl:message name="DeleteTriggerResponse">
+	</wsdl:message>
+	
+	<wsdl:portType name="TimedTriggerPort">
+		<wsdl:operation name="CreateTrigger">
+			<wsdl:input message="tns:CreateTriggerRequest"></wsdl:input>
+			<wsdl:output message="tns:CreateTriggerResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetTrigger">
+			<wsdl:input message="tns:GetTriggerRequest"></wsdl:input>
+			<wsdl:output message="tns:GetTriggerResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteTrigger">
+			<wsdl:input message="tns:DeleteTriggerRequest"></wsdl:input>
+			<wsdl:output message="tns:DeleteTriggerResponse"></wsdl:output>
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="TimedTriggerSOAP" type="tns:TimedTriggerPort">
+		<p:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="CreateTrigger">
+			<p:operation
+				soapAction="http://aletheia-project.de/iot/TimedTrigger/1.0/CreateTrigger" />
+			<wsdl:input>
+				<p:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<p:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetTrigger">
+			<p:operation
+				soapAction="http://aletheia-project.de/iot/TimedTrigger/1.0/GetTrigger" />
+			<wsdl:input>
+				<p:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<p:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteTrigger">
+			<p:operation
+				soapAction="http://aletheia-project.de/iot/TimedTrigger/1.0/DeleteTrigger" />
+			<wsdl:input>
+				<p:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<p:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	
+	<wsdl:service name="TimedTrigger">
+		<wsdl:port name="TimedTrigger" binding="tns:TimedTriggerSOAP">
+			<wsoap12:address location="http://localhost:8080" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

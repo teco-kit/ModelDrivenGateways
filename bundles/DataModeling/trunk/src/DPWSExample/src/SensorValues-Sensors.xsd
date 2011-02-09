@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:sensor="http://particle.teco.edu/SensorValues" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="sensor" ecore:package="SensorValues.Sensors" targetNamespace="http://particle.teco.edu/SensorValues">
+  <xsd:annotation>
+    <xsd:documentation>$Id:$</xsd:documentation>
+  </xsd:annotation>
+  <xsd:complexType ecore:name="TC74Sample" name="TC74_Sample">
+    <xsd:annotation>
+      <xsd:documentation>Microchip TC74
+Tiny Serial Digital Thermal Sensor
+
+http://ww1.microchip.com/downloads/en/devicedoc/21462c.pdf</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element form="qualified" name="value" type="xsd:byte"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="TSL2550Sample" name="TSL2550_Sample">
+    <xsd:annotation>
+      <xsd:documentation>Taos TSL2550 
+Ambient Light Sensor
+
+The TSL2550 is a digital-output light sensor with a two-wire, SMBus serial interface. It combines
+two photodiodes and a companding analog-to-digital converter (ADC) on a single CMOS
+integrated circuit to provide light measurements over an effective 12-bit dynamic range with a
+response similar to that of the human eye.
+The TSL2550 is designed for use with broad wavelength light sources. One of the photodiodes (channel 0) is
+sensitive to visible and infrared light, while the second photodiode (channel 1) is sensitive primarily to infrared
+light.
+
+http://www.taosinc.com/getfile.aspx?type=press&amp;file=tsl2550-e75.pdf
+Light Level (lux) =(daylight-infrared)*0.39*e(0.181R^2 )
+
+Typical outputs: 
+
+Fluorescent (297 lux) : daylight=831 infrared=68
+Daylight, shade (201 lux): daylight=895 infrared=343
+Incadescent (42 lux): daylight 42 infrared=959</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element form="qualified" name="daylight" type="xsd:unsignedShort">
+        <xsd:annotation>
+          <xsd:documentation>ADC ouput for channel 0</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element form="qualified" name="infrared" type="xsd:unsignedShort">
+        <xsd:annotation>
+          <xsd:documentation>ADC ouput for channel 1</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="SP101Sample" name="SP101_Sample">
+    <xsd:sequence>
+      <xsd:element form="qualified" name="volume" type="xsd:unsignedByte"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="FSR152Sample" name="FSR152_Sample">
+    <xsd:sequence>
+      <xsd:element form="qualified" name="value" type="xsd:unsignedByte"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="ADXL210Sample" name="ADXL210_Sample">
+    <xsd:annotation>
+      <xsd:documentation>Analog Devices ADXL210 
+Low-Cost ±10 g Dual-Axis Accelerometer with Duty Cycle 
+
+(z-output from optional orthogonally mounted second device)
+
+http://www.analog.com/static/imported-files/data_sheets_obsolete/OBSOLETE%20WATERMARK/ADXL210.pdf</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element form="qualified" name="x" type="xsd:short"/>
+      <xsd:element form="qualified" name="y" type="xsd:short"/>
+      <xsd:element form="qualified" name="z" type="xsd:short"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
