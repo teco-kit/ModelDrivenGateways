@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:tt="http://aletheia-project.de/iot/TimedTrigger/1.0" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="tt" ecore:package="TimedTrigger" targetNamespace="http://aletheia-project.de/iot/TimedTrigger/1.0">
+  <xsd:import namespace="http://schemas.xmlsoap.org/ws/2004/08/addressing" schemaLocation="addressing.xsd"/>
+  <xsd:element ecore:ignore="true" name="TimedTrigger" type="tt:TimedTrigger"/>
+  <xsd:element ecore:ignore="true" name="Repetition" type="tt:Repetition"/>
+  <xsd:element ecore:ignore="true" name="DutyCycle" type="tt:DutyCycle"/>
+  <xsd:element ecore:ignore="true" name="TimedTriggerService" type="tt:TimedTriggerService"/>
+  <xsd:element ecore:ignore="true" name="Endpoint" type="tt:Endpoint"/>
+  <xsd:element ecore:ignore="true" name="TimedTriggerRef" type="tt:TimedTriggerRef"/>
+  <xsd:complexType name="TimedTrigger">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="start" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>if not set-&gt;now
+</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element ecore:name="Action" ecore:resolveProxies="true" minOccurs="0" ref="wsa:Action"/>
+      <xsd:element ecore:resolveProxies="true" minOccurs="0" name="dutycycle" type="tt:DutyCycle"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Repetition">
+    <xsd:sequence>
+      <xsd:element ecore:unsettable="false" minOccurs="0" name="count" type="xsd:short">
+        <xsd:annotation>
+          <xsd:documentation>if not set -&gt; infinity or out of memory</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="sleep" type="xsd:duration" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType name="DutyCycle">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="duration" type="xsd:duration"/>
+      <xsd:element ecore:resolveProxies="true" minOccurs="0" name="repeat" type="tt:Repetition"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType abstract="true" ecore:interface="true" name="TimedTriggerService">
+    <xsd:annotation>
+      <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+        <operation name="createTrigger" type="xsd:byte">
+          <parameter name="trigger" type="tt:TimedTrigger"/>
+        </operation>
+        <operation name="deleteTrigger">
+          <parameter name="triggerId" type="xsd:byte"/>
+        </operation>
+      </xsd:appinfo>
+    </xsd:annotation>
+  </xsd:complexType>
+  <xsd:complexType name="Endpoint"/>
+  <xsd:complexType name="TimedTriggerRef">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="id" type="xsd:anyURI"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
