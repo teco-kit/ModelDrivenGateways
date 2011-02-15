@@ -68,7 +68,7 @@ dpws_for_each_subs		(subs, next, _device,
 			}
 
 			{
-				struct READER_STRUCT* reader=read_bits_bufreader_stack_new(buf,buf_len);
+
 				switch(op)
 				{
 					assert(0&&"unreachable"); //optimized for compiler if NDEBUG
@@ -80,6 +80,10 @@ dpws_for_each_subs		(subs, next, _device,
 					}
 
 					break;
+					default:
+					{
+
+					}break;
 				}
 			}
 			if ( soap_body_end_out(&soap)
