@@ -9,8 +9,8 @@
 #include <errno.h>
 #include <stdsoap2.h>
 
-#include "Conversion.h"
 #include "Acceleration_operations.h"
+#include "Conversion.h"
 
 #ifndef SOAP_TYPE_string
 #define SOAP_TYPE_string 0
@@ -77,3 +77,32 @@ void writeSOAPValues(struct soap *soap,float x,float y,float z,float tick, float
 	soap_element_end_out(soap, "acs:sample");
 	soap_element_end_out(soap, "acs:series");
 }
+
+int readLDCInfo(struct soap *soap, LDCInfo * info)
+{
+	if (soap_element_begin_in(soap, "acl:ldcinfo", 0, NULL) != SOAP_OK)
+	{
+		soap->error = soap_sender_fault(soap,"tag name or namespace mismatch: ldcinfo expected",NULL);
+		return 0;
+	}
+	if (soap_element_begin_in(soap, "acl:rate", 0, NULL) != SOAP_OK)
+	{
+		soap->error = soap_sender_fault(soap,"tag name or namespace mismatch: rate expected",NULL);
+		return 0;
+	}
+
+	const char* str = soap_value(soap);
+	info->rate = strdup(str);
+
+	if (soap_element_end_in(soap, "acl:rate") != SOAP_OK) {
+		soap->error = soap_sender_fault(soap,"tag name or namespace mismatch: rate expected",NULL);
+		return 0;
+	}
+
+	if (soap_element_end_in(soap, "acl:ldcinfo") != SOAP_OK) {
+		soap->error = soap_sender_fault(soap,"tag name or namespace mismatch: ldcinfo expected",NULL);
+		return 0;
+	}
+	return 1;
+}
+
