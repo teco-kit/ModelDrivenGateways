@@ -46,10 +46,13 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.cygwin.exe.debug.463850461.1742493888." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.base.1131769336" name="Cygwin GCC" superClass="cdt.managedbuild.toolchain.gnu.cygwin.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.Cygwin_PE" id="cdt.managedbuild.target.gnu.platform.cygwin.base.1659708305" name="Debug Platform" osList="win32" superClass="cdt.managedbuild.target.gnu.platform.cygwin.base"/>
-							<builder buildPath="${workspace_loc:/AccelerationModel_static/Debug}" enableAutoBuild="true" id="org.eclipse.cdt.build.core.internal.builder.460617655" superClass="org.eclipse.cdt.build.core.internal.builder"/>
+							<builder buildPath="${workspace_loc:/AccelerationModel_static/Debug}" enableAutoBuild="true" id="org.eclipse.cdt.build.core.internal.builder.460617655" keepEnvironmentInBuildfile="false" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.base.1455258052" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.base">
 								<option id="gnu.both.asm.option.include.paths.2094143770" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/AccelerationService}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DeviceInfoService/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DataLoggingService/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/AccelerationService/src}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1966871434" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -68,6 +71,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DPWSExample/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SensorService/src-gen}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/edu.teco.dpws.generator/shared/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/AccelerationService/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DeviceInfoService/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DataLoggingService/src}&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1592208731" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MUTEXES"/>
@@ -91,6 +97,9 @@
 							<tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.base.1773870858" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.base">
 								<option id="gnu.both.asm.option.include.paths.1125560482" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/AccelerationService}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DeviceInfoService/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DataLoggingService/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/AccelerationService/src}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.64286479" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -109,6 +118,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DPWSExample/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SensorService/src-gen}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/edu.teco.dpws.generator/shared/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/AccelerationService/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DeviceInfoService/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DataLoggingService/src}&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1324908342" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MUTEXES"/>
@@ -133,6 +145,20 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
 				<externalSettings containerId="AccelerationService;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/AccelerationService"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/AccelerationService/Debug"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="AccelerationService"/>
+					</externalSetting>
+				</externalSettings>
+				<externalSettings containerId="DataLoggingService;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/AccelerationService"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/AccelerationService/Debug"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="AccelerationService"/>
+					</externalSetting>
+				</externalSettings>
+				<externalSettings containerId="DeviceInfoService;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
 					<externalSetting>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/AccelerationService"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/AccelerationService/Debug"/>

@@ -5,6 +5,8 @@
 	<projects>
 		<project>SensorValuesService</project>
 		<project>AccelerationService</project>
+		<project>DataLoggingService</project>
+		<project>DeviceInfoService</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
