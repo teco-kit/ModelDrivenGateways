@@ -32,15 +32,18 @@ char * DataLoggingService_get_opuri(enum DataLogging_operations op) {
 
 void DataLoggingService_event(enum DataLogging_operations op, void *_device,
 		char * buf, size_t buf_len) {
+
 	struct soap soap;
 	struct ws4d_subscription *subs, *next;
 
 	struct dpws_s *device = (struct dpws_s *) _device;
 
 	soap_init(&soap);
+
 	soap_set_namespaces(&soap, device->hosting_handle->namespaces); //TODO:Check if correct
 	//soap_set_namespaces (&soap, namespaces);
 	{
+
 		char *soap_action_uri = DataLoggingService_get_opuri(op);
 		if (!soap_action_uri)
 			return;
@@ -59,7 +62,7 @@ dpws_for_each_subs		(subs, next, _device,
 			}
 
 			soap.omode|=SOAP_IO_CHUNK;
-			printf("Delivering to %s \n",dpws_subsm_get_deliveryPush_address (device, subs));
+
 			if ( soap_connect(&soap, dpws_subsm_get_deliveryPush_address (device, subs), soap_action_uri)
 					|| soap_envelope_begin_out(&soap)
 					|| soap_putheader(&soap)

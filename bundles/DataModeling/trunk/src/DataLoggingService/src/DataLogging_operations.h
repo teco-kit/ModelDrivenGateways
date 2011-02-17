@@ -13,7 +13,8 @@ enum DataLogging_operations {
 };
 
 typedef struct {
-	char * rate;
+	char rate[64];
+	char duration[64];
 } LoggingInfo;
 
 typedef struct {
