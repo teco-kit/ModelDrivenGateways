@@ -19,7 +19,7 @@ static struct Namespace namespaces[] = {
 
 								{ "acs", "http://www.teco.edu/AccelerationService", NULL, NULL },
 								{ "dvcinf", "http://www.teco.edu/DeviceInfoService", NULL, NULL },
-								{"log", "http://www.teco.edu/DataLoggingService", NULL, NULL},
+								{ "logging", "http://www.teco.edu/DataLoggingService", NULL, NULL},
 
 								{ NULL, NULL, NULL, NULL } };
 
@@ -37,8 +37,10 @@ extern int AccelerationService_serve_request(struct soap * soap);
 
 extern int DeviceInfoService_serve_request(struct soap * soap);
 
+extern int DataLoggingService_serve_request(struct soap * soap);
+
 static serve_requests_ptr serve_requests[] = SOAP_SERVE_SET(
-		AccelerationService_serve_request,DeviceInfoService_serve_request);
+		AccelerationService_serve_request,DeviceInfoService_serve_request,DataLoggingService_serve_request);
 
 serve_requests_ptr *AccelModel_get_serve_requests() {
 	return serve_requests;
@@ -60,7 +62,7 @@ int AccelModel_setup_hosting_service(struct dpws_s *device,
 	{
 		struct ws4d_qname *service_type = ws4d_qname_alloc(1,
 				&device->alloc_list);
-		service_type->ns = ws4d_strdup("http://www.teco.edu/AccelerationService",
+		service_type->ns = ws4d_strdup("http://www.teco.edu/AccelerationModel",
 				&device->alloc_list);
 		service_type->name
 		= ws4d_strdup("AccelerationDeviceType", &device->alloc_list);
@@ -82,7 +84,7 @@ int AccelModel_setup_device(struct dpws_s *device, struct soap *service) {
 		int ret;
 
 		strcat(uri, device->hosting_addr);
-		strcat(uri, "-1"); //TODO: every service gets an unique id!
+		strcat(uri, "0"); //TODO: every service gets an unique id!
 
 		struct ws4d_epr *dpws_service = dpws_service_init(device,
 				"AccelerationService");
@@ -128,7 +130,7 @@ int AccelModel_setup_device(struct dpws_s *device, struct soap *service) {
 		int ret;
 
 		strcat(uri, device->hosting_addr);
-		strcat(uri, "-1"); //TODO: every service gets an unique id!
+		strcat(uri, "1"); //TODO: every service gets an unique id!
 
 		struct ws4d_epr *dpws_service = dpws_service_init(device,
 				"DeviceInfoService");
@@ -174,7 +176,7 @@ int AccelModel_setup_device(struct dpws_s *device, struct soap *service) {
 		int ret;
 
 		strcat(uri, device->hosting_addr);
-		strcat(uri, "-1"); //TODO: every service gets an unique id!
+		strcat(uri, "2"); //TODO: every service gets an unique id!
 
 		struct ws4d_epr *dpws_service = dpws_service_init(device,
 				"DataLoggingService");
@@ -467,7 +469,6 @@ int AccelModel_set_wsdl(struct dpws_s *device) {
 			"                   </sequence>\n"
 			"           </complexType>\n"
 			"\n"
-			"			<element name=\"stopresult\" type=\"dis:StopNodeResult\" />\n"
 			"			<element name=\"status\" type=\"dis:StatusMessage\" />\n"
 			"\n"
 			"		</schema>\n"
@@ -637,6 +638,7 @@ int AccelModel_set_wsdl(struct dpws_s *device) {
 			"								</restriction>\n"
 			"							</simpleType>\n"
 			"						</element>\n"
+			"						<element maxOccurs=\"1\" minOccurs=\"1\" name=\"duration\" type=\"nonNegativeInteger\"/>\n"
 			"					</sequence>\n"
 			"				</complexType>\n"
 			"\n"
@@ -749,6 +751,7 @@ int AccelModel_set_wsdl(struct dpws_s *device) {
 }
 
 void AccelModel_event(int svc, int op, void* dev, char *buf, size_t len) {
+	printf("Calling AccelModel_event\n");
 	switch (svc) {
 
 	case SRV_Acceleration: {
