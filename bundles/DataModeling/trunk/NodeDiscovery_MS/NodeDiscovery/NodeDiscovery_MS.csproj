@@ -63,6 +63,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\DataLogging\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\DeviceInfoService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\WSEventing\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -77,11 +87,19 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Acceleration.wsdl" />
+    <None Include="Acceleration.wsdl">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Addressing.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLogging.wsdl">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DeviceInfo.wsdl">
       <SubType>Designer</SubType>
     </None>
     <None Include="DevicesProfile.xsd">
@@ -89,6 +107,14 @@
     </None>
     <None Include="Eventing.wsdl" />
     <None Include="Service References\AccelerationModel\AccelerationService.wsdl" />
+    <None Include="Service References\DataLogging\DataLoggingService.wsdl" />
+    <None Include="Service References\DataLogging\NodeDiscovery.DataLogging.SessionInfo.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DeviceInfoService\DeviceInfoService.wsdl" />
+    <None Include="Service References\DeviceInfoService\NodeDiscovery.DeviceInfoService.StatusMessage.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\WSEventing\default.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -119,6 +145,8 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\AccelerationModel\" />
+    <WCFMetadataStorage Include="Service References\DataLogging\" />
+    <WCFMetadataStorage Include="Service References\DeviceInfoService\" />
     <WCFMetadataStorage Include="Service References\WSEventing\" />
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +157,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\AccelerationModel\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DeviceInfoService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DeviceInfoService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DeviceInfoService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataLogging\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataLogging\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataLogging\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

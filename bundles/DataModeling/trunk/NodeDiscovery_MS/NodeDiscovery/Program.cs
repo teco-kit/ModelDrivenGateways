@@ -8,6 +8,8 @@ using System.ServiceModel.Discovery;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using NodeDiscovery.AccelerationModel;
+using NodeDiscovery.DeviceInfoService;
+using NodeDiscovery.DataLogging;
 using System.IO;
 using System.Xml;
 using NodeDiscovery.WSEventing;
@@ -26,8 +28,10 @@ namespace NodeDiscovery
     {
         private static bool AnnouncementFound = false;
         private static EndpointAddress endpointAddress = null;
-        private static EndpointAddress hostedEndPoint = null;
-           
+        private static EndpointAddress accelerationServiceEndPoint = null;
+        private static EndpointAddress deviceInfoServiceEndPoint = null;
+        private static EndpointAddress dataLoggingServiceEndPoint = null;
+
         /// <summary>
         /// Initial point of the program.
         /// </summary>
@@ -59,10 +63,29 @@ Contact N. L. Fantana (nicolaie.fantana@de.abb.com)
                 // Check the option.
                 ConsoleKeyInfo ki = new ConsoleKeyInfo();
                 Console.Write(
-@"Select one option: 
-   A-Wait for Announcement;
-   D-Discover the service;
-   S-Eventing Subscribe;  
+@"Select one option:
+------------------------------
+   Service Discovery:
+------------------------------ 
+   1-Wait for Announcement;
+   2-Discover the service;
+------------------------------
+   Device Options:
+------------------------------
+   3-Get the device status;
+   4-Stop the device;
+------------------------------   
+   Low Duty Cycle Streaming:
+------------------------------ 
+   5-Set the device to start streaming and subscribe to stream;
+------------------------------
+   Data Logging:
+------------------------------
+   6-Set the device to start logging;
+   7-Set the device to send saved events and subscribe to stream;
+   8-Get the number of saved sessions;
+   9-Erase the data on the device;
+------------------------------ 
    E-Exit
 Select: ");
                 ki = Console.ReadKey();
@@ -72,119 +95,105 @@ Select: ");
                 switch (ki.Key)
                 {
                     // Start the announcement procedure.
-                    case ConsoleKey.A:
+                    case ConsoleKey.D1:
                         StartAnouncementProcess();
                         break;
 
 
                     // Call the GetValues method (with or without showing information on the console).
-                    case ConsoleKey.D:
+                    case ConsoleKey.D2:
                         // Finds a valid Endpoint for a Node.
                         endpointAddress = StartDiscoveryProcess();
                         if (endpointAddress != null)
                         {
                             // Get Metadata and the endpoint of the service.
-                            hostedEndPoint = GetMetaData(endpointAddress);
+                            GetServiceEndPoints(endpointAddress);
 
                             // Check if the invokation of the service will be called again.
-                            
+
                         }
 
                         break;
-
-                    // Initialize the Subcription event. 
-                    case ConsoleKey.S:
-                        Console.WriteLine("Starting subscription event...");
-
-                      //  endpointAddress = StartDiscoveryProcess(false);
-                        if (hostedEndPoint != null)
+                    case ConsoleKey.D3:
                         {
-                            //Get Metadata of the address.
-                          //  EndpointAddress hostedEndPoint = GetMetaData(endpointAddress);
-
-                            InstanceContext ithis = new InstanceContext(new DiscoveryCallBack());
-                            
-                            
-                          
-                            // Create a client
-                            using (AccelerationServiceClient client = new AccelerationServiceClient(ithis))
+                            if (deviceInfoServiceEndPoint != null)
                             {
-                                client.Endpoint.Address = hostedEndPoint;
-                                client.Open();
-                               
-                                EndpointAddress callbackEndpoint = client.InnerDuplexChannel.LocalAddress;
-                                EventSourceClient eventSource = new EventSourceClient(ithis, "WSEventing");
-                                eventSource.Endpoint.Address = hostedEndPoint;
-                                eventSource.Open();
-
-                                Subscribe s = new Subscribe();
-                                (s.Delivery = new DeliveryType()).Mode = "http://schemas.xmlsoap.org/ws/2004/08/eventing/DeliveryModes/Push";
-
-                                XmlDocument doc = new XmlDocument();
-                                using (XmlWriter writer = doc.CreateNavigator().AppendChild())
-                                {
-                                    EndpointReferenceType notifyTo = new EndpointReferenceType();
-                                    
-                                    (notifyTo.Address = new AttributedURI()).Value = callbackEndpoint.Uri.AbsoluteUri;
-
-                                    XmlRootAttribute notifyToElem = new XmlRootAttribute("NotifyTo");
-                                    notifyToElem.Namespace = "http://schemas.xmlsoap.org/ws/2004/08/eventing";
-                                    
-                                    XmlDocument doc2 = new XmlDocument();                                    
-                                    using (XmlWriter writer2 = doc2.CreateNavigator().AppendChild())
-                                    {
-                                        XmlRootAttribute ReferenceElement = new XmlRootAttribute("ReferenceElement");
-                                        foreach(AddressHeader h in callbackEndpoint.Headers)
-                                        {
-                                            h.WriteAddressHeader(writer2);  
-                                        }
-
-                                        writer2.Close();
-                                        notifyTo.ReferenceParameters = new ReferenceParametersType();
-                                        notifyTo.ReferenceParameters.Any = notifyTo.ReferenceParameters.Any = doc2.ChildNodes.Cast<XmlElement>().ToArray<XmlElement>();               
-                                    }
-                                    
-                                    new XmlSerializer(notifyTo.GetType(), notifyToElem).Serialize(writer, notifyTo);
-                                }
-
-                                (s.Delivery.Any = new XmlElement[1])[0] = doc.DocumentElement;
-                                (s.Filter = new FilterType()).Dialect = "http://schemas.xmlsoap.org/ws/2006/02/devprof/Action";
-                                (s.Filter.Any = new System.Xml.XmlNode[1])[0] = new System.Xml.XmlDocument().CreateTextNode("http://www.teco.edu/AccelerationService/AccelerationServiceEventOut");
-
-                                SubscribeResponse subscription;
-                                try
-                                {
-                                    Console.WriteLine("Subscribing to the event...");
-                                    //Console.ReadLine();
-                                    subscription = eventSource.SubscribeOp(s);
-                                }
-                                catch (TimeoutException t)
-                                {
-                                    Console.WriteLine("Error reply time out: {0}!!", t.Message);
-                                    return;
-                                }
-
-                                String subscriptionId = null;
-                                foreach (XmlNode xel in subscription.SubscriptionManager.ReferenceParameters.Any)
-                                {
-                                    if (xel.LocalName.Equals("Identifier") && xel.NamespaceURI.Equals("http://schemas.xmlsoap.org/ws/2004/08/eventing"))
-                                        subscriptionId = xel.InnerText;
-                                }
-
-                                Console.WriteLine("Got subscription: {0}", subscriptionId);
-
-                                Console.WriteLine("Press <ENTER> to unsubscribe.");
-                                Console.ReadLine();
-
-                                Console.WriteLine("Unsubscribing {0}", subscriptionId);
-                                SubscriptionManagerClient subscriptionManager = new SubscriptionManagerClient("WSEventingUnsubscribe");
-                                subscriptionManager.Endpoint.Address = hostedEndPoint;
-                                subscriptionManager.UnsubscribeOp(subscriptionId, new Unsubscribe());
-                                client.Close();
+                                invokeGetDeviceStatus(deviceInfoServiceEndPoint);
                             }
-                        }
+                            else
+                            {
+                                Console.WriteLine("Please discover a device first.");
+                            }
+                        } break;
+                    case ConsoleKey.D4:
+                        {
+                            if (deviceInfoServiceEndPoint != null)
+                            {
+                                invokeStopDevice(deviceInfoServiceEndPoint);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Please discover a device first.");
+                            }
+                        } break;
+                    case ConsoleKey.D5:
+                        {
+                            if (accelerationServiceEndPoint != null)
+                            {
+                                invokeStartLDC(accelerationServiceEndPoint);
+                                subscribeToLDC(accelerationServiceEndPoint);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Please discover a device first.");
+                            }
+                        } break;
 
-                        break;
+                    case ConsoleKey.D6:
+                        {
+                            if (dataLoggingServiceEndPoint != null)
+                            {
+                                invokeStartLogging(dataLoggingServiceEndPoint);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Please discover a device first.");
+                            }
+                        } break;
+                    case ConsoleKey.D7:
+                        {
+                            if (dataLoggingServiceEndPoint != null)
+                            {
+                                invokeStartDownload(dataLoggingServiceEndPoint);
+                                subscribeToDownload(dataLoggingServiceEndPoint);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Please discover a device first.");
+                            }
+                        } break;
+                    case ConsoleKey.D8:
+                        {
+                            if (dataLoggingServiceEndPoint != null)
+                            {
+                                invokeGetSessions(dataLoggingServiceEndPoint);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Please discover a device first.");
+                            }
+                        } break;
+                    case ConsoleKey.D9:
+                        {
+                            if (dataLoggingServiceEndPoint != null)
+                            {
+                                invokeEraseDevice(dataLoggingServiceEndPoint);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Please discover a device first.");
+                            }
+                        } break;
 
                     // Close the application.
                     case ConsoleKey.E:
@@ -194,6 +203,313 @@ Select: ");
                     default:
                         Console.WriteLine("Invalid value.");
                         break;
+                }
+            }
+        }
+
+        private static void invokeEraseDevice(EndpointAddress hostedEndPoint)
+        {
+            using (DataLoggingServiceClient client =
+               new DataLoggingServiceClient(new InstanceContext(new DiscoveryCallBack()), "DataLoggingService"))
+            {
+                // Connect to the discovered service endpoint.
+                client.Endpoint.Address = hostedEndPoint;
+                client.Endpoint.Binding.ReceiveTimeout = new TimeSpan(0, 0, 2);
+                client.Open();
+
+                client.Erase();
+
+                // Closing the client gracefully closes the connection and cleans up resources.
+                client.Close();
+            }
+        }
+
+        private static void invokeGetSessions(EndpointAddress hostedEndPoint)
+        {
+            using (DataLoggingServiceClient client =
+               new DataLoggingServiceClient(new InstanceContext(new DiscoveryCallBack()), "DataLoggingService"))
+            {
+                // Connect to the discovered service endpoint.
+                client.Endpoint.Address = hostedEndPoint;
+                client.Endpoint.Binding.ReceiveTimeout = new TimeSpan(0, 0, 2);
+                client.Open();
+
+                SessionInfo info = client.GetSessionCount();
+                Console.WriteLine("Session Count: {0}", info.count);
+
+                // Closing the client gracefully closes the connection and cleans up resources.
+                client.Close();
+            }
+        }
+
+        private static void subscribeToDownload(EndpointAddress hostedEndPoint)
+        {
+            Console.WriteLine("Starting subscription event...");
+
+            //  endpointAddress = StartDiscoveryProcess(false);
+            if (hostedEndPoint != null)
+            {
+                //Get Metadata of the address.
+                //  EndpointAddress hostedEndPoint = GetMetaData(endpointAddress);
+
+                InstanceContext ithis = new InstanceContext(new DiscoveryCallBack());
+
+                using (DataLoggingServiceClient client = new DataLoggingServiceClient(ithis))
+                {
+                    client.Endpoint.Address = hostedEndPoint;
+                    client.Open();
+
+                    EndpointAddress callbackEndpoint = client.InnerDuplexChannel.LocalAddress;
+                    EventSourceClient eventSource = new EventSourceClient(ithis, "WSEventing");
+                    eventSource.Endpoint.Address = hostedEndPoint;
+                    eventSource.Open();
+
+                    Subscribe s = new Subscribe();
+                    (s.Delivery = new DeliveryType()).Mode = "http://schemas.xmlsoap.org/ws/2004/08/eventing/DeliveryModes/Push";
+
+                    XmlDocument doc = new XmlDocument();
+                    using (XmlWriter writer = doc.CreateNavigator().AppendChild())
+                    {
+                        EndpointReferenceType notifyTo = new EndpointReferenceType();
+
+                        (notifyTo.Address = new AttributedURI()).Value = callbackEndpoint.Uri.AbsoluteUri;
+
+                        XmlRootAttribute notifyToElem = new XmlRootAttribute("NotifyTo");
+                        notifyToElem.Namespace = "http://schemas.xmlsoap.org/ws/2004/08/eventing";
+
+                        XmlDocument doc2 = new XmlDocument();
+                        using (XmlWriter writer2 = doc2.CreateNavigator().AppendChild())
+                        {
+                            XmlRootAttribute ReferenceElement = new XmlRootAttribute("ReferenceElement");
+                            foreach (AddressHeader h in callbackEndpoint.Headers)
+                            {
+                                h.WriteAddressHeader(writer2);
+                            }
+
+                            writer2.Close();
+                            notifyTo.ReferenceParameters = new ReferenceParametersType();
+                            notifyTo.ReferenceParameters.Any = notifyTo.ReferenceParameters.Any = doc2.ChildNodes.Cast<XmlElement>().ToArray<XmlElement>();
+                        }
+
+                        new XmlSerializer(notifyTo.GetType(), notifyToElem).Serialize(writer, notifyTo);
+                    }
+
+                    (s.Delivery.Any = new XmlElement[1])[0] = doc.DocumentElement;
+                    (s.Filter = new FilterType()).Dialect = "http://schemas.xmlsoap.org/ws/2006/02/devprof/Action";
+                    (s.Filter.Any = new System.Xml.XmlNode[1])[0] = new System.Xml.XmlDocument().CreateTextNode("http://www.teco.edu/DataLoggingService/DataLoggingServiceEventOut");
+
+                    SubscribeResponse subscription;
+                    try
+                    {
+                        Console.WriteLine("Subscribing to the event...");
+                        //Console.ReadLine();
+                        subscription = eventSource.SubscribeOp(s);
+                    }
+                    catch (TimeoutException t)
+                    {
+                        Console.WriteLine("Error reply time out: {0}!!", t.Message);
+                        return;
+                    }
+
+                    String subscriptionId = null;
+                    foreach (XmlNode xel in subscription.SubscriptionManager.ReferenceParameters.Any)
+                    {
+                        if (xel.LocalName.Equals("Identifier") && xel.NamespaceURI.Equals("http://schemas.xmlsoap.org/ws/2004/08/eventing"))
+                            subscriptionId = xel.InnerText;
+                    }
+
+                    Console.WriteLine("Got subscription: {0}", subscriptionId);
+
+                    Console.WriteLine("Press <ENTER> to unsubscribe.");
+                    Console.ReadLine();
+
+                    Console.WriteLine("Unsubscribing {0}", subscriptionId);
+                    SubscriptionManagerClient subscriptionManager = new SubscriptionManagerClient("WSEventingUnsubscribe");
+                    subscriptionManager.Endpoint.Address = hostedEndPoint;
+                    subscriptionManager.UnsubscribeOp(subscriptionId, new Unsubscribe());
+                    client.Close();
+                }
+            }
+        }
+
+        private static void invokeStartDownload(EndpointAddress hostedEndPoint)
+        {
+
+            using (DataLoggingServiceClient client =
+               new DataLoggingServiceClient(new InstanceContext(new DiscoveryCallBack()), "DataLoggingService"))
+            {
+                // Connect to the discovered service endpoint.
+                client.Endpoint.Address = hostedEndPoint;
+                client.Endpoint.Binding.ReceiveTimeout = new TimeSpan(0, 0, 2);
+                client.Open();
+
+                client.StartDownload();
+
+                // Closing the client gracefully closes the connection and cleans up resources.
+                client.Close();
+            }
+        }
+
+        private static void invokeStartLogging(EndpointAddress hostedEndPoint)
+        {
+
+            LoggingConfig config = new LoggingConfig();
+            config.rate = LoggingConfigRate.Item256;
+            config.duration = "30";
+            using (DataLoggingServiceClient client =
+               new DataLoggingServiceClient(new InstanceContext(new DiscoveryCallBack()), "DataLoggingService"))
+            {
+                // Connect to the discovered service endpoint.
+                client.Endpoint.Address = hostedEndPoint;
+                client.Endpoint.Binding.ReceiveTimeout = new TimeSpan(0, 0, 2);
+                client.Open();
+
+                client.StartLogging(config);
+
+                // Closing the client gracefully closes the connection and cleans up resources.
+                client.Close();
+            }
+        }
+
+        private static void invokeStopDevice(EndpointAddress hostedEndPoint)
+        {
+            using (DeviceInfoServiceClient client = new DeviceInfoServiceClient("DeviceInfoService", hostedEndPoint))
+            {
+                // Connect to the discovered service endpoint.
+                client.Endpoint.Address = hostedEndPoint;
+                client.Endpoint.Binding.ReceiveTimeout = new TimeSpan(0, 0, 2);
+                client.Open();
+
+                client.StopNode();
+
+                // Closing the client gracefully closes the connection and cleans up resources.
+                client.Close();
+            }
+        }
+
+        private static void invokeGetDeviceStatus(EndpointAddress hostedEndPoint)
+        {
+          
+            using (DeviceInfoServiceClient client = new DeviceInfoServiceClient("DeviceInfoService",hostedEndPoint))
+            {
+                // Connect to the discovered service endpoint.
+                client.Endpoint.Address = hostedEndPoint;
+                client.Endpoint.Binding.ReceiveTimeout = new TimeSpan(0, 0, 2);
+                client.Open();
+
+                StatusMessage msg = client.GetNodeStatus();
+                Console.WriteLine("Device Status: Desc: {0} Ready: {1}",msg.description,msg.ready);
+
+                // Closing the client gracefully closes the connection and cleans up resources.
+                client.Close();
+            }
+        }
+
+        private static void invokeStartLDC(EndpointAddress hostedEndPoint)
+        {
+            LDCInfo info = new LDCInfo();
+            info.rate = LDCInfoRate.Item5;
+            using (AccelerationServiceClient client =
+               new AccelerationServiceClient(new InstanceContext(new DiscoveryCallBack()), "AccelerationService"))
+            {
+                // Connect to the discovered service endpoint.
+                client.Endpoint.Address = hostedEndPoint;
+                client.Endpoint.Binding.ReceiveTimeout = new TimeSpan(0, 0, 2);
+                client.Open();
+
+                client.StartLDC(info);
+
+                // Closing the client gracefully closes the connection and cleans up resources.
+                client.Close();
+            }
+        }
+
+        private static void subscribeToLDC(EndpointAddress hostedEndPoint)
+        {
+            Console.WriteLine("Starting subscription event...");
+
+            //  endpointAddress = StartDiscoveryProcess(false);
+            if (hostedEndPoint != null)
+            {
+                //Get Metadata of the address.
+                //  EndpointAddress hostedEndPoint = GetMetaData(endpointAddress);
+
+                InstanceContext ithis = new InstanceContext(new DiscoveryCallBack());
+
+                using (AccelerationServiceClient client = new AccelerationServiceClient(ithis))
+                {
+                    client.Endpoint.Address = hostedEndPoint;
+                    client.Open();
+
+                    EndpointAddress callbackEndpoint = client.InnerDuplexChannel.LocalAddress;
+                    EventSourceClient eventSource = new EventSourceClient(ithis, "WSEventing");
+                    eventSource.Endpoint.Address = hostedEndPoint;
+                    eventSource.Open();
+
+                    Subscribe s = new Subscribe();
+                    (s.Delivery = new DeliveryType()).Mode = "http://schemas.xmlsoap.org/ws/2004/08/eventing/DeliveryModes/Push";
+
+                    XmlDocument doc = new XmlDocument();
+                    using (XmlWriter writer = doc.CreateNavigator().AppendChild())
+                    {
+                        EndpointReferenceType notifyTo = new EndpointReferenceType();
+
+                        (notifyTo.Address = new AttributedURI()).Value = callbackEndpoint.Uri.AbsoluteUri;
+
+                        XmlRootAttribute notifyToElem = new XmlRootAttribute("NotifyTo");
+                        notifyToElem.Namespace = "http://schemas.xmlsoap.org/ws/2004/08/eventing";
+
+                        XmlDocument doc2 = new XmlDocument();
+                        using (XmlWriter writer2 = doc2.CreateNavigator().AppendChild())
+                        {
+                            XmlRootAttribute ReferenceElement = new XmlRootAttribute("ReferenceElement");
+                            foreach (AddressHeader h in callbackEndpoint.Headers)
+                            {
+                                h.WriteAddressHeader(writer2);
+                            }
+
+                            writer2.Close();
+                            notifyTo.ReferenceParameters = new ReferenceParametersType();
+                            notifyTo.ReferenceParameters.Any = notifyTo.ReferenceParameters.Any = doc2.ChildNodes.Cast<XmlElement>().ToArray<XmlElement>();
+                        }
+
+                        new XmlSerializer(notifyTo.GetType(), notifyToElem).Serialize(writer, notifyTo);
+                    }
+
+                    (s.Delivery.Any = new XmlElement[1])[0] = doc.DocumentElement;
+                    (s.Filter = new FilterType()).Dialect = "http://schemas.xmlsoap.org/ws/2006/02/devprof/Action";
+                    (s.Filter.Any = new System.Xml.XmlNode[1])[0] = new System.Xml.XmlDocument().CreateTextNode("http://www.teco.edu/AccelerationService/AccelerationServiceEventOut");
+
+                    SubscribeResponse subscription;
+                    try
+                    {
+                        Console.WriteLine("Subscribing to the event...");
+                        //Console.ReadLine();
+                        subscription = eventSource.SubscribeOp(s);
+                    }
+                    catch (TimeoutException t)
+                    {
+                        Console.WriteLine("Error reply time out: {0}!!", t.Message);
+                        return;
+                    }
+
+                    String subscriptionId = null;
+                    foreach (XmlNode xel in subscription.SubscriptionManager.ReferenceParameters.Any)
+                    {
+                        if (xel.LocalName.Equals("Identifier") && xel.NamespaceURI.Equals("http://schemas.xmlsoap.org/ws/2004/08/eventing"))
+                            subscriptionId = xel.InnerText;
+                    }
+
+                    Console.WriteLine("Got subscription: {0}", subscriptionId);
+
+                    Console.WriteLine("Press <ENTER> to unsubscribe.");
+                    Console.ReadLine();
+
+                    Console.WriteLine("Unsubscribing {0}", subscriptionId);
+                    SubscriptionManagerClient subscriptionManager = new SubscriptionManagerClient("WSEventingUnsubscribe");
+                    subscriptionManager.Endpoint.Address = hostedEndPoint;
+                    subscriptionManager.UnsubscribeOp(subscriptionId, new Unsubscribe());
+                    client.Close();
                 }
             }
         }
@@ -245,9 +561,9 @@ Select: ");
                 {
                     Console.WriteLine("New service found: !!");
                     AnnouncementFound = true;
-                    
+
                     endpointAddress = new EndpointAddress(metadata.ListenUris[0]);
-                    hostedEndPoint = GetMetaData(endpointAddress);
+                    GetServiceEndPoints(endpointAddress);
                     Console.WriteLine("Service can now be invoked");
                 }
             }
@@ -256,11 +572,13 @@ Select: ");
         private static void OnOfflineAnnouncement(object sender, AnnouncementEventArgs e)
         {
             EndpointDiscoveryMetadata metadata = e.EndpointDiscoveryMetadata;
-            if (metadata.ListenUris.Count>0 && metadata.ListenUris[0].Equals(endpointAddress.Uri))
+            if (metadata.ListenUris.Count > 0 && metadata.ListenUris[0].Equals(endpointAddress.Uri))
             {
                 Console.WriteLine("Service said goodbye!!");
                 endpointAddress = null;
-                hostedEndPoint = null;
+                accelerationServiceEndPoint = null;
+                deviceInfoServiceEndPoint = null;
+                dataLoggingServiceEndPoint = null;
             }
         }
 
@@ -332,7 +650,7 @@ Select: ");
             Console.Write("Finding for all services in the network (empty criteria)...");
             FindResponse findResponseX = discoveryClient.Find(new FindCriteria());
             Console.WriteLine("{0} found.\n", findResponseX.Endpoints.Count);
-            
+
             // Search for each endpoint found to resolve the address given.
             if (findResponseX.Endpoints.Count > 0)
             {
@@ -342,11 +660,11 @@ Select: ");
                         continue;
 
                     // Get all contracts of the endpoints.
-                    foreach(System.Xml.XmlQualifiedName type in meta.ContractTypeNames)
+                    foreach (System.Xml.XmlQualifiedName type in meta.ContractTypeNames)
                     {
                         // Check if its a valid contract.
                         //Console.WriteLine("Checking {0}@{1}", type, meta.Address);
-                        if (type.Equals(new System.Xml.XmlQualifiedName("AccelerationDeviceType", "http://www.teco.edu/AccelerationService")))
+                        if (type.Equals(new System.Xml.XmlQualifiedName("AccelerationDeviceType", "http://www.teco.edu/AccelerationModel")))
                         {
                             // Call the resolve function.
                             //Console.WriteLine("Found {0}@{1}",type,meta.Address);
@@ -359,7 +677,7 @@ Select: ");
                     }
                 }
             }
-            
+
             return ret.Values.ToArray();
         }
 
@@ -369,9 +687,8 @@ Select: ");
         /// receive the http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse.
         /// </summary>
         /// <param name="endpointAddress">The address the service will be called.</param>
-        public static EndpointAddress GetMetaData(EndpointAddress endpointAddress)
+        public static void GetServiceEndPoints(EndpointAddress endpointAddress)
         {
-            EndpointAddress ret = null;
 
             // Custom binding with TextMessageEncoding and HttpTransport and the specific soap and wsa versions shown here:
             CustomBinding binding = new CustomBinding(
@@ -383,7 +700,7 @@ Select: ");
             // Gave the physical address in the Via for the custom client and the logical address as the EP address to be put into the ws-addressing To header as:
             MetadataExchangeClient mex = new MetadataExchangeClient(binding);
             MetadataSet metadataSet = mex.GetMetadata(endpointAddress);
-            
+
             // Check for the metadata set size. 
             System.Collections.ObjectModel.Collection<MetadataSection> documentCollection = metadataSet.MetadataSections;
             if (documentCollection != null)
@@ -414,8 +731,25 @@ Select: ");
 
                                         if (hosted.EndpointReference != null && hosted.EndpointReference.Length > 0)
                                         {
-                                            ret = new EndpointAddress(hosted.EndpointReference[0].Address.Value);
-                                            GetMetaData(ret);
+                                            Console.WriteLine("Service ID: {0}", hosted.ServiceId);
+
+                                            if (hosted.ServiceId.Equals("AccelerationService"))
+                                            {
+                                                accelerationServiceEndPoint = new EndpointAddress(hosted.EndpointReference[0].Address.Value);
+                                                Console.WriteLine("Found endpoint for AccelerationService");
+                                            }
+                                            else if (hosted.ServiceId.Equals("DeviceInfoService"))
+                                            {
+                                                deviceInfoServiceEndPoint = new EndpointAddress(hosted.EndpointReference[0].Address.Value);
+                                                Console.WriteLine("Found endpoint for DeviceInfoService");
+                                            }
+                                            else if (hosted.ServiceId.Equals("DataLoggingService"))
+                                            {
+                                                dataLoggingServiceEndPoint = new EndpointAddress(hosted.EndpointReference[0].Address.Value);
+                                                Console.WriteLine("Found endpoint for DataLoggingService");
+                                            }
+                                            
+                                            
                                         }
                                     }
                                 }
@@ -444,7 +778,6 @@ Select: ");
                     }
                 }
             }
-            return ret;
         }
 
         /// <summary>
@@ -457,32 +790,78 @@ Select: ");
             if (response.series != null)
             {
                 Console.WriteLine("Series:");
-                Console.WriteLine("\tFragment count: {0}",response.series.count);
+                Console.WriteLine("\tFragment count: {0}", response.series.count);
                 if (response.series.timestampSpecified)
                 {
                     Console.WriteLine("\tTimestamp: {0}", response.series.timestamp);
                 }
                 Console.WriteLine("\tDelta: {0}", response.series.delta);
-                for(int i=0;i<response.series.sample.Length;i++)
+                for (int i = 0; i < response.series.sample.Length; i++)
                 {
                     Console.WriteLine("Sample:");
                     Console.WriteLine("\tDelta: {0}", response.series.sample[i].delta);
-                    Console.WriteLine("\tAcceleration X: {0}",response.series.sample[i].accl.x);
-                    Console.WriteLine("\tAcceleration Y: {0}",response.series.sample[i].accl.y);
-                    Console.WriteLine("\tAcceleration Z: {0}",response.series.sample[i].accl.z);
+                    Console.WriteLine("\tAcceleration X: {0}", response.series.sample[i].accl.x);
+                    Console.WriteLine("\tAcceleration Y: {0}", response.series.sample[i].accl.y);
+                    Console.WriteLine("\tAcceleration Z: {0}", response.series.sample[i].accl.z);
                 }
             }
         }
     }
 
-    public class DiscoveryCallBack : EventSourceCallback, AccelerationServiceCallback
+    public class DiscoveryCallBack : EventSourceCallback, AccelerationServiceCallback, DataLoggingServiceCallback
     {
         #region AccelerationServiceCallback Members
 
         public void AccelerationServiceEvent(AccelerationServiceEvent request)
         {
             Console.WriteLine("Incoming event");
-            Program.ShowValues(request);
+            Console.WriteLine("Results:");
+            if (request.series != null)
+            {
+                Console.WriteLine("Series:");
+                Console.WriteLine("\tFragment count: {0}", request.series.count);
+                if (request.series.timestampSpecified)
+                {
+                    Console.WriteLine("\tTimestamp: {0}", request.series.timestamp);
+                }
+                Console.WriteLine("\tDelta: {0}", request.series.delta);
+                for (int i = 0; i < request.series.sample.Length; i++)
+                {
+                    Console.WriteLine("Sample:");
+                    Console.WriteLine("\tDelta: {0}", request.series.sample[i].delta);
+                    Console.WriteLine("\tAcceleration X: {0}", request.series.sample[i].accl.x);
+                    Console.WriteLine("\tAcceleration Y: {0}", request.series.sample[i].accl.y);
+                    Console.WriteLine("\tAcceleration Z: {0}", request.series.sample[i].accl.z);
+                }
+            }
+        }
+
+        #endregion
+
+        #region DataLoggingServiceCallback Members
+
+        public void DataLoggingServiceEvent(DataLoggingServiceEvent request)
+        {
+            Console.WriteLine("Incoming event");
+            Console.WriteLine("Results:");
+            if (request.series != null)
+            {
+                Console.WriteLine("Series:");
+                Console.WriteLine("\tFragment count: {0}", request.series.count);
+                if (request.series.timestampSpecified)
+                {
+                    Console.WriteLine("\tTimestamp: {0}", request.series.timestamp);
+                }
+                Console.WriteLine("\tDelta: {0}", request.series.delta);
+                for (int i = 0; i < request.series.sample.Length; i++)
+                {
+                    Console.WriteLine("Sample:");
+                    Console.WriteLine("\tDelta: {0}", request.series.sample[i].delta);
+                    Console.WriteLine("\tAcceleration X: {0}", request.series.sample[i].accl.x);
+                    Console.WriteLine("\tAcceleration Y: {0}", request.series.sample[i].accl.y);
+                    Console.WriteLine("\tAcceleration Z: {0}", request.series.sample[i].accl.z);
+                }
+            }
         }
 
         #endregion
