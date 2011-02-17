@@ -16,7 +16,7 @@ typedef struct {
 } ldcmessage;
 
 typedef struct {
-	char * rate;
+	char rate[64];
 } LDCInfo;
 
 #define	ACLERR_NotReady -1
