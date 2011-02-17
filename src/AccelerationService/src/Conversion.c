@@ -24,6 +24,7 @@ void writeSOAPBuf(struct soap *soap,char * buf)
 
 void writeSOAPValues(struct soap *soap,float x,float y,float z,float tick, float delta)
 {
+	printf("Calling writeSOAPValues\n");
 	char * str = NULL;
 
 	soap_element_begin_out(soap, "acs:series", 0, "");
@@ -80,26 +81,27 @@ void writeSOAPValues(struct soap *soap,float x,float y,float z,float tick, float
 
 int readLDCInfo(struct soap *soap, LDCInfo * info)
 {
-	if (soap_element_begin_in(soap, "acl:ldcinfo", 0, NULL) != SOAP_OK)
+	printf("Calling readLDCInfo\n");
+	if (soap_element_begin_in(soap, "acs:ldcinfo", 0, NULL) != SOAP_OK)
 	{
 		soap->error = soap_sender_fault(soap,"tag name or namespace mismatch: ldcinfo expected",NULL);
 		return 0;
 	}
-	if (soap_element_begin_in(soap, "acl:rate", 0, NULL) != SOAP_OK)
+	if (soap_element_begin_in(soap, "acs:rate", 0, NULL) != SOAP_OK)
 	{
 		soap->error = soap_sender_fault(soap,"tag name or namespace mismatch: rate expected",NULL);
 		return 0;
 	}
 
 	const char* str = soap_value(soap);
-	info->rate = strdup(str);
+	strcpy(info->rate,str);
 
-	if (soap_element_end_in(soap, "acl:rate") != SOAP_OK) {
+	if (soap_element_end_in(soap, "acs:rate") != SOAP_OK) {
 		soap->error = soap_sender_fault(soap,"tag name or namespace mismatch: rate expected",NULL);
 		return 0;
 	}
 
-	if (soap_element_end_in(soap, "acl:ldcinfo") != SOAP_OK) {
+	if (soap_element_end_in(soap, "acs:ldcinfo") != SOAP_OK) {
 		soap->error = soap_sender_fault(soap,"tag name or namespace mismatch: ldcinfo expected",NULL);
 		return 0;
 	}
