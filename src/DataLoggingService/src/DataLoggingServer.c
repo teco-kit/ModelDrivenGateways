@@ -4,27 +4,29 @@
 
 #include <ws4d-gSOAP/dpws_device.h>
 
-extern int (*send_buf)(struct dpws_s *, uint16_t , uint8_t , struct soap* , u_char* , ssize_t );
-extern ssize_t (*rcv_buf)(struct dpws_s *device, uint16_t service_id, uint8_t op_id, struct soap* msg, char **buf);
+int send_buf(struct dpws_s *, uint16_t , uint8_t , struct soap* , u_char* , ssize_t );
+ssize_t rcv_buf(struct dpws_s *device, uint16_t service_id, uint8_t op_id, struct soap* msg, char **buf);
 
 #include "DataLogging_operations.h"
 #include "Conversion.h"
 
 static int soap_serve_StartLogging(struct soap *soap) //TODO: pass device context
 {
+	printf("Calling soap_serve_StartLogging\n");
 	int op_id = OP_DataLogging_StartLogging;
 	int service_id = SRV_DataLogging;
 	struct dpws_s *device = NULL;
 
 	LoggingInfo info;
-	info.rate = "32"; // Default rate is 32 Hz
+	strcpy(info.rate,"32"); // Default rate is 32 Hz
 
 
 	if(!readLoggingInfo(soap, &info))
 		return soap->error;
 
 
-	int ret = (*send_buf)(device, service_id, op_id, soap, (u_char*)&info, sizeof(LoggingInfo));
+	int ret = send_buf(device, service_id, op_id, soap, (u_char*)&info, sizeof(LoggingInfo));
+
 	/* prepare response */
 	{
 		const char* To = wsa_header_get_ReplyTo(soap);
@@ -75,7 +77,7 @@ static int soap_serve_StartLogging(struct soap *soap) //TODO: pass device contex
 
 	{
 		char * buf;
-		ssize_t len = (*rcv_buf)(device, service_id, op_id, soap, &buf);
+		ssize_t len = rcv_buf(device, service_id, op_id, soap, &buf);
 
 		if (ret == DLERR_NotReady) {
 			soap->error = soap_receiver_fault(soap, "Node not ready. Please stop the node first.", NULL);
@@ -101,11 +103,12 @@ static int soap_serve_StartLogging(struct soap *soap) //TODO: pass device contex
 
 static int soap_serve_StartDownload(struct soap *soap)
 {
+	printf("Calling soap_serve_StartDownload\n");
 	int op_id = OP_DataLogging_StartDownload;
 	int service_id = SRV_DataLogging;
 	struct dpws_s *device = NULL;
 
-	int ret = (*send_buf)(device, service_id, op_id, soap, NULL, 0);
+	int ret = send_buf(device, service_id, op_id, soap, NULL, 0);
 
 	/* prepare response */
 	{
@@ -157,7 +160,7 @@ static int soap_serve_StartDownload(struct soap *soap)
 
 	{
 		char * buf;
-		ssize_t len = (*rcv_buf)(device, service_id, op_id, soap, &buf);
+		ssize_t len = rcv_buf(device, service_id, op_id, soap, &buf);
 
 		if (ret == DLERR_NotReady) {
 			soap->error = soap_receiver_fault(soap, "Node not ready. Please stop the node first.", NULL);
@@ -183,11 +186,12 @@ static int soap_serve_StartDownload(struct soap *soap)
 
 static int soap_serve_Erase(struct soap *soap)
 {
+	printf("Calling soap_serve_Erase\n");
 	int op_id = OP_DataLogging_Erase;
 	int service_id = SRV_DataLogging;
 	struct dpws_s *device = NULL;
 
-	int ret = (*send_buf)(device, service_id, op_id, soap, NULL, 0);
+	int ret = send_buf(device, service_id, op_id, soap, NULL, 0);
 
 	/* prepare response */
 	{
@@ -239,7 +243,7 @@ static int soap_serve_Erase(struct soap *soap)
 
 	{
 		char * buf;
-		ssize_t len = (*rcv_buf)(device, service_id, op_id, soap, &buf);
+		ssize_t len = rcv_buf(device, service_id, op_id, soap, &buf);
 
 		if (ret == DLERR_NotReady) {
 			soap->error = soap_receiver_fault(soap, "Node not ready. Please stop the node first.", NULL);
@@ -262,11 +266,12 @@ static int soap_serve_Erase(struct soap *soap)
 
 static int soap_serve_GetSessionCount(struct soap *soap)
 {
+	printf("Calling soap_serve_GetSessionCount\n");
 	int op_id = OP_DataLogging_GetSessionCount;
 	int service_id = SRV_DataLogging;
 	struct dpws_s *device = NULL;
 
-	int ret = (*send_buf)(device, service_id, op_id, soap, NULL, 0);
+	int ret = send_buf(device, service_id, op_id, soap, NULL, 0);
 
 	/* prepare response */
 	{
@@ -319,7 +324,7 @@ static int soap_serve_GetSessionCount(struct soap *soap)
 	{
 		sessioninfo info;
 		sessioninfo * info_ptr = &info;
-		ssize_t len = (*rcv_buf)(device, service_id, op_id, soap, (char**)&info_ptr);
+		ssize_t len = rcv_buf(device, service_id, op_id, soap, (char**)&info_ptr);
 
 		if (ret == DLERR_NotReady) {
 			soap->error = soap_receiver_fault(soap, "Node not ready. Please stop the node first.", NULL);
@@ -349,7 +354,15 @@ static int soap_serve_GetSessionCount(struct soap *soap)
 
 int DataLoggingService_serve_request(struct soap *soap)
 {
+
 	soap_peek_element(soap);
+	if (soap->action)
+	{
+		printf("Calling DataLoggingService_serve_request with soap action %s\n",soap->action);
+	} else {
+		printf("Calling DataLoggingService_serve_request without soap action\n");
+	}
+
 
 	if ((soap->action && !strcmp(soap->action,
 			"http://www.teco.edu/DataLoggingService/StartLoggingIn"))
