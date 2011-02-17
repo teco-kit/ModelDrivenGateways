@@ -14,6 +14,11 @@ namespace NodeDiscovery.AccelerationModel {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="http://www.teco.edu/AccelerationService", ConfigurationName="AccelerationModel.AccelerationService", CallbackContract=typeof(NodeDiscovery.AccelerationModel.AccelerationServiceCallback))]
     public interface AccelerationService {
+        
+        // CODEGEN: Generating message contract since the operation StartLDC is neither RPC nor document wrapped.
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.teco.edu/AccelerationService/StartLDCIn", ReplyAction="http://www.teco.edu/AccelerationService/StartLDCOut")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        NodeDiscovery.AccelerationModel.StartLDCResponse StartLDC(NodeDiscovery.AccelerationModel.StartLDCRequest request);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -33,7 +38,7 @@ namespace NodeDiscovery.AccelerationModel {
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.teco.edu/AccelerationService")]
     public partial class AccelerationSeries : object, System.ComponentModel.INotifyPropertyChanged {
         
-        private int countField;
+        private string countField;
         
         private System.DateTime timestampField;
         
@@ -44,8 +49,8 @@ namespace NodeDiscovery.AccelerationModel {
         private AccelerationSample[] sampleField;
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public int count {
+        [System.Xml.Serialization.XmlElementAttribute(DataType="nonNegativeInteger", Order=0)]
+        public string count {
             get {
                 return this.countField;
             }
@@ -219,6 +224,121 @@ namespace NodeDiscovery.AccelerationModel {
         }
     }
     
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.1")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.teco.edu/AccelerationService")]
+    public partial class LDCInfo : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private LDCInfoRate rateField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public LDCInfoRate rate {
+            get {
+                return this.rateField;
+            }
+            set {
+                this.rateField = value;
+                this.RaisePropertyChanged("rate");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.1")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://www.teco.edu/AccelerationService")]
+    public enum LDCInfoRate {
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("500")]
+        Item500,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("250")]
+        Item250,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("100")]
+        Item100,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("50")]
+        Item50,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("25")]
+        Item25,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("10")]
+        Item10,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("5")]
+        Item5,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("2")]
+        Item2,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("1")]
+        Item1,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("1/2")]
+        Item12,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("1/5")]
+        Item15,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("1/10")]
+        Item110,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("1/30")]
+        Item130,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("1/60")]
+        Item160,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("1/120")]
+        Item1120,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("1/300")]
+        Item1300,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("1/600")]
+        Item1600,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("1/1800")]
+        Item11800,
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("1/3600")]
+        Item13600,
+    }
+    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -233,6 +353,33 @@ namespace NodeDiscovery.AccelerationModel {
         
         public AccelerationServiceEvent(NodeDiscovery.AccelerationModel.AccelerationSeries series) {
             this.series = series;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class StartLDCRequest {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.teco.edu/AccelerationService", Order=0)]
+        public NodeDiscovery.AccelerationModel.LDCInfo ldcinfo;
+        
+        public StartLDCRequest() {
+        }
+        
+        public StartLDCRequest(NodeDiscovery.AccelerationModel.LDCInfo ldcinfo) {
+            this.ldcinfo = ldcinfo;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class StartLDCResponse {
+        
+        public StartLDCResponse() {
         }
     }
     
@@ -262,6 +409,17 @@ namespace NodeDiscovery.AccelerationModel {
         
         public AccelerationServiceClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(callbackInstance, binding, remoteAddress) {
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        NodeDiscovery.AccelerationModel.StartLDCResponse NodeDiscovery.AccelerationModel.AccelerationService.StartLDC(NodeDiscovery.AccelerationModel.StartLDCRequest request) {
+            return base.Channel.StartLDC(request);
+        }
+        
+        public void StartLDC(NodeDiscovery.AccelerationModel.LDCInfo ldcinfo) {
+            NodeDiscovery.AccelerationModel.StartLDCRequest inValue = new NodeDiscovery.AccelerationModel.StartLDCRequest();
+            inValue.ldcinfo = ldcinfo;
+            NodeDiscovery.AccelerationModel.StartLDCResponse retVal = ((NodeDiscovery.AccelerationModel.AccelerationService)(this)).StartLDC(inValue);
         }
     }
 }
