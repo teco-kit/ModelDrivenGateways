@@ -75,9 +75,10 @@
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="fragment" eType="#//Fragment"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fragment" eType="#//Fragment"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sample" lowerBound="1"
-        upperBound="-1" eType="#//Sample"/>
+        upperBound="-1" eType="#//Sample" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Fragment">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="count" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Byte">
