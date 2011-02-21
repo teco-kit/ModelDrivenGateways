@@ -17,13 +17,9 @@
   <xsd:complexType name="Series">
     <xsd:sequence>
       <xsd:element form="qualified" minOccurs="0" name="timeStamp" type="xsd:dateTime"/>
+      <xsd:element ecore:resolveProxies="true" minOccurs="0" name="fragment" type="sval:Fragment"/>
+      <xsd:element ecore:resolveProxies="true" maxOccurs="unbounded" name="sample" type="sval:Sample"/>
     </xsd:sequence>
-    <xsd:attribute ecore:reference="sval:Fragment" name="fragment" type="xsd:anyURI"/>
-    <xsd:attribute ecore:reference="sval:Sample" name="sample" use="required">
-      <xsd:simpleType>
-        <xsd:list itemType="xsd:anyURI"/>
-      </xsd:simpleType>
-    </xsd:attribute>
   </xsd:complexType>
   <xsd:complexType name="Fragment">
     <xsd:attribute ecore:unsettable="false" name="count" type="xsd:byte">
