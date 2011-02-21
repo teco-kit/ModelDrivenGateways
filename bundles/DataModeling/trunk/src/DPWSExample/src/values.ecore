@@ -85,10 +85,16 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="fragment counter (to detect missing segments)"/>
       </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+      </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="delta_t" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Duration">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="time elapsed since start of series"/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
@@ -96,6 +102,9 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="delta_t" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Duration">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="time_elapse since last sample&#xD;&#xA;Mandatory for second element!!&#xD;&#xA;&#xD;&#xA;Example how to calculate timeline &quot;x-axis&quot;&#xD;&#xA;&#xD;&#xA;100s   *series&#xD;&#xA;     *delta_t 100s&#xD;&#xA;100s     *sample&#xD;&#xA;100,1s   *sample&#xD;&#xA;          *delta_t 0,1s&#xD;&#xA;100,2s   *sample&#xD;&#xA;100,3s   *sample&#xD;&#xA;100,5s   *sample&#xD;&#xA;          *delta_t 0,2s&#xD;&#xA;100,7s   *sample&#xD;&#xA;100,8s   *sample&#xD;&#xA;          *delta_t 0,1 &#xD;&#xA;"/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

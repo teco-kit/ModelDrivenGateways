@@ -22,21 +22,24 @@
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="Fragment">
-    <xsd:attribute ecore:unsettable="false" name="count" type="xsd:byte">
-      <xsd:annotation>
-        <xsd:documentation>fragment counter (to detect missing segments)</xsd:documentation>
-      </xsd:annotation>
-    </xsd:attribute>
-    <xsd:attribute ecore:name="delta_t" name="delta_t" type="xsd:duration">
-      <xsd:annotation>
-        <xsd:documentation>time elapsed since start of series</xsd:documentation>
-      </xsd:annotation>
-    </xsd:attribute>
+    <xsd:sequence>
+      <xsd:element ecore:unsettable="false" minOccurs="0" name="count" type="xsd:byte">
+        <xsd:annotation>
+          <xsd:documentation>fragment counter (to detect missing segments)</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element ecore:name="delta_t" minOccurs="0" name="delta_t" type="xsd:duration">
+        <xsd:annotation>
+          <xsd:documentation>time elapsed since start of series</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="Sample">
-    <xsd:attribute ecore:name="delta_t" name="delta_t" type="xsd:duration">
-      <xsd:annotation>
-        <xsd:documentation>time_elapse since last sample
+    <xsd:sequence>
+      <xsd:element ecore:name="delta_t" minOccurs="0" name="delta_t" type="xsd:duration">
+        <xsd:annotation>
+          <xsd:documentation>time_elapse since last sample
 Mandatory for second element!!
 
 Example how to calculate timeline "x-axis"
@@ -54,8 +57,9 @@ Example how to calculate timeline "x-axis"
 100,8s   *sample
           *delta_t 0,1 
 </xsd:documentation>
-      </xsd:annotation>
-    </xsd:attribute>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="Configuration"/>
 </xsd:schema>
