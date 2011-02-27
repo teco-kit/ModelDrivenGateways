@@ -234,6 +234,8 @@ namespace NodeDiscovery.AccelerationModel {
         
         private LDCInfoRate rateField;
         
+        private string durationField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public LDCInfoRate rate {
@@ -243,6 +245,18 @@ namespace NodeDiscovery.AccelerationModel {
             set {
                 this.rateField = value;
                 this.RaisePropertyChanged("rate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="nonNegativeInteger", Order=1)]
+        public string duration {
+            get {
+                return this.durationField;
+            }
+            set {
+                this.durationField = value;
+                this.RaisePropertyChanged("duration");
             }
         }
         

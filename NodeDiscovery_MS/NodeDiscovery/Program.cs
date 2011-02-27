@@ -409,6 +409,7 @@ Select: ");
         {
             LDCInfo info = new LDCInfo();
             info.rate = LDCInfoRate.Item5;
+            info.duration = "30";
             using (AccelerationServiceClient client =
                new AccelerationServiceClient(new InstanceContext(new DiscoveryCallBack()), "AccelerationService"))
             {

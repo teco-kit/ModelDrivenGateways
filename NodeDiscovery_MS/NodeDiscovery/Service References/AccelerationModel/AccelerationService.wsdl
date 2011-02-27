@@ -92,6 +92,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
+          <xsd:element minOccurs="1" maxOccurs="1" name="duration" type="xsd:nonNegativeInteger" />
         </xsd:sequence>
       </xsd:complexType>
       <xsd:element name="series" type="tns:AccelerationSeries" />
