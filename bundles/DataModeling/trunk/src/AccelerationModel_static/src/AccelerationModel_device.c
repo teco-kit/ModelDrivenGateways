@@ -383,6 +383,7 @@ int AccelModel_set_wsdl(struct dpws_s *device) {
 			"								</restriction>\n"
 			"							</simpleType>\n"
 			"						</element>\n"
+			"						<element maxOccurs=\"1\" minOccurs=\"1\" name=\"duration\" type=\"nonNegativeInteger\"/>\n"
 			"					</sequence>\n"
 			"				</complexType>\n"
 			"\n"

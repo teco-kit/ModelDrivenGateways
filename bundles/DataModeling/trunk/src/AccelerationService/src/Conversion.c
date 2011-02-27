@@ -101,6 +101,20 @@ int readLDCInfo(struct soap *soap, LDCInfo * info)
 		return 0;
 	}
 
+	if (soap_element_begin_in(soap, "acs:duration", 0, NULL) != SOAP_OK)
+	{
+		soap->error = soap_sender_fault(soap,"tag name or namespace mismatch: duration expected",NULL);
+		return 0;
+	}
+
+	str = soap_value(soap);
+	strcpy(info->duration,str);
+
+	if (soap_element_end_in(soap, "acs:duration") != SOAP_OK) {
+		soap->error = soap_sender_fault(soap,"tag name or namespace mismatch: duration expected",NULL);
+		return 0;
+	}
+
 	if (soap_element_end_in(soap, "acs:ldcinfo") != SOAP_OK) {
 		soap->error = soap_sender_fault(soap,"tag name or namespace mismatch: ldcinfo expected",NULL);
 		return 0;
