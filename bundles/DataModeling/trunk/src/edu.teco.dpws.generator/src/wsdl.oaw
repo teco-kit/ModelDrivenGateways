@@ -45,8 +45,6 @@
     <outlet path="${outlet}" />
         
     <beautifier class="org.eclipse.xpand2.output.cpp.CppBeautifier"/>
-
-
   </component>
 
   <component id="xsdParser"   class="edu.teco.automata.generator.XSD2EcoreReader">

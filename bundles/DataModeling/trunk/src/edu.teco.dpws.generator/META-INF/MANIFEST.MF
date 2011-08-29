@@ -25,7 +25,9 @@ Require-Bundle: org.eclipse.xtend.typesystem.xsd,
  org.eclipse.ui,
  edu.teco.automata;bundle-version="1.0.0",
  edu.teco.automata.generator;bundle-version="1.0.0",
- org.eclipse.wst.wsdl;bundle-version="1.2.0"
+ org.eclipse.wst.wsdl;bundle-version="1.2.0",
+ org.apache.log4j;bundle-version="1.2.15",
+ org.apache.commons.logging;bundle-version="1.0.4"
 Demo-Description: This example uses a custom XML format to describe a wizard-like application. Xpand is used to generate fully-working SWT-Java-application from this description.
 Bundle-Activator: edu.teco.dpws.generator.ui.Plugin
 Bundle-ActivationPolicy: lazy
